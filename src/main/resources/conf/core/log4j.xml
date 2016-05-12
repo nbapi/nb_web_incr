@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<!-- 控制台输出 -->
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %p [%c] - %m%n"/>
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+	
+	<!-- 系统启动日志输出文件 -->
+    <appender name="fileAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/system.log"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %p [%c] - %m%n"/>
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>	
+	<!--actionLogEntity appender -->
+	<appender name="actionLogEntityAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/nb_web_incr_actionlogentity.log"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm"/>
+		<layout  class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n"/>
+	    </layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+	
+	<appender name="globalExceptionAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/nb_web_incr_globalexception.log"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm"/>
+		<layout  class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n"/>
+	    </layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+	
+	<!--actionLogEntity appender -->
+      <appender name="scheduleLogEntityAppender" class="org.apache.log4j.DailyRollingFileAppender">
+           <param name="File" value="${catalina.home}/logs/schedule_logentity.log"/>
+           
+           <param name="DatePattern"  value="'.'yyyy-MM-dd-HH'.log'" />
+           <layout  class="org.apache.log4j.PatternLayout">
+                 <param name="ConversionPattern" value="%m%n"/>
+          </layout>
+           <filter class="org.apache.log4j.varia.LevelRangeFilter">
+                 <param name="LevelMin" value="INFO" />
+           </filter>
+      </appender>
+ 
+	<!-- ======================================================================================================= -->
+	<!-- =================================healthcheck组件日志appender 配置开始======================================= -->
+	<!-- ======================================================================================================= -->
+	<!-- healthcheck组件, info级别及以上日志接收器 -->
+	<appender name="healthcheckAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" 
+			value="${catalina.home}/logs/healthcheck/healthcheck_info.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="DEBUG" />
+		</filter>
+	</appender>
+	<!-- ======================================================================================================= -->
+	<!-- =================================healthcheck组件日志logger 配置结束======================================= -->
+	<!-- ======================================================================================================= -->
+ 
+
+	<!-- ===================================================================================================== -->
+	<!-- =================================health check组件日志logger 配置开始==================================== -->
+	<!-- ===================================================================================================== -->
+	<logger name="healthcheck" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="healthcheckAppender" />
+	</logger>
+	<!-- ===================================================================================================== -->
+	<!-- =================================health check组件日志logger 配置结束==================================== -->
+	<!-- ===================================================================================================== -->
+
+	<!-- SOA client组件, info级别及以上日志接收器 -->
+	<appender name="soaClientInfoAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/hotel_soa_client/soa_client_info.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+
+	<!-- SOA client组件, error级别及以上日志接收器 -->
+	<appender name="soaClientErrorAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/hotel_soa_client/soa_client_error.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="ERROR" />
+		</filter>
+	</appender>
+
+	<!-- SOA client组件, API调用, 日志接收器 -->
+	<appender name="soaClientApiAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/hotel_soa_client/soa_client_api.log" />
+		<param name="DatePattern" value="'.'yyyyMMddHHmm" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+
+	<!-- SOA client组件, 通用, 日志器 -->
+	<logger name="soaClientLogger" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaClientInfoAppender" />
+		<appender-ref ref="soaClientErrorAppender" />
+	</logger>
+	
+	<!-- SOA client组件, API调用, 日志器 -->
+	<logger name="soaClientApiLogger" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaClientApiAppender" />
+	</logger>
+	
+	<!-- zookeeper日志器, 重定向日志流 -->
+	<logger name="org.apache.zookeeper" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaClientInfoAppender" />
+		<appender-ref ref="soaClientErrorAppender" />
+	</logger>
+	
+	<!-- zookeeper curator日志器, 重定向日志流 -->
+	<logger name="org.apache.curator" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaClientInfoAppender" />
+		<appender-ref ref="soaClientErrorAppender" />
+	</logger>
+
+	<!-- ehcache日志器, 重定向日志流 -->
+	<logger name="net.sf.ehcache" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaClientInfoAppender" />
+		<appender-ref ref="soaClientErrorAppender" />
+	</logger>
+
+	<!-- SOA server组件, info级别及以上日志接收器 -->
+	<appender name="soaServerInfoAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/hotel_soa_server/soa_server_info.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+
+	<!-- SOA server组件, error级别及以上日志接收器 -->
+	<appender name="soaServerErrorAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/hotel_soa_server/soa_server_error.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="ERROR" />
+		</filter>
+	</appender>
+	<!-- SOA server组件, 通用, 日志器 -->
+	<logger name="soaServerLogger" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaServerInfoAppender" />
+		<appender-ref ref="soaServerErrorAppender" />
+	</logger>
+	
+	<!-- zookeeper日志器, 重定向日志流 -->
+	<logger name="org.apache.zookeeper" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaServerInfoAppender" />
+		<appender-ref ref="soaServerErrorAppender" />
+	</logger>
+
+	<!-- zookeeper curator日志器, 重定向日志流 -->
+	<logger name="org.apache.curator" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="soaServerInfoAppender" />
+		<appender-ref ref="soaServerErrorAppender" />
+	</logger>
+
+
+ 
+      <logger name="schedulelogger">
+   		 <level value="INFO" />
+    	<appender-ref ref="scheduleLogEntityAppender" />
+		</logger>
+	
+	<category name="actionLogEntityLogger" additivity="true">
+		<level value="INFO"/>
+		<appender-ref ref="actionLogEntityAppender" />  
+	</category>
+	
+	<category name="globalExceptionLogger" additivity="true">
+		<level value="INFO"/>
+		<appender-ref ref="globalExceptionAppender" />  
+	</category>
+	
+	<root>
+	  <level value="DEBUG"/>
+	  <appender-ref ref="stdout"/>
+	  <appender-ref ref="fileAppender"/>
+	</root>
+	
+</log4j:configuration>
