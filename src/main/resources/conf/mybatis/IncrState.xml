@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="IncrState">
+	<select id="getLastIncrState" resultType="incrState">
+		select * from IncrState
+		<where>
+			<if test="lastTime != null and !lastTime.equals('')">ChangeTime > #{lastTime} </if>
+		</where>
+		ORDER BY ChangeTime LIMIT 0,1
+	</select>
+	<select id="getIncrStates" resultType="incrState">
+		select * from IncrState
+		<where>
+			<if test="incrID != null and !incrID.equals('')">incrID > #{lastId} </if>
+		</where>
+		ORDER BY IncrID LIMIT 0,1000
+	</select>
+</mapper>
