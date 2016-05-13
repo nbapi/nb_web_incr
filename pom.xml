@@ -4,7 +4,7 @@
 	<groupId>com.elong.nbapi</groupId>
 	<artifactId>nb_web_incr</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>nb_web_incr</name>
 	<url>http://maven.apache.org</url>
 	<!-- scm git trunk -->
