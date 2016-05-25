@@ -1,6 +1,8 @@
 package com.elong.nb.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,6 +19,14 @@ public class IncrInventoryService implements IIncrInventoryService {
 	private IncrInventoryDao dao;
 
 	public IncrInventory getLastIncrInventory(Date lastTime) {
-		return dao.getLastIncrInventory(lastTime);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("lastTime", lastTime);
+
+		IncrInventory incrInventory = dao.getLastIncrInventory(paramMap);
+		if (incrInventory == null)
+			incrInventory = dao
+					.getLastIncrInventory(new HashMap<String, Object>());
+
+		return incrInventory;
 	}
 }

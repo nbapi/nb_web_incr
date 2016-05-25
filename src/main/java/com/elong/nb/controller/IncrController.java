@@ -146,9 +146,9 @@ public class IncrController {
 			String proxyId = restRequest.getProxyInfo().getProxyId();
 			Integer orderFrom = restRequest.getProxyInfo().getOrderFrom();
 
-			IncrOrder incrOrder = incrOrderService.getLastIncrOrder(restRequest
+			IncrOrder incrOrder = incrOrderService.getIncrOrders(restRequest
 					.getRequest().getLastTime(), searchOrderType, proxyId,
-					orderFrom);
+					orderFrom, 1000);
 
 			if (incrOrder != null)
 				restResponse.getResult().setLastId(incrOrder.getIncrID());

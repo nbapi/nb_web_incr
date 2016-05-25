@@ -1,6 +1,8 @@
 package com.elong.nb.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,6 +19,13 @@ public class IncrHotelService implements IIncrHotelService {
 	private IncrHotelDao dao;
 	
 	public IncrHotel getLastIncrHotel(Date lastTime) {
-		return dao.getLastIncrHotel(lastTime);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("lastTime", lastTime);
+		
+		IncrHotel incrHotel = dao.getLastIncrHotel(paramMap);
+		if (incrHotel == null) {
+			incrHotel = dao.getLastIncrHotel(new HashMap<String, Object>());
+		}
+		return incrHotel;
 	}
 }

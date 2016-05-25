@@ -1,6 +1,8 @@
 package com.elong.nb.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,14 +19,19 @@ public class IncrOrderService implements IIncrOrderService {
 	@Resource
 	private IncrOrderDao dao;
 
-	public IncrOrder getLastIncrOrder(Date lastTime, EnumOrderType orderType,
-			String proxyId, Integer orderFrom) {
-		return dao.getLastIncrOrder(lastTime, orderType, proxyId, orderFrom);
-	}
-
 	public IncrOrder getIncrOrders(Date lastTime, EnumOrderType orderType,
 			String proxyId, Integer orderFrom, int maxRecordCount) {
-		return dao.getIncrOrders(lastTime, orderType, proxyId, orderFrom,
-				maxRecordCount);
+
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("maxRecordCount", maxRecordCount);
+		if (orderType == EnumOrderType.OrderFrom) {
+			paramMap.put("orderFrom", orderFrom);
+		} else {
+			paramMap.put("proxyId", proxyId);
+		}
+		if (lastTime.getYear() + 1900 >= 2015) {
+			paramMap.put("lastTime", lastTime);
+		}
+		return dao.getIncrOrders(paramMap);
 	}
 }

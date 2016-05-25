@@ -1,6 +1,8 @@
 package com.elong.nb.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,7 +19,13 @@ public class IncrRateService implements IIncrRateService {
 	private IncrRateDao dao;
 
 	public IncrRate getLastIncrRate(Date lastTime) {
-		return dao.getLastIncrRate(lastTime);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("lastTime", lastTime);
+		IncrRate incrRate = dao.getLastIncrRate(paramMap);
+		if (incrRate == null) {
+			incrRate = dao.getLastIncrRate(new HashMap<String, Object>());
+		}
+		return incrRate;
 	}
 
 }

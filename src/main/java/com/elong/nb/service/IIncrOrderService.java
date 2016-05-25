@@ -7,10 +7,7 @@ import com.elong.nb.model.IncrOrder;
 
 public interface IIncrOrderService {
 
-	public IncrOrder getLastIncrOrder(Date lastTime, EnumOrderType orderType,
-			String proxyId, Integer orderFrom);
-
 	public IncrOrder getIncrOrders(Date lastTime, EnumOrderType orderType,
 			String proxyId, Integer orderFrom, int maxRecordCount);
-	
+
 }
