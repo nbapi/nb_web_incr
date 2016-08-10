@@ -62,7 +62,7 @@ public class IncrController {
 	public ResponseEntity<byte[]> getIncrState(HttpServletRequest request)
 			throws IOException {
 		RestRequest<IncrRequest> restRequest = GsonUtil.toReq(request,
-				IncrRequest.class);
+				IncrRequest.class, null);
 		/**
 		 * 数据校验
 		 */
@@ -89,7 +89,7 @@ public class IncrController {
 	public ResponseEntity<byte[]> getIncrOrders(HttpServletRequest request)
 			throws IOException {
 		RestRequest<IncrRequest> restRequest = GsonUtil.toReq(request,
-				IncrRequest.class);
+				IncrRequest.class, null);
 		/**
 		 * 数据校验
 		 */
@@ -114,7 +114,7 @@ public class IncrController {
 	public ResponseEntity<byte[]> getLastId(HttpServletRequest request)
 			throws IOException {
 		RestRequest<IncrIdRequest> restRequest = GsonUtil.toReq(request,
-				IncrIdRequest.class);
+				IncrIdRequest.class, null);
 		/**
 		 * 数据校验
 		 */
