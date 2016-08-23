@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="IncrHotel">
-	<select id="getLastIncrHotel" resultType="incrHotel">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elong.nb.dao.IncrHotelDao">
+	<!-- 获取大于指定lastTime的最早发生变化的酒店增量 -->
+	<select id="getOneIncrHotel" resultType="incrHotel">
 		select * from IncrHotel
 		<where>
-			<if test="lastTime != null and !lastTime.equals('')">ChangeTime > #{lastTime} </if>
+			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
 		</where>
-		ORDER BY ChangeTime LIMIT 0,1
+		order by ChangeTime limit 0,1
+	</select>
+
+	<!-- 获取最大IncrID的酒店增量 -->
+	<select id="getLastIncrHotel" resultType="incrHotel">
+		select * from IncrHotel order by IncrID desc limit 0,1
+	</select>
+
+	<!-- 获取大于指定lastId的maxRecordCount条酒店增量 -->
+	<select id="getIncrHotels" resultType="incrHotel">
+		select * from IncrHotel
+		<where>
+			<if test="incrID != null and !incrID.equals('')">and incrID > #{lastId} </if>
+		</where>
+		order by IncrID limit 0,#{maxRecordCount}
 	</select>
 </mapper>

@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="IncrState">
-	<select id="getLastIncrState" resultType="incrState">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elong.nb.dao.IncrStateDao">
+	<!--获取大于指定lastTime的最早发生变化的状态增量 -->
+	<select id="getOneIncrState" resultType="incrState">
 		select * from IncrState
 		<where>
-			<if test="lastTime != null and !lastTime.equals('')">ChangeTime > #{lastTime} </if>
+			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
 		</where>
-		ORDER BY ChangeTime LIMIT 0,1
+		order by ChangeTime limit 0,1
 	</select>
+
+	<!--获取最大IncrID的状态增量 -->
+	<select id="getLastIncrState" resultType="incrState">
+		select * from IncrState order by IncrID desc limit 0,1
+	</select>
+
+	<!-- 获取大于指定lastId的maxRecordCount条状态增量 -->
 	<select id="getIncrStates" resultType="incrState">
 		select * from IncrState
 		<where>
-			<if test="incrID != null and !incrID.equals('')">incrID > #{lastId} </if>
+			<if test="incrID != null and !incrID.equals('')">and incrID > #{lastId} </if>
 		</where>
-		ORDER BY IncrID LIMIT 0,1000
+		order by IncrID limit 0,#{maxRecordCount}
 	</select>
 </mapper>

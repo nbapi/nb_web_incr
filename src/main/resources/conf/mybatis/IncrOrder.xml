@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="IncrOrder">
-	<select id="getIncrOrders" resultType="incrOrder">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elong.nb.dao.IncrOrderDao">
+	<!-- 获取大于指定lastTime的最早发生变化的订单增量 -->
+	<select id="getOneIncrOrder" resultType="incrOrder">
 		select * from IncrOrder
 		<where>
 			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
-			<if test="incrID != null and !incrID.equals('')">and IncrID > #{lastId} </if>
 			<if test="orderFrom != null and !orderFrom.equals('')">and OrderFrom =#{orderFrom} </if>
 			<if test="proxyId != null and !proxyId.equals('')">and ProxyId =#{proxyId} </if>
 		</where>
-		ORDER BY IncrID LIMIT 0,${maxRecordCount}
+		order by ChangeTime limit 0,1
+	</select>
+
+	<!-- 获取最大IncrID的订单增量 -->
+	<select id="getLastIncrOrder" resultType="incrOrder">
+		select * from IncrOrder
+		<where>
+			<if test="orderFrom != null and !orderFrom.equals('')">and OrderFrom =#{orderFrom} </if>
+			<if test="proxyId != null and !proxyId.equals('')">and ProxyId =#{proxyId} </if>
+		</where>
+		order by IncrID desc limit 0,1
+	</select>
+
+	<!-- 获取大于指定lastId的maxRecordCount条订单增量 -->
+	<select id="getIncrOrders" resultType="incrOrder">
+		select * from IncrOrder
+		<where>
+			<if test="incrID != null and !incrID.equals('')">and incrID > #{lastId} </if>
+			<if test="orderFrom != null and !orderFrom.equals('')">and OrderFrom =#{orderFrom} </if>
+			<if test="proxyId != null and !proxyId.equals('')">and ProxyId =#{proxyId} </if>
+		</where>
+		order by IncrID limit 0,#{maxRecordCount}
 	</select>
 </mapper>
