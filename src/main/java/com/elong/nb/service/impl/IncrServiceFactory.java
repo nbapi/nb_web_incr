@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
-import com.elong.nb.enums.EnumIncrType;
+import com.elong.nb.model.enums.EnumIncrType;
 import com.elong.nb.service.IIncrService;
 
 /**

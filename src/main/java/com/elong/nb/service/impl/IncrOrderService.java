@@ -21,9 +21,9 @@ import org.springframework.stereotype.Service;
 import com.elong.nb.common.model.EnumOrderType;
 import com.elong.nb.dao.IncrOrderDao;
 import com.elong.nb.exception.IncrException;
-import com.elong.nb.model.IncrOrder;
 import com.elong.nb.model.IncrOrderResponse;
 import com.elong.nb.model.IncrResponse;
+import com.elong.nb.model.bean.IncrOrder;
 import com.elong.nb.service.IIncrOrderService;
 import com.elong.nb.util.IncrConst;
 

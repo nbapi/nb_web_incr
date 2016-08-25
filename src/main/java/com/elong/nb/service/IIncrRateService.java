@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.elong.nb.common.model.ProxyAccount;
-import com.elong.nb.model.IncrRate;
+import com.elong.nb.model.bean.IncrRate;
 
 /**
  * 房价增量接口

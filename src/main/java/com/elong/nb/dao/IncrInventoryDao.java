@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.elong.nb.db.DataSource;
-import com.elong.nb.model.IncrInventory;
+import com.elong.nb.model.bean.IncrInventory;
 
 /**
  * 库存增量数据组件

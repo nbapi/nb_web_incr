@@ -8,7 +8,7 @@ package com.elong.nb.service;
 import java.util.Date;
 import java.util.List;
 
-import com.elong.nb.model.IncrState;
+import com.elong.nb.model.bean.IncrState;
 
 /**
  * 状态增量接口

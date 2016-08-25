@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.elong.nb.common.model.EnumOrderType;
-import com.elong.nb.model.IncrOrder;
+import com.elong.nb.model.bean.IncrOrder;
 
 /**
  * 订单增量接口

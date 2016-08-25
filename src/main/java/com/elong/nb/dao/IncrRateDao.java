@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.elong.nb.db.DataSource;
-import com.elong.nb.model.IncrRate;
+import com.elong.nb.model.bean.IncrRate;
 
 /**
  * 房价增量数据组件

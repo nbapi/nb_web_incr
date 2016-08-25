@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import com.elong.nb.dao.IncrStateDao;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrResponse;
-import com.elong.nb.model.IncrState;
 import com.elong.nb.model.IncrStateResponse;
+import com.elong.nb.model.bean.IncrState;
 import com.elong.nb.service.IIncrStateService;
 import com.elong.nb.util.IncrConst;
 
@@ -111,7 +111,15 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("lastId", lastId);
 			paramMap.put("maxRecordCount", maxRecordCount);
-			return incrStateDao.getIncrStates(paramMap);
+			List<IncrState> states = incrStateDao.getIncrStates(paramMap);
+			if (states == null || states.size() == 0)
+				return states;
+			for (IncrState state : states) {
+				if (state == null)
+					continue;
+				state.setStatusForJson(state.getStatus() != null ? state.getStatus().intValue() == 1 : null);
+			}
+			return states;
 		} catch (Exception e) {
 			logger.error("getIncrStates error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
@@ -135,8 +143,7 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 		Object lastIdObj = params.get("lastId");
 		Object maxRecordCountObj = params.get("maxRecordCount");
 		if (lastIdObj == null || maxRecordCountObj == null) {
-			throw new IncrException(
-					"the parameter['lastId' or 'maxRecordCount']  which belongs to the map 'params' must not be null.");
+			throw new IncrException("the parameter['lastId' or 'maxRecordCount']  which belongs to the map 'params' must not be null.");
 		}
 		long lastId = (long) params.get("lastId");
 		int maxRecordCount = (int) params.get("maxRecordCount");

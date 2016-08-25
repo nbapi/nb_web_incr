@@ -16,11 +16,12 @@
 
 
 	<!-- 以下一行配置为JavaDoc站点，必须保留！！！切记！！！如果更改或servlet.xml，请务必保留下行 -->
-	<context:component-scan base-package="com.elong" />
+	<context:component-scan base-package="com.elong.nb" />
 	<mvc:default-servlet-handler />
 	<mvc:annotation-driven />
 	<mvc:resources mapping="/apidocs/**" location="/apidocs/" />
 	<mvc:resources mapping="/hc/**" location="/hc/" />
+	<aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true" />
 
 	<!-- HttpAPI日志拦截器，完成对@ResponseBody注解的Http请求 -->
 	<bean id="serviceAspect" class="com.elong.springmvc_enhance.core.ServiceAspect">

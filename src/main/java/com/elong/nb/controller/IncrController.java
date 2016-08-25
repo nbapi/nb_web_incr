@@ -21,17 +21,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.alibaba.fastjson.JSON;
 import com.elong.nb.common.gson.GsonUtil;
 import com.elong.nb.common.model.ErrorCode;
 import com.elong.nb.common.model.RestRequest;
 import com.elong.nb.common.model.RestResponse;
-import com.elong.nb.enums.EnumIncrType;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrIdRequest;
 import com.elong.nb.model.IncrIdResponse;
 import com.elong.nb.model.IncrRequest;
 import com.elong.nb.model.IncrResponse;
+import com.elong.nb.model.enums.EnumIncrType;
 import com.elong.nb.service.IIncrService;
 import com.elong.nb.service.IIncrValidateService;
 import com.elong.nb.service.impl.IncrServiceFactory;
@@ -74,30 +73,31 @@ public class IncrController {
 			throws IOException {
 		RestRequest<IncrRequest> restRequest = GsonUtil.toReq(request, IncrRequest.class, null);
 		Double version = restRequest.getVersion() == null ? 0d : restRequest.getVersion();
-		RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 		try {
 			// 校验请求参数
 			String rst = incrValidateService.validateIncrRequest(restRequest);
 			logger.info(getIncrDatas + ",checkMessage,result = " + rst);
+			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 			if (StringUtils.isNotBlank(rst)) {
-				restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 				restResponse.setCode(rst);
 				return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 			}
 			// 获取响应数据
 			IIncrService incrService = incrServiceFactory.getIIncrService(getIncrDatas);
 			restResponse = incrService.getIncrDatas(restRequest);
-			logger.info(getIncrDatas + ",responseResult = " + JSON.toJSONString(restResponse));
+			logger.info(getIncrDatas + ",responseCode = " + restResponse.getCode());
 			// 返回响应数据
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		} catch (IncrException e) {
 			// 返回业务异常
 			logger.error(getIncrDatas + ",business error = " + e.getMessage(), e);
+			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		} catch (Exception e) {
 			// 返回系统异常
 			logger.error(getIncrDatas + ",system error = " + e.getMessage(), e);
+			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		}
@@ -114,11 +114,11 @@ public class IncrController {
 	public ResponseEntity<byte[]> getLastId(HttpServletRequest request) throws IOException {
 		RestRequest<IncrIdRequest> restRequest = GsonUtil.toReq(request, IncrIdRequest.class, null);
 		Double version = restRequest.getVersion() == null ? 0d : restRequest.getVersion();
-		RestResponse<IncrIdResponse> restResponse = new RestResponse<IncrIdResponse>(restRequest.getGuid());
 		try {
 			// 校验请求参数
 			String rst = incrValidateService.validateIncrIdRequest(restRequest);
 			logger.info("getLastId,checkMessage,result = " + rst);
+			RestResponse<IncrIdResponse> restResponse = new RestResponse<IncrIdResponse>(restRequest.getGuid());
 			if (StringUtils.isNotBlank(rst)) {
 				restResponse.setCode(rst);
 				return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
@@ -126,17 +126,19 @@ public class IncrController {
 			// 获取响应数据
 			EnumIncrType incrType = restRequest.getRequest().getIncrType();
 			restResponse = incrServiceFactory.getIIncrService(incrType).getLastId(restRequest);
-			logger.info("getLastId,responseResult = " + JSON.toJSONString(restResponse));
+			logger.info("getLastId,responseCode = " + restResponse.getCode());
 			// 返回响应数据
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		} catch (IncrException e) {
 			// 返回业务异常
 			logger.error("getLastId,business error = " + e.getMessage(), e);
+			RestResponse<IncrIdResponse> restResponse = new RestResponse<IncrIdResponse>(restRequest.getGuid());
 			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { "getLastId", e.getMessage() }));
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		} catch (Exception e) {
 			// 返回系统异常
 			logger.error("getLastId,system error = " + e.getMessage(), e);
+			RestResponse<IncrIdResponse> restResponse = new RestResponse<IncrIdResponse>(restRequest.getGuid());
 			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { "getLastId", e.getMessage() }));
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		}

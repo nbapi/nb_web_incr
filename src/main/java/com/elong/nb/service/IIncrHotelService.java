@@ -8,7 +8,7 @@ package com.elong.nb.service;
 import java.util.Date;
 import java.util.List;
 
-import com.elong.nb.model.IncrHotel;
+import com.elong.nb.model.bean.IncrHotel;
 
 /**
  * 酒店增量接口

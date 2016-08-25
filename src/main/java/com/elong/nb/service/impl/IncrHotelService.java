@@ -19,9 +19,9 @@ import org.springframework.stereotype.Service;
 
 import com.elong.nb.dao.IncrHotelDao;
 import com.elong.nb.exception.IncrException;
-import com.elong.nb.model.IncrHotel;
 import com.elong.nb.model.IncrHotelResponse;
 import com.elong.nb.model.IncrResponse;
+import com.elong.nb.model.bean.IncrHotel;
 import com.elong.nb.service.IIncrHotelService;
 import com.elong.nb.util.IncrConst;
 

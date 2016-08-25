@@ -23,9 +23,9 @@ import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.util.SafeConvertUtils;
 import com.elong.nb.dao.IncrRateDao;
 import com.elong.nb.exception.IncrException;
-import com.elong.nb.model.IncrRate;
 import com.elong.nb.model.IncrRateResponse;
 import com.elong.nb.model.IncrResponse;
+import com.elong.nb.model.bean.IncrRate;
 import com.elong.nb.service.IIncrRateService;
 import com.elong.nb.util.IncrConst;
 

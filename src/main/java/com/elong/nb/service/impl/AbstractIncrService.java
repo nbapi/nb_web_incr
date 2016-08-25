@@ -18,12 +18,12 @@ import org.apache.commons.logging.LogFactory;
 import com.elong.nb.common.model.EnumOrderType;
 import com.elong.nb.common.model.RestRequest;
 import com.elong.nb.common.model.RestResponse;
-import com.elong.nb.enums.EnumIncrType;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrIdRequest;
 import com.elong.nb.model.IncrIdResponse;
 import com.elong.nb.model.IncrRequest;
 import com.elong.nb.model.IncrResponse;
+import com.elong.nb.model.enums.EnumIncrType;
 import com.elong.nb.service.IIncrService;
 import com.elong.nb.util.IncrConst;
 
@@ -83,6 +83,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 		params.put("searchOrderType", searchOrderType);
 		params.put("proxyId", proxyId);
 		params.put("orderFrom", orderFrom);
+		params.put("proxyInfo", restRequest.getProxyInfo());
 
 		// 获取增量数据
 		List<T> incrDatas = getIncrDatas(params);

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.elong.nb.db.DataSource;
-import com.elong.nb.model.IncrOrder;
+import com.elong.nb.model.bean.IncrOrder;
 
 /**
  * 订单增量数据组件

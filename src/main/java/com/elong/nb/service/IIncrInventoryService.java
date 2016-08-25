@@ -8,7 +8,7 @@ package com.elong.nb.service;
 import java.util.Date;
 import java.util.List;
 
-import com.elong.nb.model.IncrInventory;
+import com.elong.nb.model.bean.IncrInventory;
 
 /**
  * 库存增量接口

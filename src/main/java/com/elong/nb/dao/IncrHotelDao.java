@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.elong.nb.db.DataSource;
-import com.elong.nb.model.IncrHotel;
+import com.elong.nb.model.bean.IncrHotel;
 
 /**
  * 酒店增量数据组件

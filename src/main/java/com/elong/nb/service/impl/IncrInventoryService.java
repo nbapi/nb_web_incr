@@ -19,9 +19,9 @@ import org.springframework.stereotype.Service;
 
 import com.elong.nb.dao.IncrInventoryDao;
 import com.elong.nb.exception.IncrException;
-import com.elong.nb.model.IncrInventory;
 import com.elong.nb.model.IncrInventoryResponse;
 import com.elong.nb.model.IncrResponse;
+import com.elong.nb.model.bean.IncrInventory;
 import com.elong.nb.service.IIncrInventoryService;
 import com.elong.nb.util.IncrConst;
 

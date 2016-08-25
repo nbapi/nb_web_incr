@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.elong.nb.db.DataSource;
-import com.elong.nb.model.IncrState;
+import com.elong.nb.model.bean.IncrState;
 
 /**
  * 状态增量数据组件
