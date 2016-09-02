@@ -61,7 +61,7 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 	 */
 	@Override
 	public IncrOrder getLastIncrOrder(EnumOrderType orderType, String proxyId, Integer orderFrom) {
-		if (orderType == null) {
+		/*if (orderType == null) {
 			logger.error("getLastIncrOrder error,due to the parameter 'orderType' is null.");
 			throw new IncrException("getLastIncrOrder error,due to the parameter 'orderType' is null.");
 		}
@@ -84,7 +84,8 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 		} catch (Exception e) {
 			logger.error("getLastIncrOrder error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
-		}
+		}*/
+		return null;
 	}
 
 	/** 

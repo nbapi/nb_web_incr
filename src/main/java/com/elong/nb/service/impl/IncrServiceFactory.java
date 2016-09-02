@@ -77,13 +77,13 @@ public class IncrServiceFactory implements InitializingBean {
 		if (StringUtils.isEmpty(getIncrPath)) {
 			return null;
 		}
-		if (StringUtils.equalsIgnoreCase("getIncrStates", getIncrPath)) {
+		if (StringUtils.equalsIgnoreCase("getIncrState", getIncrPath)) {
 			return map.get(EnumIncrType.State);
 		} else if (StringUtils.equalsIgnoreCase("getIncrRates", getIncrPath)) {
 			return map.get(EnumIncrType.Rate);
 		} else if (StringUtils.equalsIgnoreCase("getIncrOrders", getIncrPath)) {
 			return map.get(EnumIncrType.Order);
-		} else if (StringUtils.equalsIgnoreCase("getIncrHotels", getIncrPath)) {
+		} else if (StringUtils.equalsIgnoreCase("getIncrHotel", getIncrPath)) {
 			return map.get(EnumIncrType.Data);
 		} else if (StringUtils.equalsIgnoreCase("getIncrInventories", getIncrPath)) {
 			return map.get(EnumIncrType.Inventory);

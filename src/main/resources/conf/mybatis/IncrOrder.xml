@@ -9,7 +9,7 @@
 			<if test="orderFrom != null and !orderFrom.equals('')">and OrderFrom =#{orderFrom} </if>
 			<if test="proxyId != null and !proxyId.equals('')">and ProxyId =#{proxyId} </if>
 		</where>
-		order by ChangeTime limit 0,1
+		order by IncrID limit 0,1
 	</select>
 
 	<!-- 获取最大IncrID的订单增量 -->
