@@ -17,10 +17,10 @@ public class IncrTestCase {
 	@Test
 	public void test() throws Exception {
 
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+//		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
 		// getIncrStates,getIncrRates,getIncrOrders,getIncrHotels,getIncrInventories,GetLastId
-		String reqUrl = "http://localhost:8080/nb_web_incr/api/Hotel/GetLastId";
+		/*String reqUrl = "http://localhost:8080/nb_web_incr/api/Hotel/GetLastId";
 
 		IncrIdRequest incrIdRequest = new IncrIdRequest();
 		incrIdRequest.setIncrType(EnumIncrType.Inventory);
@@ -41,6 +41,6 @@ public class IncrTestCase {
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }
