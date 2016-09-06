@@ -21,6 +21,6 @@
 		<where>
 			<if test="lastId != null and !lastId.equals('')">and incrID > #{lastId} </if>
 		</where>
-		order by IncrID limit 0,#{maxRecordCount}
+		limit 0,#{maxRecordCount}
 	</select>
 </mapper>

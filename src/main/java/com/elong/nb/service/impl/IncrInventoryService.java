@@ -41,83 +41,92 @@ import com.google.gson.GsonBuilder;
  * 增量库存接口实现
  *
  * <p>
- * 修改历史:											<br>  
- * 修改日期    		修改人员   	版本	 		修改内容<br>  
- * -------------------------------------------------<br>  
- * 2016年8月19日 上午11:09:13   user     1.0    	初始化创建<br>
- * </p> 
+ * 修改历史: <br>
+ * 修改日期 修改人员 版本 修改内容<br>
+ * -------------------------------------------------<br>
+ * 2016年8月19日 上午11:09:13 user 1.0 初始化创建<br>
+ * </p>
  *
- * @author		suht  
- * @version		1.0  
- * @since		JDK1.7
+ * @author suht
+ * @version 1.0
+ * @since JDK1.7
  */
 @Service
-public class IncrInventoryService extends AbstractIncrService<IncrInventory> implements IIncrInventoryService {
+public class IncrInventoryService extends AbstractIncrService<IncrInventory>
+		implements IIncrInventoryService {
 
-	private static final Log logger = LogFactory.getLog(IncrInventoryService.class);
+	private static final Log logger = LogFactory
+			.getLog(IncrInventoryService.class);
 
 	@Resource
 	private IncrInventoryDao incrInventoryDao;
 
-	/** 
+	/**
 	 * 获取最大IncrID的库存增量
 	 *
-	 * @return 
+	 * @return
 	 *
-	 * @see com.elong.nb.service.IIncrInventoryService#getLastIncrInventory()    
+	 * @see com.elong.nb.service.IIncrInventoryService#getLastIncrInventory()
 	 */
 	@Override
 	public IncrInventory getLastIncrInventory() {
 		try {
 			return incrInventoryDao.getLastIncrInventory();
 		} catch (Exception e) {
-			logger.error("getLastIncrInventory error,due to " + e.getMessage(), e);
+			logger.error("getLastIncrInventory error,due to " + e.getMessage(),
+					e);
 			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
-	/** 
+	/**
 	 * 获取大于指定lastTime的最早发生变化的库存增量
 	 *
 	 * @param lastTime
-	 * @return 
+	 * @return
 	 *
-	 * @see com.elong.nb.service.IIncrInventoryService#getOneIncrInventory(java.util.Date)    
+	 * @see com.elong.nb.service.IIncrInventoryService#getOneIncrInventory(java.util.Date)
 	 */
 	@Override
 	public IncrInventory getOneIncrInventory(Date lastTime) {
 		if (lastTime == null) {
 			logger.error("getOneIncrInventory error,due to the parameter 'lastTime' is null.");
-			throw new IncrException("getOneIncrInventory error,due to the parameter 'lastTime' is null.");
+			throw new IncrException(
+					"getOneIncrInventory error,due to the parameter 'lastTime' is null.");
 		}
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("lastTime", lastTime);
 			return incrInventoryDao.getOneIncrInventory(paramMap);
 		} catch (Exception e) {
-			logger.error("getOneIncrInventory error,due to " + e.getMessage(), e);
+			logger.error("getOneIncrInventory error,due to " + e.getMessage(),
+					e);
 			throw new IllegalStateException(e.getMessage());
 		}
 	}
 
-	/** 
+	/**
 	 * 获取大于指定lastId的maxRecordCount条库存增量
 	 *
 	 * @param lastId
 	 * @param maxRecordCount
-	 * @return 
+	 * @return
 	 *
-	 * @see com.elong.nb.service.IIncrInventoryService#getIncrInventories(long, int)    
+	 * @see com.elong.nb.service.IIncrInventoryService#getIncrInventories(long,
+	 *      int)
 	 */
 	@Override
-	public List<IncrInventory> getIncrInventories(long lastId, int maxRecordCount) {
+	public List<IncrInventory> getIncrInventories(long lastId,
+			int maxRecordCount) {
 		if (lastId == 0) {
 			logger.error("getIncrInventories error,due to the parameter 'lastId' is 0.");
-			throw new IncrException("getIncrInventories error,due to the parameter 'lastId' is 0.");
+			throw new IncrException(
+					"getIncrInventories error,due to the parameter 'lastId' is 0.");
 		}
 		if (maxRecordCount == 0) {
 			logger.error("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
-			throw new IncrException("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
+			throw new IncrException(
+					"getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
 		}
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -130,86 +139,95 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		}
 	}
 
-	/** 
+	/**
 	 * 获取增量数据
 	 *
 	 * @param params
-	 * @return 
+	 * @return
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(java.util.Map)
 	 */
 	@Override
 	protected List<IncrInventory> getIncrDatas(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastId") || !params.containsKey("maxRecordCount")) {
+		if (params == null || !params.containsKey("lastId")
+				|| !params.containsKey("maxRecordCount")) {
 			throw new IncrException(
 					"the map 'params' is requeried,and the map 'params' must contain the key ['lastId' or 'maxRecordCount'].");
 		}
 		Object lastIdObj = params.get("lastId");
 		Object maxRecordCountObj = params.get("maxRecordCount");
 		if (lastIdObj == null || maxRecordCountObj == null) {
-			throw new IncrException("the parameter['lastId' or 'maxRecordCount']  which belongs to the map 'params' must not be null.");
+			throw new IncrException(
+					"the parameter['lastId' or 'maxRecordCount']  which belongs to the map 'params' must not be null.");
 		}
 		long lastId = (long) params.get("lastId");
 		int maxRecordCount = (int) params.get("maxRecordCount");
 
-		List<IncrInventory> incrInventories = getIncrInventories(lastId, maxRecordCount);
+		List<IncrInventory> incrInventories = getIncrInventories(lastId,
+				maxRecordCount);
 		// 黑名单处理
-		return doHandlerBlackListRule(incrInventories);
+		return incrInventories;// doHandlerBlackListRule(incrInventories);
 	}
 
-	/** 
+	/**
 	 * 获取最后的更新ID
 	 *
 	 * @param params
-	 * @return 
+	 * @return
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Map)
 	 */
 	@Override
 	protected BigInteger getLastId(Map<String, Object> params) {
 		if (params == null || !params.containsKey("lastTime")) {
-			throw new IncrException("the map 'params' is requeried,and the map 'params' must contain the key 'lastTime'.");
+			throw new IncrException(
+					"the map 'params' is requeried,and the map 'params' must contain the key 'lastTime'.");
 		}
 		Object lastTimeObj = params.get("lastTime");
 		if (lastTimeObj == null) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must not be null.");
+			throw new IncrException(
+					"the parameter 'lastTime' which belongs to the map 'params' must not be null.");
 		}
 		if (!(lastTimeObj instanceof Date)) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must be date type.");
+			throw new IncrException(
+					"the parameter 'lastTime' which belongs to the map 'params' must be date type.");
 		}
 		Date lastTime = (Date) params.get("lastTime");
 		IncrInventory incrInventory = getOneIncrInventory(lastTime);
 		if (incrInventory == null) {
 			incrInventory = getLastIncrInventory();
 		}
-		return incrInventory == null ? IncrConst.bigIntegerNegativeOne : incrInventory.getIncrID();
+		return incrInventory == null ? IncrConst.bigIntegerNegativeOne
+				: incrInventory.getIncrID();
 	}
 
-	/** 
+	/**
 	 * 创建增量响应模型
 	 *
-	 * @return 
+	 * @return
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#createIncrResponse()    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#createIncrResponse()
 	 */
 	@Override
 	protected IncrResponse<IncrInventory> createIncrResponse() {
 		return new IncrInventoryResponse();
 	}
 
-	/** 
+	/**
 	 * 库存黑名单处理
 	 *
 	 * @param incrInventories
-	 * @return 
+	 * @return
 	 *
-	 * @see com.elong.nb.service.IIncrInventoryService#doHandlerBlackListRule(java.util.List)    
+	 * @see com.elong.nb.service.IIncrInventoryService#doHandlerBlackListRule(java.util.List)
 	 */
 	@Override
-	public List<IncrInventory> doHandlerBlackListRule(List<IncrInventory> incrInventories) {
+	public List<IncrInventory> doHandlerBlackListRule(
+			List<IncrInventory> incrInventories) {
 		if (incrInventories == null || incrInventories.size() == 0)
 			return Collections.emptyList();
-		String reqUrl = PropertiesHelper.getEnvProperties("Inventory.BlackList.Rule.Url", "config").toString();
+		String reqUrl = PropertiesHelper.getEnvProperties(
+				"Inventory.BlackList.Rule.Url", "config").toString();
 
 		Map<String, IncrInventory> incrInventoryMap = new HashMap<String, IncrInventory>();
 		List<RuleInventory> ruleInventories = new ArrayList<RuleInventory>();
@@ -223,7 +241,8 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			ruleInventories.add(ruleInventory);
 			incrInventoryMap.put(ruleKey, incrInventory);
 		}
-		logger.info("before doHandlerBlackListRule,incrInventories size = " + incrInventories.size());
+		logger.info("before doHandlerBlackListRule,incrInventories size = "
+				+ incrInventories.size());
 
 		// 构建库存黑名单接口参数
 		InventoryBlackListRuleRealRequest ruleRequest = new InventoryBlackListRuleRealRequest();
@@ -232,37 +251,46 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		ruleRequest.setNightlyRate(false);
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(Date.class, new DateTypeAdapter());
-		String reqData = gsonBuilder.create().toJson(ruleRequest, InventoryBlackListRuleRealRequest.class);
+		String reqData = gsonBuilder.create().toJson(ruleRequest,
+				InventoryBlackListRuleRealRequest.class);
 
 		// 库存黑名单接口调用
 		try {
 			logger.info("doHandlerBlackListRule,httpPost reqUrl = " + reqUrl);
 			logger.info("doHandlerBlackListRule,httpPost reqData = " + reqData);
-			String result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
+			String result = HttpClientUtils.httpPost(reqUrl, reqData,
+					"application/json");
 			logger.info("doHandlerBlackListRule,httpPost result = " + result);
-			InventoryBlackListRuleRealResponse ruleResponse = gsonBuilder.create().fromJson(result,
-					InventoryBlackListRuleRealResponse.class);
-			if (ruleResponse == null || ruleResponse.getInventorys() == null || ruleResponse.getInventorys().size() == 0) {
+			InventoryBlackListRuleRealResponse ruleResponse = gsonBuilder
+					.create().fromJson(result,
+							InventoryBlackListRuleRealResponse.class);
+			if (ruleResponse == null || ruleResponse.getInventorys() == null
+					|| ruleResponse.getInventorys().size() == 0) {
 				logger.info("doHandlerBlackListRule,has no ruleResponse.");
 				return Collections.emptyList();
 			}
 			ruleInventories = ruleResponse.getInventorys();
 		} catch (Exception e) {
-			logger.error("doHandlerBlackListRule,httpPost error = " + e.getMessage(), e);
+			logger.error(
+					"doHandlerBlackListRule,httpPost error = " + e.getMessage(),
+					e);
 			return Collections.emptyList();
 		}
 
 		// 补回增量部分数据
 		List<IncrInventory> incrInventoryList = new ArrayList<IncrInventory>();
 		for (RuleInventory ruleInventory : ruleInventories) {
-			if (ruleInventory == null || StringUtils.isEmpty(ruleInventory.getRuleKey()))
+			if (ruleInventory == null
+					|| StringUtils.isEmpty(ruleInventory.getRuleKey()))
 				continue;
 
-			IncrInventory incrInventory = incrInventoryMap.get(ruleInventory.getRuleKey());
+			IncrInventory incrInventory = incrInventoryMap.get(ruleInventory
+					.getRuleKey());
 			BeanUtils.copyProperties(ruleInventory, incrInventory);
 			incrInventoryList.add(incrInventory);
 		}
-		logger.info("after doHandlerBlackListRule,incrInventories size = " + incrInventoryList.size());
+		logger.info("after doHandlerBlackListRule,incrInventories size = "
+				+ incrInventoryList.size());
 		return incrInventoryList;
 	}
 }

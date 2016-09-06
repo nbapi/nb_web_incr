@@ -22,6 +22,7 @@ import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.IncrStateResponse;
 import com.elong.nb.model.bean.IncrState;
+import com.elong.nb.model.enums.EnumStateType;
 import com.elong.nb.service.IIncrStateService;
 import com.elong.nb.util.IncrConst;
 
@@ -118,6 +119,7 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 				if (state == null)
 					continue;
 				state.setStatusForJson(state.getStatus() != null ? state.getStatus().intValue() == 1 : null);
+				state.setStateType(EnumStateType.valueOf("" + state.getStateType()));
 			}
 			return states;
 		} catch (Exception e) {
