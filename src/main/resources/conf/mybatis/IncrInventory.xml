@@ -19,7 +19,7 @@
 	<select id="getIncrInventories" resultType="incrInventory">
 		select * from IncrInventory
 		<where>
-			<if test="IncrID != null and !IncrID.equals('')">and IncrID > #{lastId} </if>
+			<if test="lastId != null and !lastId.equals('')">and IncrID > #{lastId} </if>
 		</where>
 		order by IncrID limit 0,#{maxRecordCount}
 	</select>

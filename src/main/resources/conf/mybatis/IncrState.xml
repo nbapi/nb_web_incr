@@ -19,7 +19,7 @@
 	<select id="getIncrStates" resultType="incrState">
 		select * from IncrState
 		<where>
-			<if test="incrID != null and !incrID.equals('')">and incrID > #{lastId} </if>
+			<if test="lastId != null and !lastId.equals('')">and incrID > #{lastId} </if>
 		</where>
 		order by IncrID limit 0,#{maxRecordCount}
 	</select>
