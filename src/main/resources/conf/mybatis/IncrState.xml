@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.elong.nb.dao.IncrStateDao">
+
+	<resultMap id="BaseResultMap" type="incrState">
+		<id column="IncrID" jdbcType="BIGINT" javaType="java.math.BigInteger" property="IncrID" />
+		<result column="StateType" jdbcType="INTEGER" property="StateType" typeHandler="com.elong.nb.model.enums.handler.EnumStateTypeHandler"/>
+		<result column="HotelId" jdbcType="VARCHAR" javaType="java.lang.String" property="HotelId" />
+		<result column="HotelCode" jdbcType="VARCHAR" javaType="java.lang.String" property="HotelCode" />
+		<result column="RoomId" jdbcType="VARCHAR" javaType="java.lang.String" property="RoomId" />
+		<result column="RoomTypeId" jdbcType="VARCHAR" javaType="java.lang.String" property="RoomTypeId" />
+		<result column="RatePlanId" jdbcType="VARCHAR" javaType="java.lang.String" property="RatePlanId" />
+		<result column="Status" jdbcType="INTEGER" javaType="java.lang.Integer" property="Status" />
+		<result column="ChangeTime" javaType="java.util.Date" property="ChangeTime" />
+		<result column="Name" jdbcType="VARCHAR" javaType="java.lang.String" property="Name" />
+	</resultMap>
+
 	<!--获取大于指定lastTime的最早发生变化的状态增量 -->
-	<select id="getOneIncrState" resultType="incrState">
+	<select id="getOneIncrState" resultMap="BaseResultMap">
 		select * from IncrState
 		<where>
 			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
@@ -11,12 +25,12 @@
 	</select>
 
 	<!--获取最大IncrID的状态增量 -->
-	<select id="getLastIncrState" resultType="incrState">
+	<select id="getLastIncrState" resultMap="BaseResultMap">
 		select * from IncrState order by IncrID desc limit 0,1
 	</select>
 
 	<!-- 获取大于指定lastId的maxRecordCount条状态增量 -->
-	<select id="getIncrStates" resultType="incrState">
+	<select id="getIncrStates" resultMap="BaseResultMap">
 		select * from IncrState
 		<where>
 			<if test="lastId != null and !lastId.equals('')">and incrID > #{lastId} </if>
