@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.elong.nb.common.gson.DateTypeAdapter;
+import com.alibaba.fastjson.JSON;
 import com.elong.nb.dao.IncrInventoryDao;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrInventoryResponse;
@@ -38,7 +38,6 @@ import com.elong.nb.service.IIncrInventoryService;
 import com.elong.nb.util.HttpClientUtils;
 import com.elong.nb.util.IncrConst;
 import com.elong.springmvc_enhance.utilities.PropertiesHelper;
-import com.google.gson.GsonBuilder;
 
 /**
  * 增量库存接口实现
@@ -248,9 +247,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		ruleRequest.setNeedInstantConfirm(false);
 		ruleRequest.setNightlyRate(false);
 		ruleRequest.setOrderFrom(orderFrom);
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(Date.class, new DateTypeAdapter());
-		String reqData = gsonBuilder.create().toJson(ruleRequest, InventoryBlackListRuleRealRequest.class);
+		String reqData = JSON.toJSONString(ruleRequest);
 
 		// 库存黑名单接口调用
 		List<RuleInventoryResponse> ruleInventoryResponses = null;
@@ -260,8 +257,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			logger.info("doHandlerBlackListRule,httpPost reqData = " + reqData);
 			String result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
 			logger.info("doHandlerBlackListRule,httpPost result = " + result);
-			InventoryBlackListRuleRealResponse ruleResponse = gsonBuilder.create().fromJson(result,
-					InventoryBlackListRuleRealResponse.class);
+			InventoryBlackListRuleRealResponse ruleResponse = JSON.parseObject(result, InventoryBlackListRuleRealResponse.class);
 			if (ruleResponse == null || ruleResponse.getInventorys() == null || ruleResponse.getInventorys().size() == 0) {
 				logger.info("doHandlerBlackListRule,has no ruleResponse.");
 				ruleInventoryResponses = Collections.emptyList();
@@ -320,9 +316,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		checkRealReq.setHotelMap(hotelMap);
 		checkRealReq.setNeedInstantConfirm(false);
 		checkRealReq.setOrderFrom(orderFrom);
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(Date.class, new DateTypeAdapter());
-		String checkReqData = gsonBuilder.create().toJson(checkRealReq, InventoryRuleHitCheckRealRequest.class);
+		String checkReqData = JSON.toJSONString(checkRealReq);
 
 		// 接口调用
 		List<String> needBlackListRuleCodes = null;
@@ -332,8 +326,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			logger.info("checkBlackListRule,httpPost checkReqData = " + checkReqData);
 			String checkResult = HttpClientUtils.httpPost(checkHotelCodeUrl, checkReqData, "application/json");
 			logger.info("checkBlackListRule,httpPost checkResult = " + checkResult);
-			InventoryRuleHitCheckRealResponse checkRealResponse = gsonBuilder.create().fromJson(checkResult,
-					InventoryRuleHitCheckRealResponse.class);
+			InventoryRuleHitCheckRealResponse checkRealResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckRealResponse.class);
 			if (checkRealResponse == null || checkRealResponse.getNeedBlackListRuleCodes() == null
 					|| checkRealResponse.getNeedBlackListRuleCodes().size() == 0) {
 				logger.info("checkBlackListRule,has no checkRealResponse.");
