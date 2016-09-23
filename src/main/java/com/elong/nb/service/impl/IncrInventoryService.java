@@ -31,6 +31,10 @@ import com.elong.nb.model.InventoryBlackListRuleRealRequest;
 import com.elong.nb.model.InventoryBlackListRuleRealResponse;
 import com.elong.nb.model.InventoryRuleHitCheckRealRequest;
 import com.elong.nb.model.InventoryRuleHitCheckRealResponse;
+import com.elong.nb.model.InventoryRuleHitCheckSoaRequest;
+import com.elong.nb.model.InventoryRuleHitCheckSoaResponse;
+import com.elong.nb.model.InventoryRuleSoaRequst;
+import com.elong.nb.model.InventoryRuleSoaResponse;
 import com.elong.nb.model.RuleInventoryRequest;
 import com.elong.nb.model.RuleInventoryResponse;
 import com.elong.nb.model.bean.IncrInventory;
@@ -247,26 +251,37 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		ruleRequest.setNeedInstantConfirm(false);
 		ruleRequest.setNightlyRate(false);
 		ruleRequest.setOrderFrom(orderFrom);
-		String reqData = JSON.toJSONString(ruleRequest);
+		InventoryRuleSoaRequst ruleSoaReq = new InventoryRuleSoaRequst();
+		ruleSoaReq.setRealRequest(ruleRequest);
+		ruleSoaReq.setFrom("getIncrInventories");
+		ruleSoaReq.setLogId(UUID.randomUUID().toString());
+		String reqData = JSON.toJSONString(ruleSoaReq);
 
 		// 库存黑名单接口调用
-		List<RuleInventoryResponse> ruleInventoryResponses = null;
+		String result = null;
 		try {
 			String reqUrl = PropertiesHelper.getEnvProperties("Inventory.BlackList.Rule.Url", "config").toString();
 			logger.info("doHandlerBlackListRule,httpPost reqUrl = " + reqUrl);
 			logger.info("doHandlerBlackListRule,httpPost reqData = " + reqData);
-			String result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
+			result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
 			logger.info("doHandlerBlackListRule,httpPost result = " + result);
-			InventoryBlackListRuleRealResponse ruleResponse = JSON.parseObject(result, InventoryBlackListRuleRealResponse.class);
-			if (ruleResponse == null || ruleResponse.getInventorys() == null || ruleResponse.getInventorys().size() == 0) {
-				logger.info("doHandlerBlackListRule,has no ruleResponse.");
-				ruleInventoryResponses = Collections.emptyList();
-			}
-			ruleInventoryResponses = ruleResponse.getInventorys();
 		} catch (Exception e) {
 			logger.error("doHandlerBlackListRule,httpPost error = " + e.getMessage(), e);
 			throw new IllegalStateException("doHandlerBlackListRule,httpPost error = " + e.getMessage());
 		}
+
+		InventoryRuleSoaResponse ruleSoaResponse = JSON.parseObject(result, InventoryRuleSoaResponse.class);
+		if (ruleSoaResponse == null || StringUtils.equals("-1", ruleSoaResponse.getResponseCode())) {
+			throw new IllegalStateException("doHandlerBlackListRule,httpPost error,due to responseCode = "
+					+ ruleSoaResponse.getResponseCode());
+		}
+		List<RuleInventoryResponse> ruleInventoryResponses = null;
+		InventoryBlackListRuleRealResponse ruleRealResponse = ruleSoaResponse.getRealResponse();
+		if (ruleRealResponse == null || ruleRealResponse.getInventorys() == null || ruleRealResponse.getInventorys().size() == 0) {
+			logger.info("doHandlerBlackListRule,has no ruleResponse.");
+			ruleInventoryResponses = Collections.emptyList();
+		}
+		ruleInventoryResponses = ruleRealResponse.getInventorys();
 
 		// 补回增量部分数据
 		List<IncrInventory> incrInventoryList = new ArrayList<IncrInventory>();
@@ -316,27 +331,39 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		checkRealReq.setHotelMap(hotelMap);
 		checkRealReq.setNeedInstantConfirm(false);
 		checkRealReq.setOrderFrom(orderFrom);
-		String checkReqData = JSON.toJSONString(checkRealReq);
+		InventoryRuleHitCheckSoaRequest checkSoaReq = new InventoryRuleHitCheckSoaRequest();
+		checkSoaReq.setRealRequest(checkRealReq);
+		checkSoaReq.setFrom("getIncrInventories");
+		checkSoaReq.setLogId(UUID.randomUUID().toString());
+		String checkReqData = JSON.toJSONString(checkSoaReq);
 
 		// 接口调用
-		List<String> needBlackListRuleCodes = null;
+		String checkResult = null;
 		try {
 			String checkHotelCodeUrl = PropertiesHelper.getEnvProperties("Inventory.BlackList.Rule.checkHotelCodeUrl", "config").toString();
 			logger.info("checkBlackListRule,httpPost checkHotelCodeUrl = " + checkHotelCodeUrl);
 			logger.info("checkBlackListRule,httpPost checkReqData = " + checkReqData);
-			String checkResult = HttpClientUtils.httpPost(checkHotelCodeUrl, checkReqData, "application/json");
+			checkResult = HttpClientUtils.httpPost(checkHotelCodeUrl, checkReqData, "application/json");
 			logger.info("checkBlackListRule,httpPost checkResult = " + checkResult);
-			InventoryRuleHitCheckRealResponse checkRealResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckRealResponse.class);
-			if (checkRealResponse == null || checkRealResponse.getNeedBlackListRuleCodes() == null
-					|| checkRealResponse.getNeedBlackListRuleCodes().size() == 0) {
-				logger.info("checkBlackListRule,has no checkRealResponse.");
-				needBlackListRuleCodes = Collections.emptyList();
-			}
-			needBlackListRuleCodes = checkRealResponse.getNeedBlackListRuleCodes();
 		} catch (Exception e) {
 			logger.error("checkBlackListRule,httpPost check error = " + e.getMessage(), e);
 			throw new IllegalStateException("checkBlackListRule,httpPost check error = " + e.getMessage());
 		}
+
+		InventoryRuleHitCheckSoaResponse checkSoaResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckSoaResponse.class);
+		if (checkSoaResponse == null || StringUtils.equals("-1", checkSoaResponse.getResponseCode())) {
+			throw new IllegalStateException("checkBlackListRule,httpPost check error,due to responseCode = "
+					+ checkSoaResponse.getResponseCode());
+		}
+
+		List<String> needBlackListRuleCodes = null;
+		InventoryRuleHitCheckRealResponse checkRealResponse = checkSoaResponse.getRealResponse();
+		if (checkRealResponse == null || checkRealResponse.getNeedBlackListRuleCodes() == null
+				|| checkRealResponse.getNeedBlackListRuleCodes().size() == 0) {
+			logger.info("checkBlackListRule,has no checkRealResponse.");
+			needBlackListRuleCodes = Collections.emptyList();
+		}
+		needBlackListRuleCodes = checkRealResponse.getNeedBlackListRuleCodes();
 
 		// 需要黑名单检查的数据
 		List<IncrInventory> needCheckList = new ArrayList<IncrInventory>();
