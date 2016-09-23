@@ -18,20 +18,26 @@ public class IncrTestCase {
 
 	@Test
 	public void test() throws Exception {
-
+		for(int i=0;i<20;i++){
+			aaa();
+		}
+		System.out.println("finished");
+	}
+	
+	private void aaa(){
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
 		// 11、getIncrState,2、getIncrRates,3、getIncrOrders,4、getIncrHotel,55、getIncrInventories,6、GetLastId
 		String reqUrl = "http://localhost:8080/nb_web_incr/api/Hotel/getIncrState";//本地
-		reqUrl = "http://nbapi-incr.vip.elong.com/OpenApiWeb/api/Hotel/getIncrOrders";//java线上
-		reqUrl = "http://bhb-bapiweb1.ab.elong.com/OpenApiWeb/api/Hotel/getIncrOrders";//.net线上
+		reqUrl = "http://nbapi-incr.vip.elong.com/OpenApiWeb/api/Hotel/getIncrInventories";//java线上
+//		reqUrl = "http://bhb-bapiweb1.ab.elong.com/OpenApiWeb/api/Hotel/getIncrInventories";//.net线上
 
 		IncrIdRequest incrIdRequest = new IncrIdRequest();
-		incrIdRequest.setIncrType(EnumIncrType.Order);
+		incrIdRequest.setIncrType(EnumIncrType.Inventory);
 		incrIdRequest.setLastTime(DateUtils.add(new Date(), Calendar.DATE, -10));
 
 		IncrRequest incrRequest = new IncrRequest();
-		incrRequest.setLastId(new BigInteger("281477748585701"));
+		incrRequest.setLastId(new BigInteger("17215838591"));
 		incrRequest.setCount(3);
 
 		String reqData = "{\"Local\":\"zh_CN\",\"Request\":"
