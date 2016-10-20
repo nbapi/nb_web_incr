@@ -1,10 +1,8 @@
 package com.elong.nb.test;
 
 import java.math.BigInteger;
-import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
 import com.elong.nb.model.IncrIdRequest;
@@ -34,7 +32,7 @@ public class IncrTestCase {
 
 		IncrIdRequest incrIdRequest = new IncrIdRequest();
 		incrIdRequest.setIncrType(EnumIncrType.Inventory);
-		incrIdRequest.setLastTime(DateUtils.add(new Date(), Calendar.DATE, -10));
+		incrIdRequest.setLastTime(new Date());
 
 		IncrRequest incrRequest = new IncrRequest();
 		incrRequest.setLastId(new BigInteger("17215838591"));

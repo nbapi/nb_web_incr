@@ -150,7 +150,6 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 		long lastId = (long) params.get("lastId");
 		int maxRecordCount = (int) params.get("maxRecordCount");
 
-		// TODO type=6问题
 		return getIncrStates(lastId, maxRecordCount);
 	}
 
