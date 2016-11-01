@@ -19,7 +19,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -239,7 +238,14 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			String ruleKey = UUID.randomUUID().toString();
 			RuleInventoryRequest ruleInventory = new RuleInventoryRequest();
 			ruleInventory.setRuleKey(ruleKey);
-			BeanUtils.copyProperties(incrInventory, ruleInventory);
+			ruleInventory.setAvailableDate(incrInventory.getAvailableDate());
+			ruleInventory.setEndDate(incrInventory.getEndDate());
+			ruleInventory.setHotelCode(incrInventory.getHotelCode());
+			ruleInventory.setHotelID(incrInventory.getHotelID());
+			ruleInventory.setIsInstantConfirm(incrInventory.isIsInstantConfirm());
+			ruleInventory.setOverBooking(incrInventory.getOverBooking());
+			ruleInventory.setRoomTypeID(incrInventory.getRoomTypeID());
+			ruleInventory.setStartDate(incrInventory.getStartDate());
 			ruleInventoryRequests.add(ruleInventory);
 			incrInventoryMap.put(ruleKey, incrInventory);
 		}
@@ -291,7 +297,9 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 					continue;
 
 				IncrInventory incrInventory = incrInventoryMap.get(ruleInventory.getRuleKey());
-				BeanUtils.copyProperties(ruleInventory, incrInventory);
+				incrInventory.setEndDate(ruleInventory.getEndDate());
+				incrInventory.setOverBooking(ruleInventory.getOverBooking());
+				incrInventory.setStartDate(ruleInventory.getStartDate());
 				incrInventoryList.add(incrInventory);
 			}
 		}
