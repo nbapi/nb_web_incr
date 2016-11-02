@@ -3,7 +3,7 @@
 <mapper namespace="com.elong.nb.dao.IncrRateDao">
 	<!-- 获取大于指定lastTime的最早发生变化的房价增量 -->
 	<select id="getOneIncrRate" resultType="incrRate">
-		select * from JIncrRate
+		select * from IncrRate
 		<where>
 			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
 		</where>
@@ -12,12 +12,12 @@
 
 	<!-- 获取最大IncrID的房价增量 -->
 	<select id="getLastIncrRate" resultType="incrRate">
-		select * from JIncrRate order by IncrID desc limit 0,1
+		select * from IncrRate order by IncrID desc limit 0,1
 	</select>
 
 	<!-- 获取大于指定lastId的maxRecordCount条房价增量 -->
 	<select id="getIncrRates" resultType="incrRate">
-		select * from JIncrRate
+		select * from IncrRate
 		<where>
 			<if test="lastId != null and !lastId.equals('')">and incrID > #{lastId} </if>
 		</where>
