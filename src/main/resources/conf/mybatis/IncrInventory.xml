@@ -3,7 +3,7 @@
 <mapper namespace="com.elong.nb.dao.IncrInventoryDao">
 	<!-- 获取大于指定lastTime的最早发生变化的库存增量 -->
 	<select id="getOneIncrInventory" resultType="incrInventory">
-		select * from IncrInventory
+		select * from JIncrInventory
 		<where>
 			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
 		</where>
@@ -12,12 +12,12 @@
 
 	<!-- 获取最大IncrID的库存增量 -->
 	<select id="getLastIncrInventory" resultType="incrInventory">
-		select * from IncrInventory order by IncrID desc limit 0,1
+		select * from JIncrInventory order by IncrID desc limit 0,1
 	</select>
 
 	<!-- 获取大于指定lastId的maxRecordCount条库存增量 -->
 	<select id="getIncrInventories" resultType="incrInventory">
-		select * from IncrInventory
+		select * from JIncrInventory
 		<where>
 			<if test="lastId != null and !lastId.equals('')">and IncrID > #{lastId} </if>
 		</where>
