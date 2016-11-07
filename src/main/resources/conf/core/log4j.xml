@@ -11,18 +11,16 @@
 			<param name="LevelMin" value="INFO" />
 		</filter>
 	</appender>
-	
+
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="threshold" value="INFO" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern"
-				value="[%d{yyyy-MM-dd HH:mm:ss.SSS\} %-5p] [%t] (%c{1}:%L) %m%n" />
+			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS\} %-5p] [%t] (%c{1}:%L) %m%n" />
 		</layout>
 	</appender>
 
 	<!-- 系统启动日志输出文件 -->
-	<appender name="fileAppender"
-		class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+	<appender name="fileAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
 		<param name="File" value="${catalina.home}/logs/system.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
@@ -33,10 +31,8 @@
 		</filter>
 	</appender>
 	<!--actionLogEntity appender -->
-	<appender name="actionLogEntityAppender"
-		class="com.elong.common.util.log.ElongDailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/nb_web_incr_actionlogentity.log" />
+	<appender name="actionLogEntityAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/nb_web_incr_actionlogentity.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%m%n" />
@@ -46,10 +42,8 @@
 		</filter>
 	</appender>
 
-	<appender name="globalExceptionAppender"
-		class="com.elong.common.util.log.ElongDailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/nb_web_incr_globalexception.log" />
+	<appender name="globalExceptionAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/nb_web_incr_globalexception.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%m%n" />
@@ -79,18 +73,15 @@
 		<param name="encoding" value="utf-8" />
 		<param name="threshold" value="info" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern"
-				value="[%d{yyyy-MM-dd HH:mm:ss.SSS\} %-5p] [%t] (%c{1}:%L) -[%X{traceId}] %m%n" />
+			<param name="ConversionPattern" value="%m%n" />
 		</layout>
 	</appender>
-
 	<!-- ======================================================================================================= -->
 	<!-- =================================healthcheck组件日志appender 配置开始======================================= -->
 	<!-- ======================================================================================================= -->
 	<!-- healthcheck组件, info级别及以上日志接收器 -->
 	<appender name="healthcheckAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/healthcheck/healthcheck_info.log" />
+		<param name="File" value="${catalina.home}/logs/healthcheck/healthcheck_info.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
@@ -118,8 +109,7 @@
 
 	<!-- SOA client组件, info级别及以上日志接收器 -->
 	<appender name="soaClientInfoAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/hotel_soa_client/soa_client_info.log" />
+		<param name="File" value="${catalina.home}/logs/hotel_soa_client/soa_client_info.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
@@ -131,8 +121,7 @@
 
 	<!-- SOA client组件, error级别及以上日志接收器 -->
 	<appender name="soaClientErrorAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/hotel_soa_client/soa_client_error.log" />
+		<param name="File" value="${catalina.home}/logs/hotel_soa_client/soa_client_error.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
@@ -144,8 +133,7 @@
 
 	<!-- SOA client组件, API调用, 日志接收器 -->
 	<appender name="soaClientApiAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/hotel_soa_client/soa_client_api.log" />
+		<param name="File" value="${catalina.home}/logs/hotel_soa_client/soa_client_api.log" />
 		<param name="DatePattern" value="'.'yyyyMMddHHmm" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%m%n" />
@@ -191,8 +179,7 @@
 
 	<!-- SOA server组件, info级别及以上日志接收器 -->
 	<appender name="soaServerInfoAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/hotel_soa_server/soa_server_info.log" />
+		<param name="File" value="${catalina.home}/logs/hotel_soa_server/soa_server_info.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
@@ -204,8 +191,7 @@
 
 	<!-- SOA server组件, error级别及以上日志接收器 -->
 	<appender name="soaServerErrorAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File"
-			value="${catalina.home}/logs/hotel_soa_server/soa_server_error.log" />
+		<param name="File" value="${catalina.home}/logs/hotel_soa_server/soa_server_error.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d] %5p [%30.30C:%4.4L] - %m%n" />
