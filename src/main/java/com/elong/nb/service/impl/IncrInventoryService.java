@@ -242,7 +242,6 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			ruleInventory.setEndDate(incrInventory.getEndDate());
 			ruleInventory.setHotelCode(incrInventory.getHotelCode());
 			ruleInventory.setHotelID(incrInventory.getHotelID());
-			ruleInventory.setIsInstantConfirm(incrInventory.isIsInstantConfirm());
 			ruleInventory.setOverBooking(incrInventory.getOverBooking());
 			ruleInventory.setRoomTypeID(incrInventory.getRoomTypeID());
 			ruleInventory.setStartDate(incrInventory.getStartDate());
