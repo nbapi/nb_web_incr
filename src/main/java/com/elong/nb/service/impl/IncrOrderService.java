@@ -146,10 +146,10 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 	 */
 	@Override
 	public List<IncrOrder> getIncrOrders(long lastId, int maxRecordCount, EnumOrderType orderType, String proxyId, Integer orderFrom) {
-		if (lastId == 0) {
-			logger.error("getIncrOrders error,due to the parameter 'lastId' is 0.");
-			throw new IncrException("getIncrOrders error,due to the parameter 'lastId' is 0.");
-		}
+//		if (lastId == 0) {
+//			logger.error("getIncrOrders error,due to the parameter 'lastId' is 0.");
+//			throw new IncrException("getIncrOrders error,due to the parameter 'lastId' is 0.");
+//		}
 		if (maxRecordCount == 0) {
 			logger.error("getIncrOrders error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrOrders error,due to the parameter 'maxRecordCount' is 0.");
