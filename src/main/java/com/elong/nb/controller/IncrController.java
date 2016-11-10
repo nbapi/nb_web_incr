@@ -71,7 +71,7 @@ public class IncrController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/api/Hotel/getIncrState", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/Hotel/GetIncrState", method = RequestMethod.POST)
 	public ResponseEntity<byte[]> getIncrState(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrState", request);
 	}
@@ -83,7 +83,7 @@ public class IncrController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/api/Hotel/getIncrRates", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/Hotel/GetIncrRates", method = RequestMethod.POST)
 	public ResponseEntity<byte[]> getIncrRates(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrRates", request);
 	}
@@ -95,7 +95,7 @@ public class IncrController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/api/Hotel/getIncrOrders", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/Hotel/GetIncrOrders", method = RequestMethod.POST)
 	public ResponseEntity<byte[]> getIncrOrders(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrOrders", request);
 	}
@@ -107,7 +107,7 @@ public class IncrController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/api/Hotel/getIncrHotel", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/Hotel/GetIncrHotel", method = RequestMethod.POST)
 	public ResponseEntity<byte[]> getIncrHotel(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrHotel", request);
 	}
@@ -119,7 +119,7 @@ public class IncrController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/api/Hotel/getIncrInventories", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/Hotel/GetIncrInventories", method = RequestMethod.POST)
 	public ResponseEntity<byte[]> getIncrInventories(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrInventories", request);
 	}
