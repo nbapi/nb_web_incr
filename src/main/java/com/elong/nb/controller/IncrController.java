@@ -18,7 +18,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -66,54 +65,63 @@ public class IncrController {
 	private INoticeService noticeService;
 
 	/** 
-	 * 获取增量数据
+	 * 获取状态增量
 	 *
 	 * @param request
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping(value = "/api/Hotel/{getIncrDatas}", method = RequestMethod.POST)
-	public ResponseEntity<byte[]> getIncrDatas(@PathVariable(value = "getIncrDatas") String getIncrDatas, HttpServletRequest request)
-			throws IOException {
-		RestRequest<IncrRequest> restRequest = GsonUtil.toReq(request, IncrRequest.class, null);
-		Double version = restRequest.getVersion() == null ? 0d : restRequest.getVersion();
-		try {
-			// 校验请求参数
-			String rst = incrValidateService.validateIncrRequest(restRequest);
-			logger.info(getIncrDatas + ",checkMessage,result = " + rst);
-			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
-			if (StringUtils.isNotBlank(rst)) {
-				restResponse.setCode(rst);
-				return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
-			}
-			// 获取响应数据
-			IIncrService incrService = incrServiceFactory.getIIncrService(getIncrDatas);
-			restResponse = incrService.getIncrDatas(restRequest);
-			logger.info(getIncrDatas + ",responseCode = " + restResponse.getCode());
-			// 返回响应数据
-			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
-		} catch (IncrException e) {
-			// 返回业务异常
-			logger.error(getIncrDatas + ",business error = " + e.getMessage(), e);
-			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
-			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
-			noticeService.sendMessage(
-					getIncrDatas + ",business error,code = "
-							+ MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }),
-					ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
-		} catch (Exception e) {
-			// 返回系统异常
-			logger.error(getIncrDatas + ",system error = " + e.getMessage(), e);
-			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
-			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
-			noticeService.sendMessage(
-					getIncrDatas + ",system error,code = "
-							+ MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }),
-					ExceptionUtils.getFullStackTrace(e));
-			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
-		}
+	@RequestMapping(value = "/api/Hotel/getIncrState", method = RequestMethod.POST)
+	public ResponseEntity<byte[]> getIncrState(HttpServletRequest request) throws IOException {
+		return getIncrDatas("getIncrState", request);
+	}
+	
+	/** 
+	 * 获取房价增量
+	 *
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/api/Hotel/getIncrRates", method = RequestMethod.POST)
+	public ResponseEntity<byte[]> getIncrRates(HttpServletRequest request) throws IOException {
+		return getIncrDatas("getIncrRates", request);
+	}
+	
+	/** 
+	 * 获取订单增量
+	 *
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/api/Hotel/getIncrOrders", method = RequestMethod.POST)
+	public ResponseEntity<byte[]> getIncrOrders(HttpServletRequest request) throws IOException {
+		return getIncrDatas("getIncrOrders", request);
+	}
+	
+	/** 
+	 * 获取酒店增量
+	 *
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/api/Hotel/getIncrHotel", method = RequestMethod.POST)
+	public ResponseEntity<byte[]> getIncrHotel(HttpServletRequest request) throws IOException {
+		return getIncrDatas("getIncrHotel", request);
+	}
+	
+	/** 
+	 * 获取库存增量
+	 *
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/api/Hotel/getIncrInventories", method = RequestMethod.POST)
+	public ResponseEntity<byte[]> getIncrInventories(HttpServletRequest request) throws IOException {
+		return getIncrDatas("getIncrInventories", request);
 	}
 
 	/** 
@@ -153,6 +161,55 @@ public class IncrController {
 			logger.error("getLastId,system error = " + e.getMessage(), e);
 			RestResponse<IncrIdResponse> restResponse = new RestResponse<IncrIdResponse>(restRequest.getGuid());
 			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { "getLastId", e.getMessage() }));
+			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
+		}
+	}
+	
+	/** 
+	 * 获取增量数据
+	 *
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private ResponseEntity<byte[]> getIncrDatas(String getIncrDatas, HttpServletRequest request) throws IOException {
+		RestRequest<IncrRequest> restRequest = GsonUtil.toReq(request, IncrRequest.class, null);
+		Double version = restRequest.getVersion() == null ? 0d : restRequest.getVersion();
+		try {
+			// 校验请求参数
+			String rst = incrValidateService.validateIncrRequest(restRequest);
+			logger.info(getIncrDatas + ",checkMessage,result = " + rst);
+			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
+			if (StringUtils.isNotBlank(rst)) {
+				restResponse.setCode(rst);
+				return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
+			}
+			// 获取响应数据
+			IIncrService incrService = incrServiceFactory.getIIncrService(getIncrDatas);
+			restResponse = incrService.getIncrDatas(restRequest);
+			logger.info(getIncrDatas + ",responseCode = " + restResponse.getCode());
+			// 返回响应数据
+			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
+		} catch (IncrException e) {
+			// 返回业务异常
+			logger.error(getIncrDatas + ",business error = " + e.getMessage(), e);
+			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
+			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
+			noticeService.sendMessage(
+					getIncrDatas + ",business error,code = "
+							+ MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }),
+					ExceptionUtils.getFullStackTrace(e));
+			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
+		} catch (Exception e) {
+			// 返回系统异常
+			logger.error(getIncrDatas + ",system error = " + e.getMessage(), e);
+			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
+			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
+			noticeService.sendMessage(
+					getIncrDatas + ",system error,code = "
+							+ MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }),
+					ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		}
 	}
