@@ -99,10 +99,10 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 	 */
 	@Override
 	public List<IncrHotel> getIncrHotels(long lastId, int maxRecordCount) {
-		if (lastId == 0) {
-			logger.error("getIncrHotels error,due to the parameter 'lastId' is 0.");
-			throw new IncrException("getIncrHotels error,due to the parameter 'lastId' is 0.");
-		}
+//		if (lastId == 0) {
+//			logger.error("getIncrHotels error,due to the parameter 'lastId' is 0.");
+//			throw new IncrException("getIncrHotels error,due to the parameter 'lastId' is 0.");
+//		}
 		if (maxRecordCount == 0) {
 			logger.error("getIncrHotels error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrHotels error,due to the parameter 'maxRecordCount' is 0.");

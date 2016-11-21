@@ -103,10 +103,10 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	 */
 	@Override
 	public List<IncrRate> getIncrRates(long lastId, int maxRecordCount) {
-		if (lastId == 0) {
-			logger.error("getIncrRates error,due to the parameter 'lastId' is 0.");
-			throw new IncrException("getIncrRates error,due to the parameter 'lastId' is 0.");
-		}
+//		if (lastId == 0) {
+//			logger.error("getIncrRates error,due to the parameter 'lastId' is 0.");
+//			throw new IncrException("getIncrRates error,due to the parameter 'lastId' is 0.");
+//		}
 		if (maxRecordCount == 0) {
 			logger.error("getIncrRates error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrRates error,due to the parameter 'maxRecordCount' is 0.");

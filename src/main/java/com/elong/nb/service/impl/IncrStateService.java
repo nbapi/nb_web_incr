@@ -100,10 +100,10 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 	 */
 	@Override
 	public List<IncrState> getIncrStates(long lastId, int maxRecordCount) {
-		if (lastId == 0) {
-			logger.error("getIncrStates error,due to the parameter 'lastId' is 0.");
-			throw new IncrException("getIncrInventories error,due to the parameter 'lastId' is 0.");
-		}
+//		if (lastId == 0) {
+//			logger.error("getIncrStates error,due to the parameter 'lastId' is 0.");
+//			throw new IncrException("getIncrInventories error,due to the parameter 'lastId' is 0.");
+//		}
 		if (maxRecordCount == 0) {
 			logger.error("getIncrStates error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
