@@ -163,7 +163,7 @@ public class HttpClientUtils {
 		connManager.setDefaultConnectionConfig(connectionConfig);
 		connManager.setMaxTotal(65535);
 		connManager.setDefaultMaxPerRoute(65535);
-		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(20000)
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(40000).setSocketTimeout(40000)
 				.setConnectionRequestTimeout(20000).setCookieSpec(CookieSpecs.IGNORE_COOKIES).build();
 		CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(requestConfig)
 				.build();
