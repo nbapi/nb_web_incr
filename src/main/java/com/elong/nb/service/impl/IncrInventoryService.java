@@ -276,7 +276,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		}
 
 		InventoryRuleSoaResponse ruleSoaResponse = JSON.parseObject(result, InventoryRuleSoaResponse.class);
-		if (ruleSoaResponse == null || StringUtils.equals("-1", ruleSoaResponse.getResponseCode())) {
+		if (ruleSoaResponse == null || !StringUtils.equals("0", ruleSoaResponse.getResponseCode())) {
 			throw new IllegalStateException("doHandlerBlackListRule,httpPost error,due to responseCode = "
 					+ ruleSoaResponse.getResponseCode());
 		}
@@ -358,7 +358,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		}
 
 		InventoryRuleHitCheckSoaResponse checkSoaResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckSoaResponse.class);
-		if (checkSoaResponse == null || StringUtils.equals("-1", checkSoaResponse.getResponseCode())) {
+		if (checkSoaResponse == null || !StringUtils.equals("0", checkSoaResponse.getResponseCode())) {
 			throw new IllegalStateException("checkBlackListRule,httpPost check error,due to responseCode = "
 					+ checkSoaResponse.getResponseCode());
 		}
