@@ -6,6 +6,7 @@
 package com.elong.nb.service.impl;
 
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.elong.nb.common.model.EnumOrderType;
 import com.elong.nb.dao.IncrOrderDao;
@@ -24,6 +26,7 @@ import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrOrderResponse;
 import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.bean.IncrOrder;
+import com.elong.nb.model.enums.EnumPayStatus;
 import com.elong.nb.service.IIncrOrderService;
 import com.elong.nb.util.IncrConst;
 
@@ -61,30 +64,17 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 	 */
 	@Override
 	public IncrOrder getLastIncrOrder(EnumOrderType orderType, String proxyId, Integer orderFrom) {
-		/*if (orderType == null) {
-			logger.error("getLastIncrOrder error,due to the parameter 'orderType' is null.");
-			throw new IncrException("getLastIncrOrder error,due to the parameter 'orderType' is null.");
-		}
-		if (StringUtils.isEmpty(proxyId)) {
-			logger.error("getLastIncrOrder error,due to the parameter 'proxyId' is null.");
-			throw new IncrException("getLastIncrOrder error,due to the parameter 'proxyId' is null.");
-		}
-		if (orderFrom == null) {
-			logger.error("getLastIncrOrder error,due to the parameter 'orderFrom' is null.");
-			throw new IncrException("getLastIncrOrder error,due to the parameter 'orderFrom' is null.");
-		}
-		try {
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			if (orderType == EnumOrderType.OrderFrom) {
-				paramMap.put("orderFrom", orderFrom);
-			} else {
-				paramMap.put("proxyId", proxyId);
-			}
-			return incrOrderDao.getLastIncrOrder(paramMap);
-		} catch (Exception e) {
-			logger.error("getLastIncrOrder error,due to " + e.getMessage(), e);
-			throw new IllegalStateException(e.getMessage());
-		}*/
+		/*
+		 * if (orderType == null) { logger.error("getLastIncrOrder error,due to the parameter 'orderType' is null."); throw new
+		 * IncrException("getLastIncrOrder error,due to the parameter 'orderType' is null."); } if (StringUtils.isEmpty(proxyId)) {
+		 * logger.error("getLastIncrOrder error,due to the parameter 'proxyId' is null."); throw new
+		 * IncrException("getLastIncrOrder error,due to the parameter 'proxyId' is null."); } if (orderFrom == null) {
+		 * logger.error("getLastIncrOrder error,due to the parameter 'orderFrom' is null."); throw new
+		 * IncrException("getLastIncrOrder error,due to the parameter 'orderFrom' is null."); } try { Map<String, Object> paramMap = new
+		 * HashMap<String, Object>(); if (orderType == EnumOrderType.OrderFrom) { paramMap.put("orderFrom", orderFrom); } else {
+		 * paramMap.put("proxyId", proxyId); } return incrOrderDao.getLastIncrOrder(paramMap); } catch (Exception e) {
+		 * logger.error("getLastIncrOrder error,due to " + e.getMessage(), e); throw new IllegalStateException(e.getMessage()); }
+		 */
 		return null;
 	}
 
@@ -146,10 +136,10 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 	 */
 	@Override
 	public List<IncrOrder> getIncrOrders(long lastId, int maxRecordCount, EnumOrderType orderType, String proxyId, Integer orderFrom) {
-//		if (lastId == 0) {
-//			logger.error("getIncrOrders error,due to the parameter 'lastId' is 0.");
-//			throw new IncrException("getIncrOrders error,due to the parameter 'lastId' is 0.");
-//		}
+		// if (lastId == 0) {
+		// logger.error("getIncrOrders error,due to the parameter 'lastId' is 0.");
+		// throw new IncrException("getIncrOrders error,due to the parameter 'lastId' is 0.");
+		// }
 		if (maxRecordCount == 0) {
 			logger.error("getIncrOrders error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrOrders error,due to the parameter 'maxRecordCount' is 0.");
@@ -175,7 +165,15 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 			}
 			paramMap.put("lastId", lastId);
 			paramMap.put("maxRecordCount", maxRecordCount);
-			return incrOrderDao.getIncrOrders(paramMap);
+			List<IncrOrder> incrOrders = incrOrderDao.getIncrOrders(paramMap);
+			if (CollectionUtils.isEmpty(incrOrders))
+				return Collections.emptyList();
+			for (IncrOrder incrOrder : incrOrders) {
+				if (incrOrder == null)
+					continue;
+				incrOrder.setPayStatus(EnumPayStatus.forValue(incrOrder.getPayStatus()).getPayStatus());
+			}
+			return incrOrders;
 		} catch (Exception e) {
 			logger.error("getIncrOrders error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
