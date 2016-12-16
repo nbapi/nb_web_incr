@@ -8,6 +8,9 @@ package com.elong.nb.service.impl;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -35,7 +38,8 @@ public class NoticeServiceImpl implements INoticeService {
 
 	private static final Logger logger = Logger.getLogger("NoticeServiceLogger");
 
-	private ExecutorService executorService = Executors.newFixedThreadPool(5);
+	private ExecutorService executorService = new ThreadPoolExecutor(0, 5, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(100),
+			Executors.defaultThreadFactory(), new ThreadPoolExecutor.DiscardPolicy());
 	
 	private static final String alertService="http://dashboard2.mis.elong.com/alertservice/alert";
 	private static final String alertName="exceptionAlert";

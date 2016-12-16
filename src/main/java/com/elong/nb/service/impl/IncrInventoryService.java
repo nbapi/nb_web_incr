@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrInventoryDao;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrInventoryResponse;
@@ -40,7 +41,6 @@ import com.elong.nb.model.bean.IncrInventory;
 import com.elong.nb.service.IIncrInventoryService;
 import com.elong.nb.util.HttpClientUtils;
 import com.elong.nb.util.IncrConst;
-import com.elong.springmvc_enhance.utilities.PropertiesHelper;
 
 /**
  * 增量库存接口实现
@@ -265,7 +265,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		// 库存黑名单接口调用
 		String result = null;
 		try {
-			String reqUrl = PropertiesHelper.getEnvProperties("Inventory.BlackList.Rule.Url", "config").toString();
+			String reqUrl = CommonsUtil.CONFIG_PROVIDAR.getProperty("Inventory.BlackList.Rule.Url");
 			logger.info("doHandlerBlackListRule,httpPost reqUrl = " + reqUrl);
 			logger.info("doHandlerBlackListRule,httpPost reqData = " + reqData);
 			result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
@@ -347,7 +347,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		// 接口调用
 		String checkResult = null;
 		try {
-			String checkHotelCodeUrl = PropertiesHelper.getEnvProperties("Inventory.BlackList.Rule.checkHotelCodeUrl", "config").toString();
+			String checkHotelCodeUrl = CommonsUtil.CONFIG_PROVIDAR.getProperty("Inventory.BlackList.Rule.checkHotelCodeUrl");
 			logger.info("checkBlackListRule,httpPost checkHotelCodeUrl = " + checkHotelCodeUrl);
 			logger.info("checkBlackListRule,httpPost checkReqData = " + checkReqData);
 			checkResult = HttpClientUtils.httpPost(checkHotelCodeUrl, checkReqData, "application/json");

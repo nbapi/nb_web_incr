@@ -64,18 +64,30 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 	 */
 	@Override
 	public IncrOrder getLastIncrOrder(EnumOrderType orderType, String proxyId, Integer orderFrom) {
-		/*
-		 * if (orderType == null) { logger.error("getLastIncrOrder error,due to the parameter 'orderType' is null."); throw new
-		 * IncrException("getLastIncrOrder error,due to the parameter 'orderType' is null."); } if (StringUtils.isEmpty(proxyId)) {
-		 * logger.error("getLastIncrOrder error,due to the parameter 'proxyId' is null."); throw new
-		 * IncrException("getLastIncrOrder error,due to the parameter 'proxyId' is null."); } if (orderFrom == null) {
-		 * logger.error("getLastIncrOrder error,due to the parameter 'orderFrom' is null."); throw new
-		 * IncrException("getLastIncrOrder error,due to the parameter 'orderFrom' is null."); } try { Map<String, Object> paramMap = new
-		 * HashMap<String, Object>(); if (orderType == EnumOrderType.OrderFrom) { paramMap.put("orderFrom", orderFrom); } else {
-		 * paramMap.put("proxyId", proxyId); } return incrOrderDao.getLastIncrOrder(paramMap); } catch (Exception e) {
-		 * logger.error("getLastIncrOrder error,due to " + e.getMessage(), e); throw new IllegalStateException(e.getMessage()); }
-		 */
-		return null;
+		if (orderType == null) {
+			logger.error("getLastIncrOrder error,due to the parameter 'orderType' is null.");
+			throw new IncrException("getLastIncrOrder error,due to the parameter 'orderType' is null.");
+		}
+		if (StringUtils.isEmpty(proxyId)) {
+			logger.error("getLastIncrOrder error,due to the parameter 'proxyId' is null.");
+			throw new IncrException("getLastIncrOrder error,due to the parameter 'proxyId' is null.");
+		}
+		if (orderFrom == null) {
+			logger.error("getLastIncrOrder error,due to the parameter 'orderFrom' is null.");
+			throw new IncrException("getLastIncrOrder error,due to the parameter 'orderFrom' is null.");
+		}
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			if (orderType == EnumOrderType.OrderFrom) {
+				paramMap.put("orderFrom", orderFrom);
+			} else {
+				paramMap.put("proxyId", proxyId);
+			}
+			return incrOrderDao.getLastIncrOrder(paramMap);
+		} catch (Exception e) {
+			logger.error("getLastIncrOrder error,due to " + e.getMessage(), e);
+			throw new IllegalStateException(e.getMessage());
+		}
 	}
 
 	/** 

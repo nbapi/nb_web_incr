@@ -70,7 +70,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 		// 构建参数
 		long incrID = restRequest.getRequest().getLastId().longValue();
 		int maxRecordCount = restRequest.getRequest().getCount();
-		maxRecordCount = maxRecordCount == 0 ? IncrConst.maxRecordCount : maxRecordCount;
+		maxRecordCount = (maxRecordCount == 0||maxRecordCount > 1000) ? IncrConst.maxRecordCount : maxRecordCount;
 		logger.info("getIncrDatas params,lastId = " + incrID + ",maxRecordCount = " + maxRecordCount + ",guid = " + restRequest.getGuid());
 
 		EnumOrderType searchOrderType = restRequest.getProxyInfo().getSearchOrderType();
