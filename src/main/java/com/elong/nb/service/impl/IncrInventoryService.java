@@ -20,8 +20,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.alibaba.fastjson.JSON;
+import com.elong.nb.common.checklist.Constants;
 import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrInventoryDao;
 import com.elong.nb.exception.IncrException;
@@ -41,6 +45,7 @@ import com.elong.nb.model.bean.IncrInventory;
 import com.elong.nb.service.IIncrInventoryService;
 import com.elong.nb.util.HttpClientUtils;
 import com.elong.nb.util.IncrConst;
+import com.elong.springmvc_enhance.utilities.ActionLogHelper;
 
 /**
  * 增量库存接口实现
@@ -117,10 +122,10 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 	 */
 	@Override
 	public List<IncrInventory> getIncrInventories(long lastId, int maxRecordCount) {
-//		if (lastId == 0) {
-//			logger.error("getIncrInventories error,due to the parameter 'lastId' is 0.");
-//			throw new IncrException("getIncrInventories error,due to the parameter 'lastId' is 0.");
-//		}
+		// if (lastId == 0) {
+		// logger.error("getIncrInventories error,due to the parameter 'lastId' is 0.");
+		// throw new IncrException("getIncrInventories error,due to the parameter 'lastId' is 0.");
+		// }
 		if (maxRecordCount == 0) {
 			logger.error("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
@@ -263,17 +268,22 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		String reqData = JSON.toJSONString(ruleSoaReq);
 
 		// 库存黑名单接口调用
+		RequestAttributes request = RequestContextHolder.getRequestAttributes();
+		Object guid = request.getAttribute(Constants.ELONG_REQUEST_REQUESTGUID, ServletRequestAttributes.SCOPE_REQUEST);
+		long startTime = System.currentTimeMillis();
+
 		String result = null;
 		try {
 			String reqUrl = CommonsUtil.CONFIG_PROVIDAR.getProperty("Inventory.BlackList.Rule.Url");
-			logger.info("doHandlerBlackListRule,httpPost reqUrl = " + reqUrl);
-			logger.info("doHandlerBlackListRule,httpPost reqData = " + reqData);
 			result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
-			logger.info("doHandlerBlackListRule,httpPost result = " + result);
 		} catch (Exception e) {
 			logger.error("doHandlerBlackListRule,httpPost error = " + e.getMessage(), e);
+			ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "GetChangedInventory", "IncrInventoryService", null,
+					System.currentTimeMillis() - startTime, 1, result, reqData);
 			throw new IllegalStateException("doHandlerBlackListRule,httpPost error = " + e.getMessage());
 		}
+		ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "GetChangedInventory", "IncrInventoryService", null,
+				System.currentTimeMillis() - startTime, 0, result, reqData);
 
 		InventoryRuleSoaResponse ruleSoaResponse = JSON.parseObject(result, InventoryRuleSoaResponse.class);
 		if (ruleSoaResponse == null || !StringUtils.equals("0", ruleSoaResponse.getResponseCode())) {
@@ -344,18 +354,22 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		checkSoaReq.setLogId(UUID.randomUUID().toString());
 		String checkReqData = JSON.toJSONString(checkSoaReq);
 
+		RequestAttributes request = RequestContextHolder.getRequestAttributes();
+		Object guid = request.getAttribute(Constants.ELONG_REQUEST_REQUESTGUID, ServletRequestAttributes.SCOPE_REQUEST);
+		long startTime = System.currentTimeMillis();
 		// 接口调用
 		String checkResult = null;
 		try {
 			String checkHotelCodeUrl = CommonsUtil.CONFIG_PROVIDAR.getProperty("Inventory.BlackList.Rule.checkHotelCodeUrl");
-			logger.info("checkBlackListRule,httpPost checkHotelCodeUrl = " + checkHotelCodeUrl);
-			logger.info("checkBlackListRule,httpPost checkReqData = " + checkReqData);
 			checkResult = HttpClientUtils.httpPost(checkHotelCodeUrl, checkReqData, "application/json");
-			logger.info("checkBlackListRule,httpPost checkResult = " + checkResult);
 		} catch (Exception e) {
 			logger.error("checkBlackListRule,httpPost check error = " + e.getMessage(), e);
+			ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "CheckInvRuleHit", "IncrInventoryService", null,
+					System.currentTimeMillis() - startTime, 1, checkResult, checkReqData);
 			throw new IllegalStateException("checkBlackListRule,httpPost check error = " + e.getMessage());
 		}
+		ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "CheckInvRuleHit", "IncrInventoryService", null,
+				System.currentTimeMillis() - startTime, 0, checkResult, checkReqData);
 
 		InventoryRuleHitCheckSoaResponse checkSoaResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckSoaResponse.class);
 		if (checkSoaResponse == null || !StringUtils.equals("0", checkSoaResponse.getResponseCode())) {

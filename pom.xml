@@ -140,6 +140,11 @@
 		<dependency>
 			<groupId>com.elong.hotel</groupId>
 			<artifactId>spring-mvc-enhance</artifactId>
+			<version>1.10.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.elong.hotel</groupId>
+			<artifactId>elong-util</artifactId>
 			<version>1.4.0</version>
 		</dependency>
 		<dependency>
