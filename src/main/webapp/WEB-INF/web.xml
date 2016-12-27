@@ -10,7 +10,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:conf/core/elong-root-context.xml</param-value>
+		<param-value>classpath:conf/core/nb_web_incr-root-context.xml</param-value>
 	</context-param>
 
 	<context-param>

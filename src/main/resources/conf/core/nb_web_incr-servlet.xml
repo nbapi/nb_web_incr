@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:oscache="http://www.springmodules.org/schema/oscache"
-	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:oscache="http://www.springmodules.org/schema/oscache" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
@@ -13,34 +12,30 @@
            http://www.springmodules.org/schema/oscache http://www.springmodules.org/schema/cache/springmodules-oscache.xsd
            http://code.alibabatech.com/schema/dubbo
        	   http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
-       	   
+
 
 
 	<!-- 以下一行配置为JavaDoc站点，必须保留！！！切记！！！如果更改或servlet.xml，请务必保留下行 -->
-	<context:component-scan base-package="com.elong" />
+	<context:component-scan base-package="com.elong.nb" />
 	<mvc:default-servlet-handler />
 	<mvc:annotation-driven />
 	<mvc:resources mapping="/apidocs/**" location="/apidocs/" />
 	<mvc:resources mapping="/hc/**" location="/hc/" />
-	<aop:aspectj-autoproxy proxy-target-class="true"
-		expose-proxy="true" />
+	<aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true" />
 
 	<!-- HttpAPI日志拦截器，完成对@ResponseBody注解的Http请求 -->
 	<bean id="serviceAspect" class="com.elong.springmvc_enhance.core.ServiceAspect">
 	</bean>
 	<aop:config>
-		<aop:pointcut id="si"
-			expression="@annotation(org.springframework.web.bind.annotation.ResponseBody)" />
+		<aop:pointcut id="si" expression="@annotation(org.springframework.web.bind.annotation.ResponseBody)" />
 		<aop:advisor pointcut-ref="si" advice-ref="serviceAspect" />
 	</aop:config>
 
 	<!-- 页面全局异常处理 -->
-	<bean id="exceptionResolver"
-		class="com.elong.springmvc_enhance.core.HotelHandlerExceptionResolver">
+	<bean id="exceptionResolver" class="com.elong.springmvc_enhance.core.HotelHandlerExceptionResolver">
 	</bean>
 
-	<bean id="velocityConfig"
-		class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+	<bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
 		<!-- 增加自定义property -->
 		<property name="velocityProperties">
 			<props>
@@ -50,8 +45,7 @@
 		</property>
 	</bean>
 
-	<bean id="viewResolver"
-		class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
 		<!-- 增加property -->
 		<property name="cache" value="false" />
 		<property name="suffix" value=".vm" />

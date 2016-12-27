@@ -8,10 +8,10 @@
 		<setting name="defaultExecutorType" value="REUSE" />
 	</settings>
 	<typeAliases>
-		<typeAlias alias="incrInventory" type="com.elong.nb.model.IncrInventory"/>
-		<typeAlias alias="incrRate" type="com.elong.nb.model.IncrRate"/>
-		<typeAlias alias="incrState" type="com.elong.nb.model.IncrState"/>
-		<typeAlias alias="incrHotel" type="com.elong.nb.model.IncrHotel"/>
-		<typeAlias alias="incrOrder" type="com.elong.nb.model.IncrOrder"/>
+		<typeAlias alias="incrInventory" type="com.elong.nb.model.bean.IncrInventory"/>
+		<typeAlias alias="incrRate" type="com.elong.nb.model.bean.IncrRate"/>
+		<typeAlias alias="incrState" type="com.elong.nb.model.bean.IncrState"/>
+		<typeAlias alias="incrHotel" type="com.elong.nb.model.bean.IncrHotel"/>
+		<typeAlias alias="incrOrder" type="com.elong.nb.model.bean.IncrOrder"/>
 	</typeAliases>
 </configuration>

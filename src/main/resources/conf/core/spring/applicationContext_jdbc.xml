@@ -1,47 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
-		http://www.springframework.org/schema/tx 
-           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd ">
-    
-    <!-- <util:properties id="jdbcProperties"
-		location="classpath:conf/custom/env/jdbc.properties" /> -->
-		
-	<context:property-placeholder
-		location="classpath:conf/custom/env/jdbc.properties" />
-		
-	<!-- <context:property-placeholder location="classpath:conf/custom/env/jdbc.properties"
-		ignore-unresolvable="true" /> -->
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd ">
 
-	<bean id="DataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.username}" />
-		<property name="password" value="${jdbc.password}" />
+	<context:property-placeholder location="classpath:conf/custom/env/jdbc.properties" />
+
+	<bean id="readDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${read.jdbc.driverClassName}" />
+		<property name="url" value="${read.jdbc.url}" />
+		<property name="username" value="${read.jdbc.username}" />
+		<property name="password" value="${read.jdbc.password}" />
+		<property name="initialSize" value="${common.jdbc.initialSize}"></property>
+		<property name="maxActive" value="${common.jdbc.maxActive}"></property>
+		<property name="maxIdle" value="${common.jdbc.maxIdle}"></property>
+		<property name="minIdle" value="${common.jdbc.minIdle}"></property>
+		<property name="logAbandoned" value="${common.jdbc.logAbandoned}"></property>
+		<property name="removeAbandoned" value="${common.jdbc.removeAbandoned}"></property>
+		<property name="removeAbandonedTimeout" value="${common.jdbc.removeAbandonedTimeout}"></property>
+		<property name="maxWait" value="${common.jdbc.maxWait}"></property>
+		<property name="validationQuery" value="${common.jdbc.validationQuery}"></property>
+		<property name="testOnBorrow" value="${common.jdbc.testOnBorrow}"></property>
+		<property name="testWhileIdle" value="${common.jdbc.testWhileIdle}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${common.jdbc.timeBetweenEvictionRunsMillis}"></property>
+		<property name="minEvictableIdleTimeMillis" value="${common.jdbc.minEvictableIdleTimeMillis}"></property>
 	</bean>
-	
-	<bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
-		scope="prototype">
+
+	<bean id="writeDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${write.jdbc.driverClassName}" />
+		<property name="url" value="${write.jdbc.url}" />
+		<property name="username" value="${write.jdbc.username}" />
+		<property name="password" value="${write.jdbc.password}" />
+		<property name="initialSize" value="${common.jdbc.initialSize}"></property>
+		<property name="maxActive" value="${common.jdbc.maxActive}"></property>
+		<property name="maxIdle" value="${common.jdbc.maxIdle}"></property>
+		<property name="minIdle" value="${common.jdbc.minIdle}"></property>
+		<property name="logAbandoned" value="${common.jdbc.logAbandoned}"></property>
+		<property name="removeAbandoned" value="${common.jdbc.removeAbandoned}"></property>
+		<property name="removeAbandonedTimeout" value="${common.jdbc.removeAbandonedTimeout}"></property>
+		<property name="maxWait" value="${common.jdbc.maxWait}"></property>
+		<property name="validationQuery" value="${common.jdbc.validationQuery}"></property>
+		<property name="testOnBorrow" value="${common.jdbc.testOnBorrow}"></property>
+		<property name="testWhileIdle" value="${common.jdbc.testWhileIdle}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${common.jdbc.timeBetweenEvictionRunsMillis}"></property>
+		<property name="minEvictableIdleTimeMillis" value="${common.jdbc.minEvictableIdleTimeMillis}"></property>
+	</bean>
+
+	<bean id="dataSource" class="com.elong.nb.db.ByKeyRoutingDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry key="write_datasource" value-ref="writeDataSource" />
+				<entry key="read_datasource" value-ref="readDataSource" />
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="readDataSource" />
+	</bean>
+
+	<bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" scope="prototype">
 		<property name="configLocation" value="classpath:conf/core/sqlMapConfig.xml"></property>
-		<property name="dataSource" ref="DataSource" />
+		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath:conf/mybatis/*.xml" />
 	</bean>
-	
-	<bean id="SqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg index="0" ref="SqlSessionFactory" />
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.elong.nb.dao" />
 	</bean>
 
-	<!-- Transaction Start -->
-	<bean id="TransactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="DataSource" />
-	</bean>
-	<tx:annotation-driven transaction-manager="TransactionManager"
-		proxy-target-class="true" />
-	<!-- Transaction End -->
+	<!-- 配置数据库注解aop -->
+	<bean id="getDataSourceKeyAspect" class="com.elong.nb.db.GetDataSourceKeyAspect" />
+	<aop:config>
+		<aop:aspect id="b" ref="getDataSourceKeyAspect">
+			<aop:pointcut id="tx" expression="execution(* com.elong.nb.dao.*.*(..))" />
+			<aop:before pointcut-ref="tx" method="before" />
+		</aop:aspect>
+	</aop:config>
+
 </beans>

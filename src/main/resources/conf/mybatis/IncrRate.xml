@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-<mapper namespace="IncrRate">
-	<select id="getLastIncrRate" resultType="incrRate">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elong.nb.dao.IncrRateDao">
+	<!-- 获取大于指定lastTime的最早发生变化的房价增量 -->
+	<select id="getOneIncrRate" resultType="incrRate">
 		select * from IncrRate
 		<where>
-			<if test="lastTime != null and !lastTime.equals('')">ChangeTime > #{lastTime} </if>
+			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
 		</where>
-		ORDER BY ChangeTime LIMIT 0,1
+		order by ChangeTime limit 0,1
+	</select>
+
+	<!-- 获取最大IncrID的房价增量 -->
+	<select id="getLastIncrRate" resultType="incrRate">
+		select * from IncrRate order by IncrID desc limit 0,1
+	</select>
+
+	<!-- 获取大于指定lastId的maxRecordCount条房价增量 -->
+	<select id="getIncrRates" resultType="incrRate">
+		select * from IncrRate
+		<where>
+			<if test="lastId != null and !lastId.equals('')">and incrID > #{lastId} </if>
+		</where>
+		order by IncrID limit 0,#{maxRecordCount}
 	</select>
 </mapper>
