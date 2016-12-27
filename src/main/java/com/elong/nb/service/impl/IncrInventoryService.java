@@ -278,11 +278,11 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
 		} catch (Exception e) {
 			logger.error("doHandlerBlackListRule,httpPost error = " + e.getMessage(), e);
-			ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "GetChangedInventory", "IncrInventoryService", null,
-					System.currentTimeMillis() - startTime, 1, result, reqData);
+			ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "GetChangedInventory", "IncrInventoryService", null,
+					System.currentTimeMillis() - startTime, -1, result, reqData);
 			throw new IllegalStateException("doHandlerBlackListRule,httpPost error = " + e.getMessage());
 		}
-		ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "GetChangedInventory", "IncrInventoryService", null,
+		ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "GetChangedInventory", "IncrInventoryService", null,
 				System.currentTimeMillis() - startTime, 0, result, reqData);
 
 		InventoryRuleSoaResponse ruleSoaResponse = JSON.parseObject(result, InventoryRuleSoaResponse.class);
@@ -364,11 +364,11 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			checkResult = HttpClientUtils.httpPost(checkHotelCodeUrl, checkReqData, "application/json");
 		} catch (Exception e) {
 			logger.error("checkBlackListRule,httpPost check error = " + e.getMessage(), e);
-			ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "CheckInvRuleHit", "IncrInventoryService", null,
-					System.currentTimeMillis() - startTime, 1, checkResult, checkReqData);
+			ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "CheckInvRuleHit", "IncrInventoryService", null,
+					System.currentTimeMillis() - startTime, -1, checkResult, checkReqData);
 			throw new IllegalStateException("checkBlackListRule,httpPost check error = " + e.getMessage());
 		}
-		ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "CheckInvRuleHit", "IncrInventoryService", null,
+		ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "CheckInvRuleHit", "IncrInventoryService", null,
 				System.currentTimeMillis() - startTime, 0, checkResult, checkReqData);
 
 		InventoryRuleHitCheckSoaResponse checkSoaResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckSoaResponse.class);
