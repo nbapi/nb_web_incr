@@ -311,6 +311,11 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 				incrInventory.setStartDate(ruleInventory.getStartDate());
 				incrInventoryList.add(incrInventory);
 			}
+		}else{
+			for(IncrInventory incrInventory : incrInventories){
+				incrInventory.setStatus(false);
+				incrInventoryList.add(incrInventory);
+			}
 		}
 		logger.info("after doHandlerBlackListRule,incrInventories size = " + incrInventoryList.size());
 		return incrInventoryList;
