@@ -300,22 +300,23 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 
 		// 补回增量部分数据
 		List<IncrInventory> incrInventoryList = new ArrayList<IncrInventory>();
-		if (ruleInventoryResponses != null && ruleInventoryResponses.size() > 0) {
-			for (RuleInventoryResponse ruleInventory : ruleInventoryResponses) {
-				if (ruleInventory == null || StringUtils.isEmpty(ruleInventory.getRuleKey()))
-					continue;
+		for (Map.Entry<String, IncrInventory> entry : incrInventoryMap.entrySet()) {
+			String ruleKey = entry.getKey();
+			IncrInventory incrInventory = entry.getValue();
+			if (ruleInventoryResponses != null && ruleInventoryResponses.size() > 0) {
+				for (RuleInventoryResponse ruleInventory : ruleInventoryResponses) {
+					if (ruleInventory == null || StringUtils.isEmpty(ruleInventory.getRuleKey()))
+						continue;
 
-				IncrInventory incrInventory = incrInventoryMap.get(ruleInventory.getRuleKey());
-				incrInventory.setEndDate(ruleInventory.getEndDate());
-				incrInventory.setOverBooking(ruleInventory.getOverBooking());
-				incrInventory.setStartDate(ruleInventory.getStartDate());
-				incrInventoryList.add(incrInventory);
+					if (!StringUtils.equals(ruleKey, ruleInventory.getRuleKey()))
+						continue;
+					incrInventory.setEndDate(ruleInventory.getEndDate());
+					incrInventory.setOverBooking(ruleInventory.getOverBooking());
+					incrInventory.setStartDate(ruleInventory.getStartDate());
+					break;
+				}
 			}
-		}else{
-			for(IncrInventory incrInventory : incrInventories){
-				incrInventory.setStatus(false);
-				incrInventoryList.add(incrInventory);
-			}
+			incrInventoryList.add(incrInventory);
 		}
 		logger.info("after doHandlerBlackListRule,incrInventories size = " + incrInventoryList.size());
 		return incrInventoryList;
