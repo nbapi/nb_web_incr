@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrRateResponse;
 import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.bean.IncrRate;
+import com.elong.nb.rule.common.SettlementPriceRuleCommon;
+import com.elong.nb.rule.common.enums.EnumSystem;
+import com.elong.nb.rule.common.model.RateWithRule;
 import com.elong.nb.service.IIncrRateService;
 import com.elong.nb.util.IncrConst;
 
@@ -103,10 +107,10 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	 */
 	@Override
 	public List<IncrRate> getIncrRates(long lastId, int maxRecordCount) {
-//		if (lastId == 0) {
-//			logger.error("getIncrRates error,due to the parameter 'lastId' is 0.");
-//			throw new IncrException("getIncrRates error,due to the parameter 'lastId' is 0.");
-//		}
+		// if (lastId == 0) {
+		// logger.error("getIncrRates error,due to the parameter 'lastId' is 0.");
+		// throw new IncrException("getIncrRates error,due to the parameter 'lastId' is 0.");
+		// }
 		if (maxRecordCount == 0) {
 			logger.error("getIncrRates error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrRates error,due to the parameter 'maxRecordCount' is 0.");
@@ -166,6 +170,13 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 		if (beforeRates == null || beforeRates.size() == 0) {
 			return Collections.emptyList();
 		}
+		List<String> hotelCodeList = new ArrayList<String>();
+		for (IncrRate item : beforeRates) {
+			if (item == null || StringUtils.isEmpty(item.getHotelCode()))
+				continue;
+			hotelCodeList.add(item.getHotelCode());
+		}
+		SettlementPriceRuleCommon settlementPriceRuleCommon = new SettlementPriceRuleCommon(proxyInfo, hotelCodeList, EnumSystem.Incr);
 		// 价格小数点
 		List<IncrRate> afterRates = new ArrayList<IncrRate>();
 		for (IncrRate item : beforeRates) {
@@ -177,11 +188,29 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 					continue;
 				}
 			}
-			item.setMemberCost(proxyInfo.getSettlementPrice(item.getMemberCost(), item.getMember(), false));
-			item.setWeekendCost(proxyInfo.getSettlementPrice(item.getWeekendCost(), item.getWeekend(), false));
 			item.setMember(SafeConvertUtils.toIntegerPrice(item.getMember(), proxyInfo.getIntegerPriceType()));
 			item.setWeekend(SafeConvertUtils.toIntegerPrice(item.getWeekend(), proxyInfo.getIntegerPriceType()));
-			afterRates.add(item);
+
+			List<RateWithRule> memberCostRuleList = settlementPriceRuleCommon.getSettlementPrice(item.getMemberCost(), item.getMember(),
+					item.getHotelCode(), item.getStartDate(), item.getEndDate());
+			List<RateWithRule> weekCostRuleList = settlementPriceRuleCommon.getSettlementPrice(item.getWeekendCost(),
+					item.getWeekendCost(), item.getHotelCode(), item.getStartDate(), item.getEndDate());
+			if (memberCostRuleList != null && memberCostRuleList.size() > 0) {
+				try {
+					for (int idx = 0; idx < memberCostRuleList.size(); idx++) {
+						RateWithRule memberCostRule = memberCostRuleList.get(idx);
+						IncrRate incrRate = (IncrRate) item.clone();
+						incrRate.setStartDate(memberCostRule.getStartDate());
+						incrRate.setEndDate(memberCostRule.getEndDate());
+						incrRate.setMemberCost(memberCostRule.getCost());
+						RateWithRule weekCostRule = weekCostRuleList.get(idx);
+						incrRate.setMemberCost(weekCostRule.getCost());
+						afterRates.add(item);
+					}
+				} catch (CloneNotSupportedException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
 		}
 		return afterRates;
 	}
