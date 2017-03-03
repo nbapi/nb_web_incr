@@ -204,8 +204,8 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 						incrRate.setEndDate(memberCostRule.getEndDate());
 						incrRate.setMemberCost(memberCostRule.getCost());
 						RateWithRule weekCostRule = weekCostRuleList.get(idx);
-						incrRate.setMemberCost(weekCostRule.getCost());
-						afterRates.add(item);
+						incrRate.setWeekendCost(weekCostRule.getCost());
+						afterRates.add(incrRate);
 					}
 				} catch (CloneNotSupportedException e) {
 					logger.error(e.getMessage(), e);
