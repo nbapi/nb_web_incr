@@ -194,7 +194,7 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 			List<RateWithRule> memberCostRuleList = settlementPriceRuleCommon.getSettlementPrice(item.getMemberCost(), item.getMember(),
 					item.getHotelCode(), item.getStartDate(), item.getEndDate());
 			List<RateWithRule> weekCostRuleList = settlementPriceRuleCommon.getSettlementPrice(item.getWeekendCost(),
-					item.getWeekendCost(), item.getHotelCode(), item.getStartDate(), item.getEndDate());
+					item.getWeekend(), item.getHotelCode(), item.getStartDate(), item.getEndDate());
 			if (memberCostRuleList != null && memberCostRuleList.size() > 0) {
 				try {
 					for (int idx = 0; idx < memberCostRuleList.size(); idx++) {
