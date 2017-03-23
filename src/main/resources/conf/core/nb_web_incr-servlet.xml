@@ -16,19 +16,24 @@
 
 
 	<!-- 以下一行配置为JavaDoc站点，必须保留！！！切记！！！如果更改或servlet.xml，请务必保留下行 -->
-	<context:component-scan base-package="com.elong.nb" />
+	<context:component-scan base-package="com.elong.nb.**" />
 	<mvc:default-servlet-handler />
 	<mvc:annotation-driven />
 	<mvc:resources mapping="/apidocs/**" location="/apidocs/" />
 	<mvc:resources mapping="/hc/**" location="/hc/" />
 	<aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true" />
-
-	<!-- HttpAPI日志拦截器，完成对@ResponseBody注解的Http请求 -->
-	<bean id="serviceAspect" class="com.elong.springmvc_enhance.core.ServiceAspect">
-	</bean>
+	
+	<!-- 配置checklist切面 -->
+	<bean id="checklistAspect" class="com.elong.nb.checklist.ChecklistAspect" />
 	<aop:config>
-		<aop:pointcut id="si" expression="@annotation(org.springframework.web.bind.annotation.ResponseBody)" />
-		<aop:advisor pointcut-ref="si" advice-ref="serviceAspect" />
+		<aop:aspect id="b2" ref="checklistAspect">
+			<aop:pointcut id="tx2"
+				expression="execution(public * com.elong.nb.controller..*..*(..))
+							||execution(public * com.elong.nb.dao..*(..))" />
+			<aop:before pointcut-ref="tx2" method="handlerLogBefore" />
+			<aop:after-returning pointcut-ref="tx2" method="handlerLogAfter" returning="returnValue" />
+			<aop:after-throwing pointcut-ref="tx2" method="handlerLogThrowing" throwing="throwing" />
+		</aop:aspect>
 	</aop:config>
 
 	<!-- 页面全局异常处理 -->
