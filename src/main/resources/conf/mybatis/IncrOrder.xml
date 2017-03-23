@@ -5,11 +5,13 @@
 	<select id="getOneIncrOrder" resultType="incrOrder">
 		select * from IncrOrder
 		<where>
-			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
+			<if test="lastTime != null and !lastTime.equals('')">
+				<![CDATA[ and ChangeTime <= #{lastTime}  ]]>
+			</if>
 			<if test="orderFrom != null and !orderFrom.equals('')">and OrderFrom =#{orderFrom} </if>
 			<if test="proxyId != null and !proxyId.equals('')">and ProxyId =#{proxyId} </if>
 		</where>
-		order by IncrID limit 0,1
+		order by IncrID desc limit 0,1
 	</select>
 
 	<!-- 获取最大IncrID的订单增量 -->

@@ -5,9 +5,11 @@
 	<select id="getOneIncrRate" resultType="incrRate">
 		select * from IncrRate
 		<where>
-			<if test="lastTime != null and !lastTime.equals('')">and ChangeTime > #{lastTime} </if>
+			<if test="lastTime != null and !lastTime.equals('')">
+				<![CDATA[ and ChangeTime <= #{lastTime}  ]]>
+			</if>
 		</where>
-		order by ChangeTime limit 0,1
+		order by ChangeTime desc limit 0,1
 	</select>
 
 	<!-- 获取最大IncrID的房价增量 -->
