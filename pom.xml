@@ -200,7 +200,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.elong.nbapi</groupId>
-			<artifactId>nb_common_rule</artifactId>
+			<artifactId>nb_agent_rule</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
