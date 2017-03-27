@@ -377,7 +377,12 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "CheckInvRuleHit", "IncrInventoryService", null,
 				System.currentTimeMillis() - startTime, 0, checkResult, checkReqData);
 
-		InventoryRuleHitCheckSoaResponse checkSoaResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckSoaResponse.class);
+		InventoryRuleHitCheckSoaResponse checkSoaResponse = null;
+		try {
+			checkSoaResponse = JSON.parseObject(checkResult, InventoryRuleHitCheckSoaResponse.class);
+		} catch (Exception e) {
+			throw new IllegalStateException("checkBlackListRule,result doesn't parse by JSON.parseObject,result = " + StringUtils.substring(checkResult, 0, 200));
+		}
 		if (checkSoaResponse == null || !StringUtils.equals("0", checkSoaResponse.getResponseCode())) {
 			throw new IllegalStateException("checkBlackListRule,httpPost check error,due to responseCode = "
 					+ checkSoaResponse.getResponseCode());
