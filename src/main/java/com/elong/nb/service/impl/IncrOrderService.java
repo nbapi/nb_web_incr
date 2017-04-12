@@ -6,6 +6,7 @@
 package com.elong.nb.service.impl;
 
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.elong.nb.common.model.EnumOrderType;
+import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrOrderDao;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrOrderResponse;
@@ -28,6 +30,7 @@ import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.bean.IncrOrder;
 import com.elong.nb.model.enums.EnumPayStatus;
 import com.elong.nb.service.IIncrOrderService;
+import com.elong.nb.util.DateHandlerUtils;
 import com.elong.nb.util.IncrConst;
 
 /**
@@ -177,6 +180,16 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 			}
 			paramMap.put("lastId", lastId);
 			paramMap.put("maxRecordCount", maxRecordCount);
+
+			String delayMinute = CommonsUtil.CONFIG_PROVIDAR.getProperty("IncrOrder.getIncrOrders.delayMinutes");
+			delayMinute = StringUtils.isEmpty(delayMinute) ? "-1" : StringUtils.trim(delayMinute);
+			int offset = -1;
+			try {
+				offset = Integer.valueOf(delayMinute);
+			} catch (NumberFormatException e) {
+				offset = -1;
+			}
+			paramMap.put("lastTime", DateHandlerUtils.getOffsetDate(Calendar.MINUTE, offset));
 			List<IncrOrder> incrOrders = incrOrderDao.getIncrOrders(paramMap);
 			if (CollectionUtils.isEmpty(incrOrders))
 				return Collections.emptyList();
