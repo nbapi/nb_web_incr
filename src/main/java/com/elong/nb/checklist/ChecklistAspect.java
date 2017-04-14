@@ -2,25 +2,22 @@ package com.elong.nb.checklist;
 
 import java.util.UUID;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.alibaba.fastjson.JSON;
 import com.elong.nb.common.checklist.Constants;
-import com.elong.nb.service.INoticeService;
-import com.elong.nb.service.impl.NoticeServiceImpl;
 import com.elong.nb.util.ThreadLocalUtil;
 import com.elong.springmvc_enhance.utilities.ActionLogHelper;
 
 public class ChecklistAspect {
 
 	public static final String ELONG_REQUEST_STARTTIME = "elongRequestStartTime";
-
-	private INoticeService noticeService = new NoticeServiceImpl();
 
 	/**
 	 * 之前
@@ -66,11 +63,9 @@ public class ChecklistAspect {
 
 			int code = 0;
 			RequestAttributes request = RequestContextHolder.getRequestAttributes();
-			if (request != null) {
-				Object businessCode = request.getAttribute(Constants.ELONG_RESPONSE_CODE, ServletRequestAttributes.SCOPE_REQUEST);
-				if (businessCode != null && !businessCode.equals("0")) {
-					code = 1;
-				}
+			String businessCode = (String)request.getAttribute(Constants.ELONG_RESPONSE_CODE, ServletRequestAttributes.SCOPE_REQUEST);
+			if (businessCode != null && !businessCode.equals("0")) {
+				code = 1;
 			}
 
 			String result = null;
@@ -78,9 +73,12 @@ public class ChecklistAspect {
 				@SuppressWarnings("unchecked")
 				ResponseEntity<byte[]> resp = (ResponseEntity<byte[]>) returnValue;
 				result = new String(resp.getBody());
+				ActionLogHelper.businessLog(guid.toString(), true, methodName, classFullName, null, useTime, code, businessCode, result,
+						(String) (request.getAttribute(Constants.ELONG_REQUEST_JSON, ServletRequestAttributes.SCOPE_REQUEST)));
+			} else {
+				ActionLogHelper.businessLog(guid.toString(), true, methodName, classFullName, null, useTime, code, businessCode, result,
+						JSON.toJSONString(point.getArgs()));
 			}
-			ActionLogHelper.businessLog(guid.toString(), true, methodName, classFullName, null, useTime, code, null, result,
-					(String) (request.getAttribute(Constants.ELONG_REQUEST_JSON, ServletRequestAttributes.SCOPE_REQUEST)));
 		} catch (Exception e) {// 异常吃掉，避免影响主业务
 		}
 	}
@@ -99,11 +97,14 @@ public class ChecklistAspect {
 			if (throwing instanceof Exception) {
 				e = (Exception) throwing;
 			}
-			ActionLogHelper.businessLog((String) guid, false, methodName, classFullName, e, useTime, -1, e.getMessage(), null,
-					point.getArgs());
-
-			noticeService.sendMessage("nb_web_incr," + methodName + ",system error:" + e.getMessage(),
-					ExceptionUtils.getFullStackTrace(e));
+			if (StringUtils.contains(classFullName, "Controller")) {
+				RequestAttributes request = RequestContextHolder.getRequestAttributes();
+				ActionLogHelper.businessLog((String) guid, false, methodName, classFullName, e, useTime, -1, e.getMessage(), null,
+						(String) (request.getAttribute(Constants.ELONG_REQUEST_JSON, ServletRequestAttributes.SCOPE_REQUEST)));
+			} else {
+				ActionLogHelper.businessLog((String) guid, false, methodName, classFullName, e, useTime, -1, e.getMessage(), null,
+						JSON.toJSONString(point.getArgs()));
+			}
 		} catch (Exception e) {// 异常吃掉，避免影响主业务
 		}
 	}

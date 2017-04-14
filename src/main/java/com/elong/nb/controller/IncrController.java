@@ -11,7 +11,6 @@ import java.text.MessageFormat;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +32,6 @@ import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.enums.EnumIncrType;
 import com.elong.nb.service.IIncrService;
 import com.elong.nb.service.IIncrValidateService;
-import com.elong.nb.service.INoticeService;
 import com.elong.nb.service.impl.IncrServiceFactory;
 
 /**
@@ -60,9 +58,6 @@ public class IncrController {
 
 	@Resource
 	private IncrServiceFactory incrServiceFactory;
-
-	@Resource
-	private INoticeService noticeService;
 
 	/** 
 	 * 获取状态增量
@@ -196,20 +191,12 @@ public class IncrController {
 			logger.error(getIncrDatas + ",business error = " + e.getMessage(), e);
 			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
-			noticeService.sendMessage(
-					getIncrDatas + ",business error,code = "
-							+ MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }),
-					ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		} catch (Exception e) {
 			// 返回系统异常
 			logger.error(getIncrDatas + ",system error = " + e.getMessage(), e);
 			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 			restResponse.setCode(MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }));
-			noticeService.sendMessage(
-					getIncrDatas + ",system error,code = "
-							+ MessageFormat.format(ErrorCode.Incr_Exception, new Object[] { getIncrDatas, e.getMessage() }),
-					ExceptionUtils.getFullStackTrace(e));
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		}
 	}
