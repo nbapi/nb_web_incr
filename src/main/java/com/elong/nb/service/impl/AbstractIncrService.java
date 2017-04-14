@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -87,7 +86,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 
 		// 获取增量数据
 		List<T> incrDatas = getIncrDatas(params);
-		logger.info("getIncrDatas result,result count = " + (incrDatas == null ? 0 : CollectionUtils.size(incrDatas)) + ",guid = "
+		logger.info("getIncrDatas result,result count = " + (incrDatas == null ? 0 : incrDatas.size()) + ",guid = "
 				+ restRequest.getGuid());
 		incrResponse.setList(incrDatas);
 		restResponse.setResult(incrResponse);

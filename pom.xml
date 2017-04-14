@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>com.elong</groupId>
 			<artifactId>hotel-soa-client</artifactId>
-			<version>1.6.0</version><!--使用最新版本 -->
+			<version>1.13.1</version><!--使用最新版本 -->
 		</dependency>
 		<dependency>
 			<groupId>com.google.collections</groupId>
@@ -117,7 +117,7 @@
 		<dependency>
 			<groupId>com.elong</groupId>
 			<artifactId>hotel-soa-server</artifactId>
-			<version>1.2.0</version>
+			<version>1.10.3</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -171,7 +171,7 @@
 		<dependency>
 			<groupId>com.elong.hotel</groupId>
 			<artifactId>healthcheck</artifactId>
-			<version>1.20.0</version>
+			<version>1.21.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
