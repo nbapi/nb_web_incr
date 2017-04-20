@@ -49,12 +49,33 @@
 		<property name="timeBetweenEvictionRunsMillis" value="${common.jdbc.timeBetweenEvictionRunsMillis}"></property>
 		<property name="minEvictableIdleTimeMillis" value="${common.jdbc.minEvictableIdleTimeMillis}"></property>
 	</bean>
+	
+	<bean id="incrorderReadDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${incrorder.read.jdbc.driverClassName}" />
+		<property name="url" value="${incrorder.read.jdbc.url}" />
+		<property name="username" value="${incrorder.read.jdbc.username}" />
+		<property name="password" value="${incrorder.read.jdbc.password}" />
+		<property name="initialSize" value="${common.jdbc.initialSize}"></property>
+		<property name="maxActive" value="${common.jdbc.maxActive}"></property>
+		<property name="maxIdle" value="${common.jdbc.maxIdle}"></property>
+		<property name="minIdle" value="${common.jdbc.minIdle}"></property>
+		<property name="logAbandoned" value="${common.jdbc.logAbandoned}"></property>
+		<property name="removeAbandoned" value="${common.jdbc.removeAbandoned}"></property>
+		<property name="removeAbandonedTimeout" value="${common.jdbc.removeAbandonedTimeout}"></property>
+		<property name="maxWait" value="${common.jdbc.maxWait}"></property>
+		<property name="validationQuery" value="${common.jdbc.validationQuery}"></property>
+		<property name="testOnBorrow" value="${common.jdbc.testOnBorrow}"></property>
+		<property name="testWhileIdle" value="${common.jdbc.testWhileIdle}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${common.jdbc.timeBetweenEvictionRunsMillis}"></property>
+		<property name="minEvictableIdleTimeMillis" value="${common.jdbc.minEvictableIdleTimeMillis}"></property>
+	</bean>
 
 	<bean id="dataSource" class="com.elong.nb.db.ByKeyRoutingDataSource">
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
 				<entry key="write_datasource" value-ref="writeDataSource" />
 				<entry key="read_datasource" value-ref="readDataSource" />
+				<entry key="incrorderReadDataSource" value-ref="incrorderReadDataSource" />
 			</map>
 		</property>
 		<property name="defaultTargetDataSource" ref="readDataSource" />
