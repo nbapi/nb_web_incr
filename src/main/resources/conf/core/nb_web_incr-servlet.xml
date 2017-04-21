@@ -24,7 +24,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true" />
 	
 	<!-- 配置checklist切面 -->
-	<bean id="checklistAspect" class="com.elong.nb.checklist.ChecklistAspect" />
+	<!-- <bean id="checklistAspect" class="com.elong.nb.checklist.ChecklistAspect" />
 	<aop:config>
 		<aop:aspect id="b2" ref="checklistAspect">
 			<aop:pointcut id="tx2"
@@ -34,7 +34,7 @@
 			<aop:after-returning pointcut-ref="tx2" method="handlerLogAfter" returning="returnValue" />
 			<aop:after-throwing pointcut-ref="tx2" method="handlerLogThrowing" throwing="throwing" />
 		</aop:aspect>
-	</aop:config>
+	</aop:config> -->
 
 	<!-- 页面全局异常处理 -->
 	<bean id="exceptionResolver" class="com.elong.springmvc_enhance.core.HotelHandlerExceptionResolver">

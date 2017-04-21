@@ -8,7 +8,6 @@ package com.elong.nb.service.impl;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +18,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
-import com.elong.nb.dao.IncrHotelDao;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrHotelResponse;
 import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.bean.IncrHotel;
 import com.elong.nb.service.IIncrHotelService;
+import com.elong.nb.submeter.service.ISubmeterService;
 import com.elong.nb.util.IncrConst;
 
 /**
@@ -46,8 +45,8 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 
 	private static final Log logger = LogFactory.getLog(IncrHotelService.class);
 
-	@Resource
-	private IncrHotelDao incrHotelDao;
+	@Resource(name = "incrHotelSubmeterService")
+	private ISubmeterService<IncrHotel> incrHotelSubmeterService;
 
 	/** 
 	 * 获取最大IncrID的酒店增量
@@ -59,7 +58,7 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 	@Override
 	public IncrHotel getLastIncrHotel() {
 		try {
-			return incrHotelDao.getLastIncrHotel();
+			return incrHotelSubmeterService.getLastIncrData();
 		} catch (Exception e) {
 			logger.error("getLastIncrHotel error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
@@ -81,9 +80,7 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 			throw new IncrException("getOneIncrHotel error,due to the parameter 'lastTime' is null.");
 		}
 		try {
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("lastTime", lastTime);
-			return incrHotelDao.getOneIncrHotel(paramMap);
+			return incrHotelSubmeterService.getOneIncrData(lastTime);
 		} catch (Exception e) {
 			logger.error("getOneIncrHotel error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
@@ -101,19 +98,12 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 	 */
 	@Override
 	public List<IncrHotel> getIncrHotels(long lastId, int maxRecordCount) {
-		// if (lastId == 0) {
-		// logger.error("getIncrHotels error,due to the parameter 'lastId' is 0.");
-		// throw new IncrException("getIncrHotels error,due to the parameter 'lastId' is 0.");
-		// }
 		if (maxRecordCount == 0) {
 			logger.error("getIncrHotels error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrHotels error,due to the parameter 'maxRecordCount' is 0.");
 		}
 		try {
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("lastId", lastId);
-			paramMap.put("maxRecordCount", maxRecordCount);
-			List<IncrHotel> incrHotelList = incrHotelDao.getIncrHotels(paramMap);
+			List<IncrHotel> incrHotelList = incrHotelSubmeterService.getIncrDataList(lastId, maxRecordCount);
 			if (incrHotelList == null || incrHotelList.size() == 0)
 				return Collections.emptyList();
 			for (IncrHotel incrHotel : incrHotelList) {
@@ -177,7 +167,7 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 		if (incrHotel == null) {
 			incrHotel = getLastIncrHotel();
 		}
-		return incrHotel == null ? IncrConst.bigIntegerNegativeOne : incrHotel.getIncrID();
+		return incrHotel == null ? IncrConst.bigIntegerNegativeOne : BigInteger.valueOf(incrHotel.getID());
 	}
 
 	/** 

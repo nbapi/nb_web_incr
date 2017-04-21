@@ -5,8 +5,11 @@
  */
 package com.elong.nb.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.elong.nb.db.DataSource;
 import com.elong.nb.model.bean.IncrInventory;
@@ -33,7 +36,7 @@ public interface IncrInventoryDao {
 	 *
 	 * @return
 	 */
-	public IncrInventory getLastIncrInventory();
+	public IncrInventory getLastIncrInventory(@Param("subTableName") String subTableName);
 
 	/** 
 	 * 获取大于指定lastTime的最早发生变化的库存增量
@@ -41,7 +44,7 @@ public interface IncrInventoryDao {
 	 * @param paramMap
 	 * @return
 	 */
-	public IncrInventory getOneIncrInventory(Map<String, Object> paramMap);
+	public IncrInventory getOneIncrInventory(@Param("subTableName") String subTableName,@Param("lastTime") Date lastTime);
 
 	/** 
 	 * 获取大于指定lastId的maxRecordCount条库存增量
@@ -49,6 +52,6 @@ public interface IncrInventoryDao {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<IncrInventory> getIncrInventories(Map<String, Object> paramMap);
+	public List<IncrInventory> getIncrInventories(@Param("subTableName") String subTableName,@Param("params")  Map<String, Object> paramMap);
 
 }

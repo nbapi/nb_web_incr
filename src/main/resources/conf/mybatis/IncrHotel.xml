@@ -3,7 +3,7 @@
 <mapper namespace="com.elong.nb.dao.IncrHotelDao">
 	<!-- 获取大于指定lastTime的最早发生变化的酒店增量 -->
 	<select id="getOneIncrHotel" resultType="incrHotel">
-		select * from IncrHotel
+		select * from ${subTableName}
 		<where>
 			<if test="lastTime != null and !lastTime.equals('')">
 				<![CDATA[ and ChangeTime <= #{lastTime}  ]]>
@@ -14,15 +14,18 @@
 
 	<!-- 获取最大IncrID的酒店增量 -->
 	<select id="getLastIncrHotel" resultType="incrHotel">
-		select * from IncrHotel order by IncrID desc limit 0,1
+		select * from ${subTableName}
+		order by ID desc limit 0,1
 	</select>
 
 	<!-- 获取大于指定lastId的maxRecordCount条酒店增量 -->
 	<select id="getIncrHotels" resultType="incrHotel">
-		select * from IncrHotel
+		select * from ${subTableName}
 		<where>
-			<if test="lastId != null and !lastId.equals('')">and incrID > #{lastId} </if>
+			<if test="params.ID != null and !params.ID.equals('')">
+				<![CDATA[ and ID > #{params.ID}  ]]>
+			</if>
 		</where>
-		limit 0,#{maxRecordCount}
+		order by ID limit 0,#{params.maxRecordCount}
 	</select>
 </mapper>
