@@ -45,6 +45,7 @@ import com.elong.nb.service.IIncrInventoryService;
 import com.elong.nb.submeter.service.ISubmeterService;
 import com.elong.nb.util.HttpClientUtils;
 import com.elong.nb.util.IncrConst;
+import com.elong.springmvc_enhance.utilities.ActionLogHelper;
 
 /**
  * 增量库存接口实现
@@ -272,12 +273,12 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			result = HttpClientUtils.httpPost(reqUrl, reqData, "application/json");
 		} catch (Exception e) {
 			logger.error("doHandlerBlackListRule,httpPost error = " + e.getMessage(), e);
-//			ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "api/Hotel/GetChangedInventory",
-//					"nbapi-rule.vip.elong.com", null, System.currentTimeMillis() - startTime, -1, result, reqData);
+			ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "api/Hotel/GetChangedInventory",
+					"nbapi-rule.vip.elong.com", null, System.currentTimeMillis() - startTime, -1, result, reqData);
 			throw new IllegalStateException("doHandlerBlackListRule,httpPost error = " + e.getMessage());
 		}
-//		ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "api/Hotel/GetChangedInventory", "nbapi-rule.vip.elong.com",
-//				null, System.currentTimeMillis() - startTime, 0, result, reqData);
+		ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "api/Hotel/GetChangedInventory", "nbapi-rule.vip.elong.com",
+				null, System.currentTimeMillis() - startTime, 0, result, reqData);
 
 		InventoryRuleSoaResponse ruleSoaResponse = JSON.parseObject(result, InventoryRuleSoaResponse.class);
 		if (ruleSoaResponse == null || !StringUtils.equals("0", ruleSoaResponse.getResponseCode())) {
@@ -363,12 +364,12 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			String checkHotelCodeUrl = CommonsUtil.CONFIG_PROVIDAR.getProperty("Inventory.BlackList.Rule.checkHotelCodeUrl");
 			checkResult = HttpClientUtils.httpPost(checkHotelCodeUrl, checkReqData, "application/json");
 		} catch (Exception e) {
-//			ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "api/Hotel/CheckInvRuleHit",
-//					"nbapi-rule.vip.elong.com", null, System.currentTimeMillis() - startTime, -1, checkResult, checkReqData);
+			ActionLogHelper.businessLog(guid == null ? null : (String) guid, false, "api/Hotel/CheckInvRuleHit",
+					"nbapi-rule.vip.elong.com", null, System.currentTimeMillis() - startTime, -1, checkResult, null);
 			throw new IllegalStateException("checkBlackListRule,httpPost check error = " + e.getMessage());
 		}
-//		ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "api/Hotel/CheckInvRuleHit", "nbapi-rule.vip.elong.com",
-//				null, System.currentTimeMillis() - startTime, 0, checkResult, checkReqData);
+		ActionLogHelper.businessLog(guid == null ? null : (String) guid, true, "api/Hotel/CheckInvRuleHit", "nbapi-rule.vip.elong.com",
+				null, System.currentTimeMillis() - startTime, 0, checkResult, null);
 
 		InventoryRuleHitCheckSoaResponse checkSoaResponse = null;
 		try {
