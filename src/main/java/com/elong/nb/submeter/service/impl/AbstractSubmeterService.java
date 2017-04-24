@@ -75,6 +75,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 			if (StringUtils.isEmpty(subTableName))
 				continue;
 			params.put("maxRecordCount", maxRecordCount);
+			params.put("lastTime", getLastTimeAfterDelay());
 			List<T> subList = getIncrDataList(subTableName, params);
 			if (subList == null || subList.size() == 0)
 				continue;
@@ -165,5 +166,14 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	 * @return
 	 */
 	protected abstract List<T> getIncrDataList(String subTableName, Map<String, Object> params);
+
+	/** 
+	 * 获取数据延时时间（子类选择覆盖）
+	 *
+	 * @return
+	 */
+	protected Date getLastTimeAfterDelay() {
+		return new Date();
+	}
 
 }

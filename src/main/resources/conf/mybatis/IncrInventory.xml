@@ -31,6 +31,9 @@
 			<if test="params.ID != null and !params.ID.equals('')">
 				<![CDATA[ and ID > #{params.ID}  ]]>
 			</if>
+			<if test="params.lastTime != null and !params.lastTime.equals('')">
+				<![CDATA[ and ChangeTime <= #{params.lastTime}  ]]>
+			</if>
 		</where>
 		order by ID limit 0,#{params.maxRecordCount}
 	</select>

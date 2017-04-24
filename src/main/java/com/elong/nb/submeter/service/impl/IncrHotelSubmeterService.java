@@ -5,6 +5,7 @@
  */
 package com.elong.nb.submeter.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.elong.common.util.StringUtils;
+import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrHotelDao;
 import com.elong.nb.model.bean.IncrHotel;
+import com.elong.nb.util.DateHandlerUtils;
 
 /**
  * IncrHotel分表实现
@@ -54,6 +58,19 @@ public class IncrHotelSubmeterService extends AbstractSubmeterService<IncrHotel>
 	@Override
 	protected List<IncrHotel> getIncrDataList(String subTableName, Map<String, Object> params) {
 		return incrHotelDao.getIncrHotels(subTableName, params);
+	}
+
+	@Override
+	protected Date getLastTimeAfterDelay() {
+		String delayMinute = CommonsUtil.CONFIG_PROVIDAR.getProperty("IncrHotel.getIncrDatas.delayMinutes");
+		delayMinute = StringUtils.isEmpty(delayMinute) ? "-3" : StringUtils.trim(delayMinute);
+		int offset = -3;
+		try {
+			offset = Integer.valueOf(delayMinute);
+		} catch (NumberFormatException e) {
+			offset = -3;
+		}
+		return DateHandlerUtils.getOffsetDate(Calendar.MINUTE, offset);
 	}
 
 }
