@@ -6,6 +6,7 @@
 package com.elong.nb.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -29,12 +30,21 @@ import com.elong.nb.db.DataSource;
 public interface SubmeterTableDao {
 
 	/** 
-	 * 查询指定前缀的所有分表
+	 * 查询指定前缀的非空分表
 	 *
 	 * @param tablePrefix
-	 * @param isEmpty 是否空表
+	 * @param isDesc
 	 * @return
 	 */
-	public List<String> querySubTableList(@Param("tablePrefix") String tablePrefix, @Param("isEmpty") boolean isEmpty, @Param("isDesc") boolean isDesc);
+	public List<String> queryNoEmptySubTableList(@Param("tablePrefix") String tablePrefix, @Param("isDesc") boolean isDesc);
+
+	/** 
+	 * 查询指定前缀的分表
+	 *
+	 * @param tablePrefix
+	 * @param maxRecordCount
+	 * @return
+	 */
+	public List<Map<String,Object>> queryAllSubTableList(@Param("tablePrefix") String tablePrefix, @Param("maxRecordCount") int maxRecordCount);
 
 }

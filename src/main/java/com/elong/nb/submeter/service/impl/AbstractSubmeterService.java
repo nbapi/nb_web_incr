@@ -17,8 +17,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.elong.nb.dao.SubmeterTableDao;
 import com.elong.nb.model.bean.Idable;
+import com.elong.nb.model.enums.SubmeterConst;
 import com.elong.nb.submeter.service.ISubmeterService;
 
 /**
@@ -39,11 +39,9 @@ import com.elong.nb.submeter.service.ISubmeterService;
 public abstract class AbstractSubmeterService<T extends Idable> implements ISubmeterService<T> {
 
 	private static final Logger logger = Logger.getLogger("SubmeterLogger");
-
+	
 	@Resource
-	private SubmeterTableDao submeterTableDao;
-
-	private static final long SUBMETER_ROWCOUNT = 100;
+	private SubmeterTableCache submeterTableCache;
 
 	/** 
 	 * 获取大于指定lastId的maxRecordCount条增量
@@ -57,11 +55,11 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public List<T> getIncrDataList(long lastId, int maxRecordCount) {
 		String tablePrefix = getTablePrefix();
-		List<String> subTableNameList = submeterTableDao.querySubTableList(tablePrefix + "%", false, false);
+		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, false);
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return Collections.emptyList();
 
-		long tableNumber = (int) Math.ceil(lastId * 1.0 / SUBMETER_ROWCOUNT);
+		long tableNumber = (int) Math.ceil(lastId * 1.0 / SubmeterConst.PER_SUBMETER_ROW_COUNT);
 		String selectTableName = tablePrefix + "_" + tableNumber;
 		int fromIndex = subTableNameList.indexOf(selectTableName);
 		if (fromIndex == -1)
@@ -98,7 +96,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public T getLastIncrData() {
 		String tablePrefix = getTablePrefix();
-		List<String> subTableNameList = submeterTableDao.querySubTableList(tablePrefix + "%", false, true);
+		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, true);
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return null;
 
@@ -125,7 +123,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public T getOneIncrData(Date lastTime) {
 		String tablePrefix = getTablePrefix();
-		List<String> subTableNameList = submeterTableDao.querySubTableList(tablePrefix + "%", false, true);
+		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, true);
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return null;
 

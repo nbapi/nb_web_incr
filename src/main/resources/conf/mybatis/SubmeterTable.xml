@@ -2,13 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.elong.nb.dao.SubmeterTableDao">
 
-	<!-- 查询指定tableNamePrefix的所有空分表 -->
-	<select id="querySubTableList" resultType="java.lang.String">
+	<!-- 查询指定tableNamePrefix的非空分表 -->
+	<select id="queryNoEmptySubTableList" resultType="java.lang.String">
 		select t.table_name from information_schema.tables t
 		<where>
-			and t.table_name like #{tablePrefix}
-			<if test="isEmpty != null and isEmpty == false">and t.table_rows > 0 </if>
-			<if test="isEmpty != null and isEmpty == true">and t.table_rows = 0 </if>
+			and t.table_name like #{tablePrefix} 
+			and t.table_rows > 0
 		</where>
 		<if test="isDesc != null and isDesc == false">
 			order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) asc
@@ -16,6 +15,16 @@
 		<if test="isDesc != null and isDesc == true">
 			order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) desc
 		</if>
+	</select>
+	
+	<!-- 查询指定tableNamePrefix的分表 -->
+	<select id="queryAllSubTableList" resultType="java.util.Map">
+		select t.table_name,t.table_rows from information_schema.tables t
+		<where>
+			and t.table_name like #{tablePrefix}
+		</where>
+		order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) desc  
+		limit 0,#{maxRecordCount}
 	</select>
 
 </mapper>
