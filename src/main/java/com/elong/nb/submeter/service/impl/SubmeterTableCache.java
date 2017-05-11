@@ -39,7 +39,7 @@ public class SubmeterTableCache {
 
 	private static final Logger logger = Logger.getLogger("SubmeterLogger");
 
-	private RedisManager redisManager = RedisManager.getInstance("redis_job", "redis_job");
+	private RedisManager redisManager = RedisManager.getInstance("redis_incr", "redis_incr");
 
 	@Resource
 	private SubmeterTableDao submeterTableDao;
