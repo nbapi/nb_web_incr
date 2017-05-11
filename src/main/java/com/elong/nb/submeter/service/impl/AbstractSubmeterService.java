@@ -105,6 +105,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 			if (StringUtils.isEmpty(subTableName))
 				continue;
 			T result = getLastIncrData(subTableName);
+			logger.info("subTableName = " + subTableName + ",getLastIncrData,result  = " + result);
 			if (result == null)
 				continue;
 			return result;
@@ -132,6 +133,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 			if (StringUtils.isEmpty(subTableName))
 				continue;
 			T result = getOneIncrData(subTableName, lastTime);
+			logger.info("subTableName = " + subTableName + ",getLastIncrData lastTime = " + lastTime + ",result  = " + result);
 			if (result == null)
 				continue;
 			return result;
