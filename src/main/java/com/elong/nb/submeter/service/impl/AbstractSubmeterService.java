@@ -64,7 +64,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 		int fromIndex = subTableNameList.indexOf(selectTableName);
 		if (fromIndex == -1)
 			return Collections.emptyList();
-		List<String> selectSubTableList = subTableNameList.subList(fromIndex, subTableNameList.size() - 1);
+		List<String> selectSubTableList = subTableNameList.subList(fromIndex, subTableNameList.size());
 
 		List<T> resultList = new ArrayList<T>();
 		Map<String, Object> params = new HashMap<String, Object>();

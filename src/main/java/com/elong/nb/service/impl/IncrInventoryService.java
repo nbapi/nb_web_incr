@@ -8,6 +8,7 @@ package com.elong.nb.service.impl;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -173,6 +174,25 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		needCheckList = doHandlerBlackListRule(needCheckList, orderFrom);
 		// 加入黑名单处理完数据
 		incrInventories.addAll(needCheckList);
+
+		Collections.sort(incrInventories, new Comparator<IncrInventory>() {
+			@Override
+			public int compare(IncrInventory o1, IncrInventory o2) {
+				if (o1 == null && o2 == null)
+					return 0;
+				if (o1 == null)
+					return -1;
+				if (o2 == null)
+					return 1;
+				if (o1.getID() == o2.getID())
+					return 0;
+				if (o1.getID() < o2.getID())
+					return -1;
+				if (o1.getID() > o2.getID())
+					return 1;
+				return 0;
+			}
+		});
 		return incrInventories;
 	}
 
@@ -308,6 +328,10 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 					incrInventory.setEndDate(ruleInventory.getEndDate());
 					incrInventory.setOverBooking(ruleInventory.getOverBooking());
 					incrInventory.setStartDate(ruleInventory.getStartDate());
+					incrInventory.setStatus(ruleInventory.isStatus());
+					if (!ruleInventory.isStatus()) {
+						incrInventory.setAvailableAmount(0);
+					}
 					break;
 				}
 			}
