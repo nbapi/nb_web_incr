@@ -56,7 +56,7 @@ public class SubmeterTableCache {
 	 *
 	 * long SubmeterTableCache.java lastChangeTime
 	 */
-	private long lastChangeTime = 0l;
+	private volatile long lastChangeTime = 0l;
 
 	/** 
 	 * 查询指定tablePrefix的所有非空分表
