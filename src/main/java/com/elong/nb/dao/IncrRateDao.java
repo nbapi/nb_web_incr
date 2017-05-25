@@ -25,7 +25,7 @@ import com.elong.nb.model.bean.IncrRate;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("read_datasource")
+@DataSource("dataSource_nbhotelincr_read")
 public interface IncrRateDao {
 
 	/** 

@@ -25,7 +25,7 @@ import com.elong.nb.model.bean.IncrOrder;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("incrorderReadDataSource")
+@DataSource("dataSource_nbhotelincr_read")
 public interface IncrOrderDao {
 
 	/** 

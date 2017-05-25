@@ -10,75 +10,86 @@
 
 	<context:property-placeholder location="classpath:conf/custom/env/jdbc.properties" />
 
-	<bean id="readDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${read.jdbc.driverClassName}" />
-		<property name="url" value="${read.jdbc.url}" />
-		<property name="username" value="${read.jdbc.username}" />
-		<property name="password" value="${read.jdbc.password}" />
-		<property name="initialSize" value="${common.jdbc.initialSize}"></property>
-		<property name="maxActive" value="${common.jdbc.maxActive}"></property>
-		<property name="maxIdle" value="${common.jdbc.maxIdle}"></property>
-		<property name="minIdle" value="${common.jdbc.minIdle}"></property>
-		<property name="logAbandoned" value="${common.jdbc.logAbandoned}"></property>
-		<property name="removeAbandoned" value="${common.jdbc.removeAbandoned}"></property>
-		<property name="removeAbandonedTimeout" value="${common.jdbc.removeAbandonedTimeout}"></property>
-		<property name="maxWait" value="${common.jdbc.maxWait}"></property>
-		<property name="validationQuery" value="${common.jdbc.validationQuery}"></property>
-		<property name="testOnBorrow" value="${common.jdbc.testOnBorrow}"></property>
-		<property name="testWhileIdle" value="${common.jdbc.testWhileIdle}"></property>
-		<property name="timeBetweenEvictionRunsMillis" value="${common.jdbc.timeBetweenEvictionRunsMillis}"></property>
-		<property name="minEvictableIdleTimeMillis" value="${common.jdbc.minEvictableIdleTimeMillis}"></property>
-	</bean>
-
-	<bean id="writeDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${write.jdbc.driverClassName}" />
-		<property name="url" value="${write.jdbc.url}" />
-		<property name="username" value="${write.jdbc.username}" />
-		<property name="password" value="${write.jdbc.password}" />
-		<property name="initialSize" value="${common.jdbc.initialSize}"></property>
-		<property name="maxActive" value="${common.jdbc.maxActive}"></property>
-		<property name="maxIdle" value="${common.jdbc.maxIdle}"></property>
-		<property name="minIdle" value="${common.jdbc.minIdle}"></property>
-		<property name="logAbandoned" value="${common.jdbc.logAbandoned}"></property>
-		<property name="removeAbandoned" value="${common.jdbc.removeAbandoned}"></property>
-		<property name="removeAbandonedTimeout" value="${common.jdbc.removeAbandonedTimeout}"></property>
-		<property name="maxWait" value="${common.jdbc.maxWait}"></property>
-		<property name="validationQuery" value="${common.jdbc.validationQuery}"></property>
-		<property name="testOnBorrow" value="${common.jdbc.testOnBorrow}"></property>
-		<property name="testWhileIdle" value="${common.jdbc.testWhileIdle}"></property>
-		<property name="timeBetweenEvictionRunsMillis" value="${common.jdbc.timeBetweenEvictionRunsMillis}"></property>
-		<property name="minEvictableIdleTimeMillis" value="${common.jdbc.minEvictableIdleTimeMillis}"></property>
+	<!-- 分表专用数据源 -->
+	<bean id="dataSource_nbsubmeter_read" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.job.driverClassName}"></property>
+		<property name="url" value="${jdbc.submeter.read.url}"></property>
+		<property name="username" value="${jdbc.submeter.read.username}"></property>
+		<property name="password" value="${jdbc.submeter.read.password}"></property>
+		<property name="maxActive" value="${jdbc.common.maxActive}"></property>
+		<property name="maxIdle" value="${jdbc.common.maxIdle}"></property>
+		<property name="maxWait" value="${jdbc.common.maxWait}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.common.timeBetweenEvictionRunsMillis}"></property>
+		<property name="testWhileIdle" value="${jdbc.common.testWhileIdle}"></property>
+		<property name="testOnBorrow" value="${jdbc.common.testOnBorrow}"></property>
+		<property name="testOnReturn" value="${jdbc.common.testOnReturn}"></property>
+		<property name="validationQuery">
+			<value>select 1</value>
+		</property>
 	</bean>
 	
-	<bean id="incrorderReadDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${incrorder.read.jdbc.driverClassName}" />
-		<property name="url" value="${incrorder.read.jdbc.url}" />
-		<property name="username" value="${incrorder.read.jdbc.username}" />
-		<property name="password" value="${incrorder.read.jdbc.password}" />
-		<property name="initialSize" value="${common.jdbc.initialSize}"></property>
-		<property name="maxActive" value="${common.jdbc.maxActive}"></property>
-		<property name="maxIdle" value="${common.jdbc.maxIdle}"></property>
-		<property name="minIdle" value="${common.jdbc.minIdle}"></property>
-		<property name="logAbandoned" value="${common.jdbc.logAbandoned}"></property>
-		<property name="removeAbandoned" value="${common.jdbc.removeAbandoned}"></property>
-		<property name="removeAbandonedTimeout" value="${common.jdbc.removeAbandonedTimeout}"></property>
-		<property name="maxWait" value="${common.jdbc.maxWait}"></property>
-		<property name="validationQuery" value="${common.jdbc.validationQuery}"></property>
-		<property name="testOnBorrow" value="${common.jdbc.testOnBorrow}"></property>
-		<property name="testWhileIdle" value="${common.jdbc.testWhileIdle}"></property>
-		<property name="timeBetweenEvictionRunsMillis" value="${common.jdbc.timeBetweenEvictionRunsMillis}"></property>
-		<property name="minEvictableIdleTimeMillis" value="${common.jdbc.minEvictableIdleTimeMillis}"></property>
+	<bean id="dataSource_nbsubmeter_write" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.job.driverClassName}"></property>
+		<property name="url" value="${jdbc.submeter.write.url}"></property>
+		<property name="username" value="${jdbc.submeter.write.username}"></property>
+		<property name="password" value="${jdbc.submeter.write.password}"></property>
+		<property name="maxActive" value="${jdbc.common.maxActive}"></property>
+		<property name="maxIdle" value="${jdbc.common.maxIdle}"></property>
+		<property name="maxWait" value="${jdbc.common.maxWait}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.common.timeBetweenEvictionRunsMillis}"></property>
+		<property name="testWhileIdle" value="${jdbc.common.testWhileIdle}"></property>
+		<property name="testOnBorrow" value="${jdbc.common.testOnBorrow}"></property>
+		<property name="testOnReturn" value="${jdbc.common.testOnReturn}"></property>
+		<property name="validationQuery">
+			<value>select 1</value>
+		</property>
+	</bean>
+
+	<!-- nb hotelincr数据源 -->
+	<bean id="dataSource_nbhotelincr_read" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.hotelincr.driverClassName}"></property>
+		<property name="url" value="${jdbc.hotelincr.read.url}"></property>
+		<property name="username" value="${jdbc.hotelincr.read.username}"></property>
+		<property name="password" value="${jdbc.hotelincr.read.password}"></property>
+		<property name="maxActive" value="${jdbc.common.maxActive}"></property>
+		<property name="maxIdle" value="${jdbc.common.maxIdle}"></property>
+		<property name="maxWait" value="${jdbc.common.maxWait}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.common.timeBetweenEvictionRunsMillis}"></property>
+		<property name="testWhileIdle" value="${jdbc.common.testWhileIdle}"></property>
+		<property name="testOnBorrow" value="${jdbc.common.testOnBorrow}"></property>
+		<property name="testOnReturn" value="${jdbc.common.testOnReturn}"></property>
+		<property name="validationQuery">
+			<value>select 1</value>
+		</property>
+	</bean>
+	
+	<bean id="dataSource_nbhotelincr_write" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.hotelincr.driverClassName}"></property>
+		<property name="url" value="${jdbc.hotelincr.write.url}"></property>
+		<property name="username" value="${jdbc.hotelincr.write.username}"></property>
+		<property name="password" value="${jdbc.hotelincr.write.password}"></property>
+		<property name="maxActive" value="${jdbc.common.maxActive}"></property>
+		<property name="maxIdle" value="${jdbc.common.maxIdle}"></property>
+		<property name="maxWait" value="${jdbc.common.maxWait}"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.common.timeBetweenEvictionRunsMillis}"></property>
+		<property name="testWhileIdle" value="${jdbc.common.testWhileIdle}"></property>
+		<property name="testOnBorrow" value="${jdbc.common.testOnBorrow}"></property>
+		<property name="testOnReturn" value="${jdbc.common.testOnReturn}"></property>
+		<property name="validationQuery">
+			<value>select 1</value>
+		</property>
 	</bean>
 
 	<bean id="dataSource" class="com.elong.nb.db.ByKeyRoutingDataSource">
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
-				<entry key="write_datasource" value-ref="writeDataSource" />
-				<entry key="read_datasource" value-ref="readDataSource" />
-				<entry key="incrorderReadDataSource" value-ref="incrorderReadDataSource" />
+				<entry key="dataSource_nbsubmeter_write" value-ref="dataSource_nbsubmeter_write" />
+				<entry key="dataSource_nbsubmeter_read" value-ref="dataSource_nbsubmeter_read" />
+				<entry key="dataSource_nbhotelincr_write" value-ref="dataSource_nbhotelincr_write" />
+				<entry key="dataSource_nbhotelincr_read" value-ref="dataSource_nbhotelincr_read" />
 			</map>
 		</property>
-		<property name="defaultTargetDataSource" ref="readDataSource" />
+		<property name="defaultTargetDataSource" ref="dataSource_nbhotelincr_read" />
 	</bean>
 
 	<bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" scope="prototype">

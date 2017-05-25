@@ -28,7 +28,7 @@ import com.elong.nb.model.bean.IncrHotel;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("read_datasource")
+@DataSource("dataSource_nbsubmeter_write")
 public interface IncrHotelDao {
 
 	/** 

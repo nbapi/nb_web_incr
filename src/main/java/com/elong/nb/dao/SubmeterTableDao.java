@@ -26,7 +26,7 @@ import com.elong.nb.db.DataSource;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("dataSource_nbhotelincr_write")
+@DataSource("dataSource_nbsubmeter_write")
 public interface SubmeterTableDao {
 
 	/** 
