@@ -166,14 +166,14 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 		}
 
 		Integer orderFrom = (Integer) params.get("orderFrom");
-//		// 获取需要进行黑名单处理的数据
-//		List<IncrInventory> needCheckList = checkBlackListRule(incrInventories, orderFrom);
-//		// 移除掉需要处理的数据，剩下不需要处理的数据
-//		incrInventories.removeAll(needCheckList);
-//		// 进行黑名单处理
-//		needCheckList = doHandlerBlackListRule(needCheckList, orderFrom);
-//		// 加入黑名单处理完数据
-//		incrInventories.addAll(needCheckList);
+		// 获取需要进行黑名单处理的数据
+		List<IncrInventory> needCheckList = checkBlackListRule(incrInventories, orderFrom);
+		// 移除掉需要处理的数据，剩下不需要处理的数据
+		incrInventories.removeAll(needCheckList);
+		// 进行黑名单处理
+		needCheckList = doHandlerBlackListRule(needCheckList, orderFrom);
+		// 加入黑名单处理完数据
+		incrInventories.addAll(needCheckList);
 
 		Collections.sort(incrInventories, new Comparator<IncrInventory>() {
 			@Override
@@ -367,7 +367,9 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 			if (hotelCodeList == null) {
 				hotelCodeList = new ArrayList<String>();
 			}
-			hotelCodeList.add(incrInventory.getHotelCode());
+			if(!hotelCodeList.contains(incrInventory.getHotelCode())){
+				hotelCodeList.add(incrInventory.getHotelCode());
+			}
 			hotelMap.put(hotelID, hotelCodeList);
 		}
 		checkRealReq.setHotelMap(hotelMap);
