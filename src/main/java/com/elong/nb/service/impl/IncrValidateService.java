@@ -43,7 +43,10 @@ public class IncrValidateService implements IIncrValidateService {
 	public String validateIncrRequest(RestRequest<IncrRequest> restRequest) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(ValidateUtil.validateRestRequest(restRequest));
-		if (restRequest.getRequest().getLastId() == null) {
+		IncrRequest incrRequest = restRequest.getRequest();
+		if (incrRequest == null)
+			return sb.toString();
+		if (incrRequest.getLastId() == null) {
 			sb.append(ErrorCode.Incr_LastIdRequired);
 		}
 		return sb.toString();
@@ -61,10 +64,13 @@ public class IncrValidateService implements IIncrValidateService {
 	public String validateIncrIdRequest(RestRequest<IncrIdRequest> restRequest) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(ValidateUtil.validateRestRequest(restRequest));
-		if (restRequest.getRequest().getIncrType() == null) {
+		IncrIdRequest incrIdRequest = restRequest.getRequest();
+		if (incrIdRequest == null)
+			return sb.toString();
+		if (incrIdRequest.getIncrType() == null) {
 			sb.append(ErrorCode.Incr_IncrTypeRequired);
 		}
-		if (restRequest.getRequest().getLastTime() == null) {
+		if (incrIdRequest.getLastTime() == null) {
 			sb.append(ErrorCode.Incr_LastTimeRequired);
 		}
 		return sb.toString();
