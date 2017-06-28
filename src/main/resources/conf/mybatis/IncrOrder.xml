@@ -31,7 +31,7 @@
 			<if test="lastId != null and !lastId.equals('')">and incrID > #{lastId} </if>
 			<if test="orderFrom != null and !orderFrom.equals('')">and OrderFrom =#{orderFrom} </if>
 			<if test="proxyId != null and !proxyId.equals('')">and ProxyId =#{proxyId} </if>
-			<if test="lastTime != null and !lastTime.equals('')"><![CDATA[ and ChangeTime <= #{lastTime}  ]]></if>
+			<if test="lastTime != null and !lastTime.equals('')"><![CDATA[ and InsertTime <= #{lastTime}  ]]></if>
 		</where>
 		order by IncrID limit 0,#{maxRecordCount}
 	</select>
