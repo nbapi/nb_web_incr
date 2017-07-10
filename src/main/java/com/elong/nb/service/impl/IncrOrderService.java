@@ -201,7 +201,7 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 			incrQueryStatistic.setBusiness_type("nbincrquery");
 			incrQueryStatistic.setLog_time(DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 			incrQueryStatistic.setIncrType(EnumIncrType.Order.name());
-			incrQueryStatistic.setProxyId(proxyId);
+			incrQueryStatistic.setProxyId(orderFrom + "");
 			if (CollectionUtils.isEmpty(incrOrders)){
 				incrQueryStatistic.setQueryTime(DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 				incrQueryStatistic.setEmptyStatus(true);
