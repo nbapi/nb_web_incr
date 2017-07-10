@@ -18,9 +18,12 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.elong.nb.IncrQueryStatistic;
 import com.elong.nb.common.model.EnumOrderType;
 import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrOrderDao;
@@ -28,6 +31,7 @@ import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrOrderResponse;
 import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.bean.IncrOrder;
+import com.elong.nb.model.enums.EnumIncrType;
 import com.elong.nb.model.enums.EnumPayStatus;
 import com.elong.nb.service.IIncrOrderService;
 import com.elong.nb.util.DateHandlerUtils;
@@ -51,6 +55,8 @@ import com.elong.nb.util.IncrConst;
 public class IncrOrderService extends AbstractIncrService<IncrOrder> implements IIncrOrderService {
 
 	private static final Log logger = LogFactory.getLog(IncrOrderService.class);
+	
+	protected static final Logger minitorLogger = Logger.getLogger("MinitorLogger");
 
 	@Resource
 	private IncrOrderDao incrOrderDao;
@@ -191,13 +197,24 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 			}
 			paramMap.put("lastTime", DateHandlerUtils.getOffsetDate(Calendar.MINUTE, offset));
 			List<IncrOrder> incrOrders = incrOrderDao.getIncrOrders(paramMap);
-			if (CollectionUtils.isEmpty(incrOrders))
+			IncrQueryStatistic incrQueryStatistic = new IncrQueryStatistic();
+			incrQueryStatistic.setBusiness_type("nbincrquery");
+			incrQueryStatistic.setLog_time(DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+			incrQueryStatistic.setIncrType(EnumIncrType.Order.name());
+			incrQueryStatistic.setProxyId(proxyId);
+			if (CollectionUtils.isEmpty(incrOrders)){
+				incrQueryStatistic.setQueryTime(DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				incrQueryStatistic.setEmptyStatus(true);
 				return Collections.emptyList();
+			}
 			for (IncrOrder incrOrder : incrOrders) {
 				if (incrOrder == null)
 					continue;
 				incrOrder.setPayStatus(EnumPayStatus.forValue(incrOrder.getPayStatus()).getPayStatus());
 			}
+			incrQueryStatistic.setQueryTime(DateHandlerUtils.formatDate(incrOrders.get(0).getChangeTime(), "yyyy-MM-dd HH:mm:ss"));
+			incrQueryStatistic.setEmptyStatus(false);
+			minitorLogger.info(JSON.toJSONString(incrQueryStatistic));
 			return incrOrders;
 		} catch (Exception e) {
 			logger.error("getIncrOrders error,due to " + e.getMessage(), e);

@@ -20,6 +20,18 @@
 			<param name="LevelMin" value="INFO" />
 		</filter>
 	</appender>
+	
+	<!--nbminitor appender -->
+	<appender name="MinitorAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/nb_web_incr_minitor.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
 
 	<!--actionLogEntity appender -->
 	<appender name="actionLogEntityAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
@@ -41,6 +53,10 @@
 	<logger name="SubmeterLogger" additivity="false">
 		<level value="INFO" />
 		<appender-ref ref="SubmeterAppender" />
+	</logger>
+	<logger name="MinitorLogger" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="MinitorAppender" />
 	</logger>
 
 	<root>
