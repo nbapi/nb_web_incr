@@ -205,6 +205,7 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 			if (CollectionUtils.isEmpty(incrOrders)){
 				incrQueryStatistic.setQueryTime(DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 				incrQueryStatistic.setEmptyStatus(true);
+				minitorLogger.info(JSON.toJSONString(incrQueryStatistic));
 				return Collections.emptyList();
 			}
 			for (IncrOrder incrOrder : incrOrders) {
