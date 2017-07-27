@@ -157,10 +157,6 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 	 */
 	@Override
 	public List<IncrOrder> getIncrOrders(long lastId, int maxRecordCount, EnumOrderType orderType, String proxyId, Integer orderFrom) {
-		// if (lastId == 0) {
-		// logger.error("getIncrOrders error,due to the parameter 'lastId' is 0.");
-		// throw new IncrException("getIncrOrders error,due to the parameter 'lastId' is 0.");
-		// }
 		if (maxRecordCount == 0) {
 			logger.error("getIncrOrders error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrOrders error,due to the parameter 'maxRecordCount' is 0.");
@@ -187,15 +183,15 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 			paramMap.put("lastId", lastId);
 			paramMap.put("maxRecordCount", maxRecordCount);
 
-			String delayMinute = CommonsUtil.CONFIG_PROVIDAR.getProperty("IncrOrder.getIncrOrders.delayMinutes");
-			delayMinute = StringUtils.isEmpty(delayMinute) ? "-1" : StringUtils.trim(delayMinute);
-			int offset = -1;
+			String delayTime = CommonsUtil.CONFIG_PROVIDAR.getProperty("IncrOrder.getIncrOrders.delayTimes");
+			delayTime = StringUtils.isEmpty(delayTime) ? "-60" : StringUtils.trim(delayTime);
+			int offset = -60;
 			try {
-				offset = Integer.valueOf(delayMinute);
+				offset = Integer.valueOf(delayTime);
 			} catch (NumberFormatException e) {
-				offset = -1;
+				offset = -60;
 			}
-			paramMap.put("lastTime", DateHandlerUtils.getOffsetDate(Calendar.MINUTE, offset));
+			paramMap.put("lastTime", DateHandlerUtils.getOffsetDate(Calendar.SECOND, offset));
 			List<IncrOrder> incrOrders = incrOrderDao.getIncrOrders(paramMap);
 			IncrQueryStatistic incrQueryStatistic = new IncrQueryStatistic();
 			incrQueryStatistic.setBusiness_type("nbincrquery");
