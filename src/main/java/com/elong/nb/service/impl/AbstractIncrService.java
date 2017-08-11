@@ -7,14 +7,12 @@ package com.elong.nb.service.impl;
 
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.elong.nb.common.model.EnumOrderType;
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.model.RestRequest;
 import com.elong.nb.common.model.RestResponse;
 import com.elong.nb.exception.IncrException;
@@ -67,27 +65,14 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 		IncrResponse<T> incrResponse = createIncrResponse();
 
 		// 构建参数
-		long incrID = restRequest.getRequest().getLastId().longValue();
+		long lastId = restRequest.getRequest().getLastId().longValue();
 		int maxRecordCount = restRequest.getRequest().getCount();
-		maxRecordCount = (maxRecordCount == 0||maxRecordCount > 1000) ? IncrConst.maxRecordCount : maxRecordCount;
-		logger.info("getIncrDatas params,lastId = " + incrID + ",maxRecordCount = " + maxRecordCount + ",guid = " + restRequest.getGuid());
-
-		EnumOrderType searchOrderType = restRequest.getProxyInfo().getSearchOrderType();
-		String proxyId = restRequest.getProxyInfo().getProxyId();
-		Integer orderFrom = restRequest.getProxyInfo().getOrderFrom();
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("lastId", incrID);
-		params.put("maxRecordCount", maxRecordCount);
-		params.put("searchOrderType", searchOrderType);
-		params.put("proxyId", proxyId);
-		params.put("orderFrom", orderFrom);
-		params.put("proxyInfo", restRequest.getProxyInfo());
+		maxRecordCount = (maxRecordCount == 0 || maxRecordCount > 1000) ? 1000 : maxRecordCount;
+		logger.info("getIncrDatas params,lastId = " + lastId + ",maxRecordCount = " + maxRecordCount + ",guid = " + restRequest.getGuid());
 
 		// 获取增量数据
-		List<T> incrDatas = getIncrDatas(params);
-		logger.info("getIncrDatas result,result count = " + (incrDatas == null ? 0 : incrDatas.size()) + ",guid = "
-				+ restRequest.getGuid());
+		List<T> incrDatas = getIncrDatas(lastId, maxRecordCount, restRequest.getProxyInfo());
+		logger.info("getIncrDatas result,result count = " + (incrDatas == null ? 0 : incrDatas.size()) + ",guid = " + restRequest.getGuid());
 		incrResponse.setList(incrDatas);
 		restResponse.setResult(incrResponse);
 		return restResponse;
@@ -106,7 +91,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 	 * @param params
 	 * @return
 	 */
-	protected abstract List<T> getIncrDatas(Map<String, Object> params);
+	protected abstract List<T> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount);
 
 	/** 
 	 * 获取最后的更新ID
@@ -133,23 +118,14 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 			logger.error("getLastId error,due to 'incrType' which belongs to parameter 'restRequest' is null.");
 			throw new IncrException("getLastId error,due to 'incrType' which belongs to parameter 'restRequest' is null.");
 		}
+
+		// 构建参数
 		logger.info("getLastId params,lastTime = " + lastTime + ",incrType = " + incrType.getValue() + ",guid = " + restRequest.getGuid());
 		RestResponse<IncrIdResponse> restResponse = new RestResponse<IncrIdResponse>(restRequest.getGuid());
 		IncrIdResponse incrIdResponse = new IncrIdResponse();
 
-		// 构建参数
-		EnumOrderType searchOrderType = restRequest.getProxyInfo().getSearchOrderType();
-		String proxyId = restRequest.getProxyInfo().getProxyId();
-		Integer orderFrom = restRequest.getProxyInfo().getOrderFrom();
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("lastTime", lastTime);
-		params.put("searchOrderType", searchOrderType);
-		params.put("proxyId", proxyId);
-		params.put("orderFrom", orderFrom);
-
 		// 获取数据
-		BigInteger lastId = getLastId(params);
+		BigInteger lastId = getLastId(lastTime, restRequest.getProxyInfo());
 		incrIdResponse.setLastId(lastId == null ? IncrConst.bigIntegerNegativeOne : lastId);
 		logger.info("getLastId result,lastId = " + incrIdResponse.getLastId() + ",guid = " + restRequest.getGuid());
 		restResponse.setResult(incrIdResponse);
@@ -157,11 +133,12 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 	}
 
 	/** 
-	 * 获取最后的更新ID
+	 * 获取最后的更新ID 
 	 *
-	 * @param params
+	 * @param lastTime
+	 * @param proxyAccount
 	 * @return
 	 */
-	protected abstract BigInteger getLastId(Map<String, Object> params);
+	protected abstract BigInteger getLastId(Date lastTime, ProxyAccount proxyAccount);
 
 }

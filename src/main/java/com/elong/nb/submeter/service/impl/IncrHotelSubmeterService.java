@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.elong.common.util.StringUtils;
 import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrHotelDao;
 import com.elong.nb.model.bean.IncrHotel;
@@ -63,7 +62,6 @@ public class IncrHotelSubmeterService extends AbstractSubmeterService<IncrHotel>
 	@Override
 	protected Date getLastTimeAfterDelay() {
 		String delayMinute = CommonsUtil.CONFIG_PROVIDAR.getProperty("IncrHotel.getIncrDatas.delayMinutes");
-		delayMinute = StringUtils.isEmpty(delayMinute) ? "-3" : StringUtils.trim(delayMinute);
 		int offset = -3;
 		try {
 			offset = Integer.valueOf(delayMinute);

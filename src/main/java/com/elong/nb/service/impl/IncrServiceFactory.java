@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.enums.EnumIncrType;
 import com.elong.nb.service.IIncrService;
 
@@ -59,10 +60,10 @@ public class IncrServiceFactory implements InitializingBean {
 	 */
 	public IIncrService<?> getIIncrService(EnumIncrType incrType) {
 		if (incrType == null) {
-			return null;
+			throw new IncrException("incrType is null or empry.");
 		}
 		if (!map.containsKey(incrType)) {
-			return null;
+			throw new IncrException("incrType = " + incrType + " doesn't support IncrService!");
 		}
 		return map.get(incrType);
 	}
@@ -75,7 +76,7 @@ public class IncrServiceFactory implements InitializingBean {
 	 */
 	public IIncrService<?> getIIncrService(String getIncrPath) {
 		if (StringUtils.isEmpty(getIncrPath)) {
-			return null;
+			throw new IncrException("getIncrPath is null or empry.");
 		}
 		if (StringUtils.equalsIgnoreCase("getIncrState", getIncrPath)) {
 			return map.get(EnumIncrType.State);
@@ -87,8 +88,9 @@ public class IncrServiceFactory implements InitializingBean {
 			return map.get(EnumIncrType.Data);
 		} else if (StringUtils.equalsIgnoreCase("getIncrInventories", getIncrPath)) {
 			return map.get(EnumIncrType.Inventory);
+		} else {
+			throw new IncrException("getIncrPath = " + getIncrPath + " doesn't support IncrService!");
 		}
-		return null;
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.elong.nb.IncrQueryStatistic;
 import com.elong.nb.common.model.EnumOrderType;
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrOrderDao;
 import com.elong.nb.exception.IncrException;
@@ -55,7 +56,7 @@ import com.elong.nb.util.IncrConst;
 public class IncrOrderService extends AbstractIncrService<IncrOrder> implements IIncrOrderService {
 
 	private static final Log logger = LogFactory.getLog(IncrOrderService.class);
-	
+
 	protected static final Logger minitorLogger = Logger.getLogger("MinitorLogger");
 
 	@Resource
@@ -198,7 +199,7 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 			incrQueryStatistic.setLog_time(DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 			incrQueryStatistic.setIncrType(EnumIncrType.Order.name());
 			incrQueryStatistic.setProxyId(orderFrom + "");
-			if (CollectionUtils.isEmpty(incrOrders)){
+			if (CollectionUtils.isEmpty(incrOrders)) {
 				incrQueryStatistic.setQueryTime(DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
 				incrQueryStatistic.setEmptyStatus(true);
 				minitorLogger.info(JSON.toJSONString(incrQueryStatistic));
@@ -222,71 +223,35 @@ public class IncrOrderService extends AbstractIncrService<IncrOrder> implements 
 	/** 
 	 * 获取订单增量数据
 	 *
-	 * @param params
-	 * @return
+	 * @param lastId
+	 * @param maxRecordCount
+	 * @param proxyAccount
+	 * @return 
+	 *
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(long, int, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected List<IncrOrder> getIncrDatas(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastId") || !params.containsKey("maxRecordCount")
-				|| !params.containsKey("searchOrderType")) {
-			throw new IncrException(
-					"the map 'params' is requeried,and the map 'params' must contain the key ['lastId' or 'maxRecordCount' or 'searchOrderType'].");
-		}
-		if (!params.containsKey("orderFrom") && !params.containsKey("proxyId")) {
-			throw new IncrException("the map 'params' must contain the key ['orderFrom' or 'proxyId'] at least.");
-		}
-		if (params.get("lastId") == null || params.get("maxRecordCount") == null) {
-			throw new IncrException("the parameter['lastId' or 'maxRecordCount']  which belongs to the map 'params' must not be null.");
-		}
-		if (params.containsKey("orderFrom") && params.get("orderFrom") == null) {
-			throw new IncrException("the parameter['orderFrom']  which belongs to the map 'params' must not be null.");
-		}
-		if (params.containsKey("proxyId") && params.get("proxyId") == null) {
-			throw new IncrException("the parameter['proxyId']  which belongs to the map 'params' must not be null.");
-		}
-
-		long lastId = (long) params.get("lastId");
-		int maxRecordCount = (int) params.get("maxRecordCount");
-		EnumOrderType searchOrderType = (EnumOrderType) params.get("searchOrderType");
-		String proxyId = (String) params.get("proxyId");
-		Integer orderFrom = (Integer) params.get("orderFrom");
-
+	protected List<IncrOrder> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
+		EnumOrderType searchOrderType = proxyAccount.getSearchOrderType();
+		String proxyId = proxyAccount.getProxyId();
+		Integer orderFrom = proxyAccount.getOrderFrom();
 		return getIncrOrders(lastId, maxRecordCount, searchOrderType, proxyId, orderFrom);
 	}
 
 	/** 
-	 * 获取订单增量最后更新ID
+	 * 获取订单增量最后更新ID 
 	 *
-	 * @param params
-	 * @return
+	 * @param lastTime
+	 * @param proxyAccount
+	 * @return 
+	 *
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Date, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected BigInteger getLastId(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastTime") || !params.containsKey("searchOrderType")) {
-			throw new IncrException(
-					"the map 'params' is requeried,and the map 'params' must contain the key ['lastTime' or 'searchOrderType'].");
-		}
-		Object lastTimeObj = params.get("lastTime");
-		if (lastTimeObj == null) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must not be null.");
-		}
-		if (!(lastTimeObj instanceof Date)) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must be date type.");
-		}
-		if (!params.containsKey("orderFrom") && !params.containsKey("proxyId")) {
-			throw new IncrException("the map 'params' must contain the key ['orderFrom' or 'proxyId'] at least.");
-		}
-		if (params.containsKey("orderFrom") && params.get("orderFrom") == null) {
-			throw new IncrException("the parameter['orderFrom']  which belongs to the map 'params' must not be null.");
-		}
-		if (params.containsKey("proxyId") && params.get("proxyId") == null) {
-			throw new IncrException("the parameter['proxyId']  which belongs to the map 'params' must not be null.");
-		}
-
-		Date lastTime = (Date) params.get("lastTime");
-		EnumOrderType searchOrderType = (EnumOrderType) params.get("searchOrderType");
-		String proxyId = (String) params.get("proxyId");
-		Integer orderFrom = (Integer) params.get("orderFrom");
+	protected BigInteger getLastId(Date lastTime, ProxyAccount proxyAccount) {
+		EnumOrderType searchOrderType = proxyAccount.getSearchOrderType();
+		String proxyId = proxyAccount.getProxyId();
+		Integer orderFrom = proxyAccount.getOrderFrom();
 		IncrOrder incrOrder = getOneIncrOrder(lastTime, searchOrderType, proxyId, orderFrom);
 		if (incrOrder == null) {
 			incrOrder = getLastIncrOrder(searchOrderType, proxyId, orderFrom);

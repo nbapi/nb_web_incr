@@ -25,6 +25,5 @@ public class IncrConst {
 
 	public static final BigInteger bigIntegerNegativeOne = new BigInteger("-1");
 
-	public static final int maxRecordCount = 1000;
 
 }

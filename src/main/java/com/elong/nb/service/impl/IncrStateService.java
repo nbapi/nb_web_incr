@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.dao.IncrStateDao;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrResponse;
@@ -100,10 +101,6 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 	 */
 	@Override
 	public List<IncrState> getIncrStates(long lastId, int maxRecordCount) {
-//		if (lastId == 0) {
-//			logger.error("getIncrStates error,due to the parameter 'lastId' is 0.");
-//			throw new IncrException("getIncrInventories error,due to the parameter 'lastId' is 0.");
-//		}
 		if (maxRecordCount == 0) {
 			logger.error("getIncrStates error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
@@ -131,49 +128,29 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 	/** 
 	 * 获取状态增量数据
 	 *
-	 * @param params
+	 * @param lastId
+	 * @param maxRecordCount
+	 * @param proxyAccount
 	 * @return 
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(long, int, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected List<IncrState> getIncrDatas(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastId") || !params.containsKey("maxRecordCount")) {
-			throw new IncrException(
-					"the map 'params' is requeried,and the map 'params' must contain the key ['lastId' or 'maxRecordCount'].");
-		}
-		Object lastIdObj = params.get("lastId");
-		Object maxRecordCountObj = params.get("maxRecordCount");
-		if (lastIdObj == null || maxRecordCountObj == null) {
-			throw new IncrException("the parameter['lastId' or 'maxRecordCount']  which belongs to the map 'params' must not be null.");
-		}
-		long lastId = (long) params.get("lastId");
-		int maxRecordCount = (int) params.get("maxRecordCount");
-
+	protected List<IncrState> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		return getIncrStates(lastId, maxRecordCount);
 	}
 
 	/** 
-	 * 获取状态增量最后更新ID
+	 *  获取状态增量最后更新ID
 	 *
-	 * @param params
+	 * @param lastTime
+	 * @param proxyAccount
 	 * @return 
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Date, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected BigInteger getLastId(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastTime")) {
-			throw new IncrException("the map 'params' is requeried,and the map 'params' must contain the key 'lastTime'.");
-		}
-		Object lastTimeObj = params.get("lastTime");
-		if (lastTimeObj == null) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must not be null.");
-		}
-		if (!(lastTimeObj instanceof Date)) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must be date type.");
-		}
-		Date lastTime = (Date) params.get("lastTime");
+	protected BigInteger getLastId(Date lastTime, ProxyAccount proxyAccount) {
 		IncrState incrState = getOneIncrState(lastTime);
 		if (incrState == null) {
 			incrState = getLastIncrState();

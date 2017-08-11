@@ -107,32 +107,6 @@ public class SubmeterTableCache {
 		}
 	}
 
-	/** 
-	 * 指定tablePrefix的非空分表存入redis
-	 *
-	 * @param tablePrefix
-	 * @param newTableName
-	 */
-	public void lpushLimit(String tablePrefix, String newTableName) {
-		String jedisKey = tablePrefix + ".Submeter.TableNames";
-		Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
-		List<String> subTableNameList = jedis.lrange(jedisKey, 0, jedis.llen(jedisKey));
-		JedisPoolUtil.returnRes(jedis);
-		if (subTableNameList != null && subTableNameList.contains(newTableName))
-			return;
-
-		String source = "UUID = " + UUID.randomUUID().toString() + ",push neweast tablename into redis when inserting data";
-		long lockTime = lock(source);
-		try {
-			jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
-			jedis.lpush(jedisKey, newTableName);
-			jedis.ltrim(jedisKey, 0, SubmeterConst.NOEMPTY_SUMETER_COUNT_IN_REDIS);
-			JedisPoolUtil.returnRes(jedis);
-		} finally {
-			unlock(source, lockTime);
-		}
-	}
-
 	private long lock(String source) {
 		Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
 		while (jedis.setnx(SubmeterConst.SUMETER_REDIS_LOCK_KEY, "lock") == 0) {

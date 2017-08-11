@@ -50,22 +50,4 @@ public interface IIncrInventoryService {
 	 */
 	public List<IncrInventory> getIncrInventories(long lastId, int maxRecordCount);
 
-	/** 
-	 * 检查库存黑名单 
-	 *
-	 * @param incrInventories
-	 * @param orderFrom
-	 * @return
-	 */
-	public List<IncrInventory> checkBlackListRule(List<IncrInventory> incrInventories, Integer orderFrom);
-
-	/** 
-	 * 库存黑名单处理
-	 *
-	 * @param incrInventories
-	 * @param orderFrom
-	 * @return
-	 */
-	public List<IncrInventory> doHandlerBlackListRule(List<IncrInventory> incrInventories, Integer orderFrom);
-
 }

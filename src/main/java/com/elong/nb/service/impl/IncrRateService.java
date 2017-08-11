@@ -127,32 +127,20 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	}
 
 	/** 
-	 * 获取房价增量 
+	 * 获取价格增量数据 
 	 *
-	 * @param params
+	 * @param lastId
+	 * @param maxRecordCount
+	 * @param proxyAccount
 	 * @return 
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(long, int, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected List<IncrRate> getIncrDatas(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastId") || !params.containsKey("maxRecordCount") || !params.containsKey("proxyInfo")) {
-			throw new IncrException(
-					"the map 'params' is requeried,and the map 'params' must contain the key ['lastId' or 'maxRecordCount' or 'proxyInfo'].");
-		}
-		Object lastIdObj = params.get("lastId");
-		Object maxRecordCountObj = params.get("maxRecordCount");
-		ProxyAccount proxyInfo = (ProxyAccount) params.get("proxyInfo");
-		if (lastIdObj == null || maxRecordCountObj == null || proxyInfo == null) {
-			throw new IncrException(
-					"the parameter['lastId' or 'maxRecordCount' or 'proxyInfo']  which belongs to the map 'params' must not be null.");
-		}
-		long lastId = (long) params.get("lastId");
-		int maxRecordCount = (int) params.get("maxRecordCount");
-
+	protected List<IncrRate> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		List<IncrRate> beforeRates = getIncrRates(lastId, maxRecordCount);
 		// 价格小数点
-		return demicalHandler(proxyInfo, beforeRates);
+		return demicalHandler(proxyAccount, beforeRates);
 	}
 
 	/** 
@@ -193,8 +181,8 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 
 			List<RateWithRule> memberCostRuleList = settlementPriceRuleCommon.getSettlementPrice(item.getMemberCost(), item.getMember(),
 					item.getHotelCode(), item.getStartDate(), item.getEndDate());
-			List<RateWithRule> weekCostRuleList = settlementPriceRuleCommon.getSettlementPrice(item.getWeekendCost(),
-					item.getWeekend(), item.getHotelCode(), item.getStartDate(), item.getEndDate());
+			List<RateWithRule> weekCostRuleList = settlementPriceRuleCommon.getSettlementPrice(item.getWeekendCost(), item.getWeekend(),
+					item.getHotelCode(), item.getStartDate(), item.getEndDate());
 			if (memberCostRuleList != null && memberCostRuleList.size() > 0) {
 				try {
 					for (int idx = 0; idx < memberCostRuleList.size(); idx++) {
@@ -230,24 +218,14 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	/** 
 	 * 获取房价增量最后的更新ID
 	 *
-	 * @param params
+	 * @param lastTime
+	 * @param proxyAccount
 	 * @return 
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Date, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected BigInteger getLastId(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastTime")) {
-			throw new IncrException("the map 'params' is requeried,and the map 'params' must contain the key 'lastTime'.");
-		}
-		Object lastTimeObj = params.get("lastTime");
-		if (lastTimeObj == null) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must not be null.");
-		}
-		if (!(lastTimeObj instanceof Date)) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must be date type.");
-		}
-		Date lastTime = (Date) params.get("lastTime");
+	protected BigInteger getLastId(Date lastTime, ProxyAccount proxyAccount) {
 		IncrRate incrRate = getOneIncrRate(lastTime);
 		if (incrRate == null) {
 			incrRate = getLastIncrRate();

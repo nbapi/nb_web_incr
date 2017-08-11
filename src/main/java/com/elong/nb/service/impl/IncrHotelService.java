@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -18,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrHotelResponse;
 import com.elong.nb.model.IncrResponse;
@@ -119,50 +119,31 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 	}
 
 	/** 
-	 * 获取增量数据
+	 * 获取酒店增量数据
 	 *
-	 * @param params
+	 * @param lastId
+	 * @param maxRecordCount
+	 * @param proxyAccount
 	 * @return 
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getIncrDatas(long, int, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected List<IncrHotel> getIncrDatas(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastId") || !params.containsKey("maxRecordCount")) {
-			throw new IncrException(
-					"the map 'params' is requeried,and the map 'params' must contain the key ['lastId' or 'maxRecordCount'].");
-		}
-		Object lastIdObj = params.get("lastId");
-		Object maxRecordCountObj = params.get("maxRecordCount");
-		if (lastIdObj == null || maxRecordCountObj == null) {
-			throw new IncrException("the parameter['lastId' or 'maxRecordCount']  which belongs to the map 'params' must not be null.");
-		}
-		long lastId = (long) params.get("lastId");
-		int maxRecordCount = (int) params.get("maxRecordCount");
+	protected List<IncrHotel> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		return getIncrHotels(lastId, maxRecordCount);
 	}
 
 	/** 
-	 * 获取最后的更新ID
+	 * 获取酒店增量最后的更新ID
 	 *
-	 * @param params
+	 * @param lastTime
+	 * @param proxyAccount
 	 * @return 
 	 *
-	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Map)    
+	 * @see com.elong.nb.service.impl.AbstractIncrService#getLastId(java.util.Date, com.elong.nb.common.model.ProxyAccount)    
 	 */
 	@Override
-	protected BigInteger getLastId(Map<String, Object> params) {
-		if (params == null || !params.containsKey("lastTime")) {
-			throw new IncrException("the map 'params' is requeried,and the map 'params' must contain the key 'lastTime'.");
-		}
-		Object lastTimeObj = params.get("lastTime");
-		if (lastTimeObj == null) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must not be null.");
-		}
-		if (!(lastTimeObj instanceof Date)) {
-			throw new IncrException("the parameter 'lastTime' which belongs to the map 'params' must be date type.");
-		}
-		Date lastTime = (Date) params.get("lastTime");
+	protected BigInteger getLastId(Date lastTime, ProxyAccount proxyAccount) {
 		IncrHotel incrHotel = getOneIncrHotel(lastTime);
 		if (incrHotel == null) {
 			incrHotel = getLastIncrHotel();

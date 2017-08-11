@@ -28,22 +28,6 @@ public class DateHandlerUtils {
 	/** 
 	 * 获取指定类型偏移值后的日期
 	 *
-	 * @param date
-	 * @param type
-	 * @param value
-	 * @param pattern
-	 * @return
-	 */
-	public static String getOffsetDateStr(Date date, int type, int value, String pattern) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendar.add(type, value);
-		return formatDate(calendar.getTime(), pattern);
-	}
-
-	/** 
-	 * 获取指定类型偏移值后的日期
-	 *
 	 * @param type Calendar.HOUR 等等
 	 * @param value 偏移值
 	 * @return
@@ -65,30 +49,6 @@ public class DateHandlerUtils {
 	public static String formatDate(Date date, String pattern) {
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		return sdf.format(date);
-	}
-
-	/**   
-	 * 得到dBExpireDate的值   
-	 *   
-	 * @return dBExpireDate的值
-	 */
-	public static Date getDBExpireDate() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		calendar.add(Calendar.HOUR, -30);
-		return calendar.getTime();
-	}
-
-	/**   
-	 * 得到cacheExpireDate的值   
-	 *   
-	 * @return cacheExpireDate的值
-	 */
-	public static Date getCacheExpireDate() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		calendar.add(Calendar.MINUTE, -30);
-		return calendar.getTime();
 	}
 
 }
