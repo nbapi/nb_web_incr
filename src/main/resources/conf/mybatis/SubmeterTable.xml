@@ -6,24 +6,19 @@
 	<select id="queryNoEmptySubTableList" resultType="java.lang.String">
 		select t.table_name from information_schema.tables t
 		<where>
-			and t.table_name like #{tablePrefix} 
+			and t.table_name like #{tablePrefix}
 			and t.table_rows > 0
 		</where>
-		<if test="isDesc != null and isDesc == false">
-			order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) asc
-		</if>
-		<if test="isDesc != null and isDesc == true">
-			order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) desc
-		</if>
+		order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) desc limit 0,10
 	</select>
-	
+
 	<!-- 查询指定tableNamePrefix的分表 -->
 	<select id="queryAllSubTableList" resultType="java.util.Map">
 		select t.table_name,t.table_rows from information_schema.tables t
 		<where>
 			and t.table_name like #{tablePrefix}
 		</where>
-		order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) desc  
+		order by cast(SUBSTR(t.table_name FROM INSTR(t.table_name,'_') + 1) as UNSIGNED INTEGER) desc
 		limit 0,#{maxRecordCount}
 	</select>
 
