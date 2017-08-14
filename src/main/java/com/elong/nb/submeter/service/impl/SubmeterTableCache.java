@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
 
 import com.elong.nb.common.util.JedisPoolUtil;
 import com.elong.nb.dao.SubmeterTableDao;
@@ -72,12 +73,12 @@ public class SubmeterTableCache {
 			}
 			return subTableNameList;
 		}
-		lastChangeTime = currentTime;
 
 		// 数据库获取到list降序的，根据isDesc决定是否倒序，直接返回
 		subTableNameList = submeterTableDao.queryNoEmptySubTableList(tablePrefix + "%");
 		// 刷新redis数据
 		refresh(tablePrefix, subTableNameList);
+		lastChangeTime = currentTime;
 		if (!isDesc) {
 			Collections.reverse(subTableNameList);
 		}
@@ -96,17 +97,26 @@ public class SubmeterTableCache {
 		long lockTime = lock(source);
 		try {
 			Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
+			jedis.watch(jedisKey);
+			Transaction transaction = jedis.multi();
 			jedis.del(jedisKey);
 			for (String subTableName : subTableNameList) {
 				jedis.lpush(jedisKey, subTableName);
 				jedis.ltrim(jedisKey, 0, SubmeterConst.NOEMPTY_SUMETER_COUNT_IN_REDIS);
 			}
+			transaction.exec();
 			JedisPoolUtil.returnRes(jedis);
 		} finally {
 			unlock(source, lockTime);
 		}
 	}
 
+	/** 
+	 * 不完善，后续改为调统一分布式锁服务 
+	 *
+	 * @param source
+	 * @return
+	 */
 	private long lock(String source) {
 		Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
 		while (jedis.setnx(SubmeterConst.SUMETER_REDIS_LOCK_KEY, "lock") == 0) {
