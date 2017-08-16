@@ -20,8 +20,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.elong.nb.UserServiceAgent;
 import com.elong.nb.common.gson.GsonUtil;
 import com.elong.nb.common.model.ErrorCode;
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.model.RestRequest;
 import com.elong.nb.common.model.RestResponse;
 import com.elong.nb.exception.IncrException;
@@ -70,7 +72,7 @@ public class IncrController {
 	public ResponseEntity<byte[]> getIncrState(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrState", request);
 	}
-	
+
 	/** 
 	 * 获取房价增量
 	 *
@@ -82,7 +84,7 @@ public class IncrController {
 	public ResponseEntity<byte[]> getIncrRates(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrRates", request);
 	}
-	
+
 	/** 
 	 * 获取订单增量
 	 *
@@ -94,7 +96,7 @@ public class IncrController {
 	public ResponseEntity<byte[]> getIncrOrders(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrOrders", request);
 	}
-	
+
 	/** 
 	 * 获取酒店增量
 	 *
@@ -106,7 +108,7 @@ public class IncrController {
 	public ResponseEntity<byte[]> getIncrHotel(HttpServletRequest request) throws IOException {
 		return getIncrDatas("getIncrHotel", request);
 	}
-	
+
 	/** 
 	 * 获取库存增量
 	 *
@@ -131,6 +133,9 @@ public class IncrController {
 		RestRequest<IncrIdRequest> restRequest = GsonUtil.toReq(request, IncrIdRequest.class, null);
 		Double version = restRequest.getVersion() == null ? 0d : restRequest.getVersion();
 		try {
+			String userName = request.getHeader("userName");
+			ProxyAccount proxyAccount = UserServiceAgent.findProxyByUsername(userName);
+
 			// 校验请求参数
 			String rst = incrValidateService.validateIncrIdRequest(restRequest);
 			logger.info("getLastId,checkMessage,result = " + rst);
@@ -141,7 +146,7 @@ public class IncrController {
 			}
 			// 获取响应数据
 			EnumIncrType incrType = restRequest.getRequest().getIncrType();
-			restResponse = incrServiceFactory.getIIncrService(incrType).getLastId(restRequest);
+			restResponse = incrServiceFactory.getIIncrService(incrType).getLastId(restRequest, proxyAccount);
 			logger.info("getLastId,responseCode = " + restResponse.getCode());
 			// 返回响应数据
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
@@ -159,7 +164,7 @@ public class IncrController {
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);
 		}
 	}
-	
+
 	/** 
 	 * 获取增量数据
 	 *
@@ -172,6 +177,9 @@ public class IncrController {
 		RestRequest<IncrRequest> restRequest = GsonUtil.toReq(request, IncrRequest.class, null);
 		Double version = restRequest.getVersion() == null ? 0d : restRequest.getVersion();
 		try {
+			String userName = request.getHeader("userName");
+			ProxyAccount proxyAccount = UserServiceAgent.findProxyByUsername(userName);
+
 			// 校验请求参数
 			String rst = incrValidateService.validateIncrRequest(restRequest);
 			logger.info(getIncrDatas + ",checkMessage,result = " + rst);
@@ -182,7 +190,7 @@ public class IncrController {
 			}
 			// 获取响应数据
 			IIncrService incrService = incrServiceFactory.getIIncrService(getIncrDatas);
-			restResponse = incrService.getIncrDatas(restRequest);
+			restResponse = incrService.getIncrDatas(restRequest, proxyAccount);
 			logger.info(getIncrDatas + ",responseCode = " + restResponse.getCode());
 			// 返回响应数据
 			return new ResponseEntity<byte[]>(GsonUtil.toJson(restResponse, version).getBytes(), HttpStatus.OK);

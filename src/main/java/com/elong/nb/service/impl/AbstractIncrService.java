@@ -51,7 +51,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 	 * @see com.elong.nb.service.IIncrService#getIncrDatas(com.elong.nb.common.model.RestRequest)    
 	 */
 	@Override
-	public RestResponse<IncrResponse<T>> getIncrDatas(RestRequest<IncrRequest> restRequest) {
+	public RestResponse<IncrResponse<T>> getIncrDatas(RestRequest<IncrRequest> restRequest,ProxyAccount proxyAccount) {
 		// 基本检查
 		if (restRequest == null || restRequest.getRequest() == null) {
 			logger.error("getIncrDatas error,due to the parameter 'restRequest' is null or the real request is null.");
@@ -71,7 +71,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 		logger.info("getIncrDatas params,lastId = " + lastId + ",maxRecordCount = " + maxRecordCount + ",guid = " + restRequest.getGuid());
 
 		// 获取增量数据
-		List<T> incrDatas = getIncrDatas(lastId, maxRecordCount, restRequest.getProxyInfo());
+		List<T> incrDatas = getIncrDatas(lastId, maxRecordCount, proxyAccount);
 		logger.info("getIncrDatas result,result count = " + (incrDatas == null ? 0 : incrDatas.size()) + ",guid = " + restRequest.getGuid());
 		incrResponse.setList(incrDatas);
 		restResponse.setResult(incrResponse);
@@ -102,7 +102,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 	 * @see com.elong.nb.service.IIncrService#getLastId(com.elong.nb.common.model.RestRequest)    
 	 */
 	@Override
-	public RestResponse<IncrIdResponse> getLastId(RestRequest<IncrIdRequest> restRequest) {
+	public RestResponse<IncrIdResponse> getLastId(RestRequest<IncrIdRequest> restRequest,ProxyAccount proxyAccount) {
 		// 基本检查
 		if (restRequest == null || restRequest.getRequest() == null) {
 			logger.error("getLastId error,due to the parameter 'restRequest' is null or the real request is null.");
@@ -125,7 +125,7 @@ public abstract class AbstractIncrService<T> implements IIncrService<T> {
 		IncrIdResponse incrIdResponse = new IncrIdResponse();
 
 		// 获取数据
-		BigInteger lastId = getLastId(lastTime, restRequest.getProxyInfo());
+		BigInteger lastId = getLastId(lastTime, proxyAccount);
 		incrIdResponse.setLastId(lastId == null ? IncrConst.bigIntegerNegativeOne : lastId);
 		logger.info("getLastId result,lastId = " + incrIdResponse.getLastId() + ",guid = " + restRequest.getGuid());
 		restResponse.setResult(incrIdResponse);

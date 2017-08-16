@@ -5,6 +5,7 @@
  */
 package com.elong.nb.service;
 
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.model.RestRequest;
 import com.elong.nb.common.model.RestResponse;
 import com.elong.nb.model.IncrIdRequest;
@@ -34,7 +35,7 @@ public interface IIncrService<T> {
 	 * @param restRequest
 	 * @return
 	 */
-	public RestResponse<IncrResponse<T>> getIncrDatas(RestRequest<IncrRequest> restRequest);
+	public RestResponse<IncrResponse<T>> getIncrDatas(RestRequest<IncrRequest> restRequest,ProxyAccount proxyAccount);
 
 	/** 
 	 * 获取最后的更新ID
@@ -42,6 +43,6 @@ public interface IIncrService<T> {
 	 * @param restRequest
 	 * @return
 	 */
-	public RestResponse<IncrIdResponse> getLastId(RestRequest<IncrIdRequest> restRequest);
+	public RestResponse<IncrIdResponse> getLastId(RestRequest<IncrIdRequest> restRequest,ProxyAccount proxyAccount);
 
 }
