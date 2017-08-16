@@ -17,9 +17,9 @@ import org.springframework.stereotype.Repository;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
-import com.elong.nb.common.util.JedisPoolUtil;
 import com.elong.nb.dao.SubmeterTableDao;
 import com.elong.nb.model.enums.SubmeterConst;
+import com.elong.nb.util.JedisPoolUtil;
 
 /**
  * 表元数据信息缓存
