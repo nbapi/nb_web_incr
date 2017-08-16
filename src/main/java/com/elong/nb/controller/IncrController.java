@@ -137,7 +137,7 @@ public class IncrController {
 			ProxyAccount proxyAccount = UserServiceAgent.findProxyByUsername(userName);
 
 			// 校验请求参数
-			String rst = incrValidateService.validateIncrIdRequest(restRequest);
+			String rst = incrValidateService.validateIncrIdRequest(restRequest, proxyAccount);
 			logger.info("getLastId,checkMessage,result = " + rst);
 			RestResponse<IncrIdResponse> restResponse = new RestResponse<IncrIdResponse>(restRequest.getGuid());
 			if (StringUtils.isNotBlank(rst)) {
@@ -181,7 +181,7 @@ public class IncrController {
 			ProxyAccount proxyAccount = UserServiceAgent.findProxyByUsername(userName);
 
 			// 校验请求参数
-			String rst = incrValidateService.validateIncrRequest(restRequest);
+			String rst = incrValidateService.validateIncrRequest(restRequest, proxyAccount);
 			logger.info(getIncrDatas + ",checkMessage,result = " + rst);
 			RestResponse<IncrResponse> restResponse = new RestResponse<IncrResponse>(restRequest.getGuid());
 			if (StringUtils.isNotBlank(rst)) {

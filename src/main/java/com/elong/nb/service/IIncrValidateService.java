@@ -5,6 +5,7 @@
  */
 package com.elong.nb.service;
 
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.model.RestRequest;
 import com.elong.nb.model.IncrIdRequest;
 import com.elong.nb.model.IncrRequest;
@@ -31,7 +32,7 @@ public interface IIncrValidateService {
 	 * @param restRequest
 	 * @return
 	 */
-	public String validateIncrRequest(RestRequest<IncrRequest> restRequest);
+	public String validateIncrRequest(RestRequest<IncrRequest> restRequest, ProxyAccount proxyAccount);
 
 	/** 
 	 * 增量请求LastId校验
@@ -39,6 +40,6 @@ public interface IIncrValidateService {
 	 * @param restRequest
 	 * @return
 	 */
-	public String validateIncrIdRequest(RestRequest<IncrIdRequest> restRequest);
+	public String validateIncrIdRequest(RestRequest<IncrIdRequest> restRequest, ProxyAccount proxyAccount);
 
 }

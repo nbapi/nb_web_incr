@@ -8,6 +8,7 @@ package com.elong.nb.service.impl;
 import org.springframework.stereotype.Service;
 
 import com.elong.nb.common.model.ErrorCode;
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.model.RestRequest;
 import com.elong.nb.common.util.ValidateUtil;
 import com.elong.nb.model.IncrIdRequest;
@@ -40,9 +41,9 @@ public class IncrValidateService implements IIncrValidateService {
 	 * @see com.elong.nb.service.IIncrValidateService#validateIncrRequest(com.elong.nb.common.model.RestRequest)    
 	 */
 	@Override
-	public String validateIncrRequest(RestRequest<IncrRequest> restRequest) {
+	public String validateIncrRequest(RestRequest<IncrRequest> restRequest, ProxyAccount proxyAccount) {
 		StringBuffer sb = new StringBuffer();
-		sb.append(ValidateUtil.validateRestRequest(restRequest));
+		sb.append(ValidateUtil.validateRestRequest(restRequest, proxyAccount));
 		IncrRequest incrRequest = restRequest.getRequest();
 		if (incrRequest == null)
 			return sb.toString();
@@ -61,9 +62,9 @@ public class IncrValidateService implements IIncrValidateService {
 	 * @see com.elong.nb.service.IIncrValidateService#validateIncrIdRequest(com.elong.nb.common.model.RestRequest)    
 	 */
 	@Override
-	public String validateIncrIdRequest(RestRequest<IncrIdRequest> restRequest) {
+	public String validateIncrIdRequest(RestRequest<IncrIdRequest> restRequest, ProxyAccount proxyAccount) {
 		StringBuffer sb = new StringBuffer();
-		sb.append(ValidateUtil.validateRestRequest(restRequest));
+		sb.append(ValidateUtil.validateRestRequest(restRequest, proxyAccount));
 		IncrIdRequest incrIdRequest = restRequest.getRequest();
 		if (incrIdRequest == null)
 			return sb.toString();
