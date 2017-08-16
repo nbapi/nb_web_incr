@@ -14,12 +14,10 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Transaction;
-
+import com.elong.nb.cache.ICacheKey;
+import com.elong.nb.cache.RedisManager;
 import com.elong.nb.dao.SubmeterTableDao;
 import com.elong.nb.model.enums.SubmeterConst;
-import com.elong.nb.util.JedisPoolUtil;
 
 /**
  * 表元数据信息缓存
@@ -40,7 +38,7 @@ public class SubmeterTableCache {
 
 	private static final Logger logger = Logger.getLogger("SubmeterLogger");
 
-	private static final String REDIS_SENTINEL_CONFIG = "redis_sentinel";
+	private RedisManager redisManager = RedisManager.getInstance("redis_shared", "redis_shared");
 
 	@Resource
 	private SubmeterTableDao submeterTableDao;
@@ -61,9 +59,8 @@ public class SubmeterTableCache {
 	 */
 	public List<String> queryNoEmptySubTableList(String tablePrefix, boolean isDesc) {
 		String jedisKey = tablePrefix + ".Submeter.TableNames";
-		Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
-		List<String> subTableNameList = jedis.lrange(jedisKey, 0, jedis.llen(jedisKey));
-		JedisPoolUtil.returnRes(jedis);
+		ICacheKey lockCacheKey = RedisManager.getCacheKey(jedisKey);
+		List<String> subTableNameList = redisManager.pull(lockCacheKey);
 
 		// 缓存中获取到list升序的，根据isDesc决定是否倒序，直接返回
 		long currentTime = System.currentTimeMillis();
@@ -93,21 +90,17 @@ public class SubmeterTableCache {
 	 */
 	private void refresh(String tablePrefix, List<String> subTableNameList) {
 		String jedisKey = tablePrefix + ".Submeter.TableNames";
+		ICacheKey lockCacheKey = RedisManager.getCacheKey(jedisKey);
 		String source = "UUID = " + UUID.randomUUID().toString() + ",refresh noempty tablenames from db into redis";
-		long lockTime = lock(source);
+		long lockTime = lock(lockCacheKey, source);
 		try {
-			Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
-			jedis.watch(jedisKey);
-			Transaction transaction = jedis.multi();
-			jedis.del(jedisKey);
+			redisManager.del(lockCacheKey);
 			for (String subTableName : subTableNameList) {
-				jedis.lpush(jedisKey, subTableName);
-				jedis.ltrim(jedisKey, 0, SubmeterConst.NOEMPTY_SUMETER_COUNT_IN_REDIS);
+				redisManager.lpush(lockCacheKey, subTableName.getBytes());
+				redisManager.ltrim(lockCacheKey, 0, SubmeterConst.NOEMPTY_SUMETER_COUNT_IN_REDIS);
 			}
-			transaction.exec();
-			JedisPoolUtil.returnRes(jedis);
 		} finally {
-			unlock(source, lockTime);
+			unlock(lockCacheKey, source, lockTime);
 		}
 	}
 
@@ -117,23 +110,19 @@ public class SubmeterTableCache {
 	 * @param source
 	 * @return
 	 */
-	private long lock(String source) {
-		Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
-		while (jedis.setnx(SubmeterConst.SUMETER_REDIS_LOCK_KEY, "lock") == 0) {
+	private long lock(ICacheKey lockCacheKey, String source) {
+		while (redisManager.setnx(lockCacheKey, "lock") == 0) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
 		}
 		logger.info("lock successfully.invoke position = " + source);
-		JedisPoolUtil.returnRes(jedis);
 		return System.currentTimeMillis();
 	}
 
-	private void unlock(String source, long lockTime) {
-		Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
-		jedis.del(SubmeterConst.SUMETER_REDIS_LOCK_KEY);
-		JedisPoolUtil.returnRes(jedis);
+	private void unlock(ICacheKey lockCacheKey, String source, long lockTime) {
+		redisManager.del(lockCacheKey);
 		logger.info("lock time = " + (System.currentTimeMillis() - lockTime) + ",unlock successfully.invoke position = " + source);
 	}
 
