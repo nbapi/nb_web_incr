@@ -5,6 +5,7 @@
  */
 package com.elong.nb.submeter.service.impl;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -58,8 +59,8 @@ public class SubmeterTableCache {
 	 * @return
 	 */
 	public List<String> queryNoEmptySubTableList(String tablePrefix, boolean isDesc) {
-		String jedisKey = tablePrefix + ".Submeter.TableNames";
-		ICacheKey tablesCacheKey = RedisManager.getCacheKey(jedisKey);
+		ICacheKey tablesCacheKey = RedisManager.getCacheKey(MessageFormat
+				.format(SubmeterConst.SUBMETER_NOEMPTY_TABLENAMES_KEY, tablePrefix));
 		List<String> subTableNameList = redisManager.pull(tablesCacheKey);
 
 		// 缓存中获取到list升序的，根据isDesc决定是否倒序，直接返回
@@ -89,15 +90,16 @@ public class SubmeterTableCache {
 	 * @param newTableNames
 	 */
 	private void refresh(String tablePrefix, List<String> subTableNameList) {
-		String jedisKey = SubmeterConst.SUMETER_REDIS_LOCK_KEY + "_" + tablePrefix;
-		ICacheKey lockCacheKey = RedisManager.getCacheKey(jedisKey);
+		ICacheKey lockCacheKey = RedisManager.getCacheKey(MessageFormat.format(SubmeterConst.SUBMETER_REDIS_LOCK_KEY, tablePrefix));
 		String source = "UUID = " + UUID.randomUUID().toString() + ",refresh noempty tablenames from db into redis";
 		long lockTime = lock(lockCacheKey, source);
 		try {
-			redisManager.del(lockCacheKey);
+			ICacheKey tablesCacheKey = RedisManager.getCacheKey(MessageFormat.format(SubmeterConst.SUBMETER_NOEMPTY_TABLENAMES_KEY,
+					tablePrefix));
+			redisManager.del(tablesCacheKey);
 			for (String subTableName : subTableNameList) {
-				redisManager.lpush(lockCacheKey, subTableName.getBytes());
-				redisManager.ltrim(lockCacheKey, 0, SubmeterConst.NOEMPTY_SUMETER_COUNT_IN_REDIS);
+				redisManager.lpush(tablesCacheKey, subTableName.getBytes());
+				redisManager.ltrim(tablesCacheKey, 0, SubmeterConst.NOEMPTY_SUMETER_COUNT_IN_REDIS);
 			}
 		} finally {
 			unlock(lockCacheKey, source, lockTime);
