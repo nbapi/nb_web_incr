@@ -59,8 +59,8 @@ public class SubmeterTableCache {
 	 */
 	public List<String> queryNoEmptySubTableList(String tablePrefix, boolean isDesc) {
 		String jedisKey = tablePrefix + ".Submeter.TableNames";
-		ICacheKey lockCacheKey = RedisManager.getCacheKey(jedisKey);
-		List<String> subTableNameList = redisManager.pull(lockCacheKey);
+		ICacheKey tablesCacheKey = RedisManager.getCacheKey(jedisKey);
+		List<String> subTableNameList = redisManager.pull(tablesCacheKey);
 
 		// 缓存中获取到list升序的，根据isDesc决定是否倒序，直接返回
 		long currentTime = System.currentTimeMillis();
@@ -89,7 +89,7 @@ public class SubmeterTableCache {
 	 * @param newTableNames
 	 */
 	private void refresh(String tablePrefix, List<String> subTableNameList) {
-		String jedisKey = tablePrefix + ".Submeter.TableNames";
+		String jedisKey = SubmeterConst.SUMETER_REDIS_LOCK_KEY + "_" + tablePrefix;
 		ICacheKey lockCacheKey = RedisManager.getCacheKey(jedisKey);
 		String source = "UUID = " + UUID.randomUUID().toString() + ",refresh noempty tablenames from db into redis";
 		long lockTime = lock(lockCacheKey, source);
