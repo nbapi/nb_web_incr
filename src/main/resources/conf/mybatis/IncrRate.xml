@@ -21,8 +21,11 @@
 	<select id="getIncrRates" resultType="incrRate">
 		select * from ${subTableName}
 		<where>
-			<if test="params.ID != null and !params.ID.equals('')">
-				<![CDATA[ and ID > #{params.ID}  ]]>
+			<if test="params.startId != null and !params.startId.equals('')">
+				<![CDATA[ and ID > #{params.startId}  ]]>
+			</if>
+			<if test="params.endId != null and !params.endId.equals('')">
+				<![CDATA[ and ID <= #{params.endId}  ]]>
 			</if>
 			<if test="params.lastTime != null and !params.lastTime.equals('')">
 				<![CDATA[ and ChangeTime <= #{params.lastTime}  ]]>

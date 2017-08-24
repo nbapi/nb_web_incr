@@ -61,6 +61,10 @@ public class IncrHotelSubmeterService extends AbstractSubmeterService<IncrHotel>
 		if (EnumSellChannel.B == proxyAccount.getSellChannel()) {
 			params.put("Channel", 0);
 		}
+		long startId = (long) params.get("ID");
+		long endId = startId + 10000;
+		params.put("startId", startId);
+		params.put("endId", endId);
 		return incrHotelDao.getIncrHotels(subTableName, params);
 	}
 
