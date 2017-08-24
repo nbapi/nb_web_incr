@@ -8,6 +8,8 @@ package com.elong.nb.submeter.service;
 import java.util.Date;
 import java.util.List;
 
+import com.elong.nb.common.model.ProxyAccount;
+
 /**
  * 分表服务接口
  *
@@ -38,7 +40,7 @@ public interface ISubmeterService<T> {
 	 * @param maxRecordCount
 	 * @return
 	 */
-	public List<T> getIncrDataList(long lastId, int maxRecordCount);
+	public List<T> getIncrDataList(long lastId, int maxRecordCount, ProxyAccount proxyAccount);
 
 	/** 
 	 * 获取最大IncrID的增量

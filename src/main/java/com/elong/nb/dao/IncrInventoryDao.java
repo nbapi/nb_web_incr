@@ -28,7 +28,7 @@ import com.elong.nb.model.bean.IncrInventory;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("dataSource_nbsubmeter_write")
+@DataSource("dataSource_nbsubmeter_read")
 public interface IncrInventoryDao {
 
 	/** 

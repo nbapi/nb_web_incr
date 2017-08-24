@@ -8,6 +8,7 @@ package com.elong.nb.service;
 import java.util.Date;
 import java.util.List;
 
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.model.bean.IncrInventory;
 
 /**
@@ -48,6 +49,6 @@ public interface IIncrInventoryService {
 	 * @param maxRecordCount
 	 * @return
 	 */
-	public List<IncrInventory> getIncrInventories(long lastId, int maxRecordCount);
+	public List<IncrInventory> getIncrInventories(long lastId, int maxRecordCount,ProxyAccount proxyAccount);
 
 }

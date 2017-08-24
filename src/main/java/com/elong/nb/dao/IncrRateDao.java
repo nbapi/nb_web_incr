@@ -5,8 +5,11 @@
  */
 package com.elong.nb.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.elong.nb.db.DataSource;
 import com.elong.nb.model.bean.IncrRate;
@@ -25,30 +28,30 @@ import com.elong.nb.model.bean.IncrRate;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("dataSource_nbhotelincr_read")
+@DataSource("dataSource_nbsubmeter_read")
 public interface IncrRateDao {
 
 	/** 
-	 * 获取最大IncrID的房价增量
+	 * 获取最大IncrID的价格增量
 	 *
 	 * @return
 	 */
-	public IncrRate getLastIncrRate();
+	public IncrRate getLastIncrRate(@Param("subTableName") String subTableName);
 
 	/** 
-	 * 获取大于指定lastTime的最早发生变化的房价增量
+	 * 获取大于指定lastTime的最早发生变化的价格增量
 	 *
 	 * @param paramMap
 	 * @return
 	 */
-	public IncrRate getOneIncrRate(Map<String, Object> paramMap);
+	public IncrRate getOneIncrRate(@Param("subTableName") String subTableName, @Param("lastTime") Date lastTime);
 
 	/** 
-	 * 获取大于指定lastId的maxRecordCount条房价增量
+	 * 获取大于指定lastId的maxRecordCount条价格增量
 	 *
 	 * @param paramMap
 	 * @return
 	 */
-	public List<IncrRate> getIncrRates(Map<String, Object> paramMap);
+	public List<IncrRate> getIncrRates(@Param("subTableName") String subTableName, @Param("params") Map<String, Object> paramMap);
 
 }

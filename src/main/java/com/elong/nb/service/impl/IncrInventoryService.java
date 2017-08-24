@@ -96,13 +96,13 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 	 *      int)
 	 */
 	@Override
-	public List<IncrInventory> getIncrInventories(long lastId, int maxRecordCount) {
+	public List<IncrInventory> getIncrInventories(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		if (maxRecordCount == 0) {
 			logger.error("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrInventories error,due to the parameter 'maxRecordCount' is 0.");
 		}
 		try {
-			return incrInventorySubmeterService.getIncrDataList(lastId, maxRecordCount);
+			return incrInventorySubmeterService.getIncrDataList(lastId, maxRecordCount, proxyAccount);
 		} catch (Exception e) {
 			logger.error("getIncrInventories error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
@@ -121,7 +121,7 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 	 */
 	@Override
 	protected List<IncrInventory> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
-		return getIncrInventories(lastId, maxRecordCount);
+		return getIncrInventories(lastId, maxRecordCount, proxyAccount);
 	}
 
 	/** 

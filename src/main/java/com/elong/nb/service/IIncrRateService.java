@@ -58,6 +58,6 @@ public interface IIncrRateService {
 	 * @param maxRecordCount
 	 * @return
 	 */
-	public List<IncrRate> getIncrRates(long lastId, int maxRecordCount);
+	public List<IncrRate> getIncrRates(long lastId, int maxRecordCount, ProxyAccount proxyAccount);
 
 }

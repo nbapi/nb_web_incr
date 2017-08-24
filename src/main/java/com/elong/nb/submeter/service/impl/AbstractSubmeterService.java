@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.model.bean.Idable;
 import com.elong.nb.model.enums.SubmeterConst;
 import com.elong.nb.submeter.service.ISubmeterService;
@@ -39,7 +40,7 @@ import com.elong.nb.submeter.service.ISubmeterService;
 public abstract class AbstractSubmeterService<T extends Idable> implements ISubmeterService<T> {
 
 	private static final Logger logger = Logger.getLogger("SubmeterLogger");
-	
+
 	@Resource
 	private SubmeterTableCache submeterTableCache;
 
@@ -53,7 +54,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	 * @see com.elong.nb.service.ISubmeterService#getIncrDataList(long, int)    
 	 */
 	@Override
-	public List<T> getIncrDataList(long lastId, int maxRecordCount) {
+	public List<T> getIncrDataList(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		String tablePrefix = getTablePrefix();
 		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, false);
 		if (subTableNameList == null || subTableNameList.size() == 0)
@@ -73,7 +74,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 				continue;
 			params.put("maxRecordCount", maxRecordCount);
 			params.put("lastTime", getLastTimeAfterDelay());
-			List<T> subList = getIncrDataList(subTableName, params);
+			List<T> subList = getIncrDataList(subTableName, params, proxyAccount);
 			if (subList == null || subList.size() == 0)
 				continue;
 			resultList.addAll(subList);
@@ -164,7 +165,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	 * @param params
 	 * @return
 	 */
-	protected abstract List<T> getIncrDataList(String subTableName, Map<String, Object> params);
+	protected abstract List<T> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount);
 
 	/** 
 	 * 获取数据延时时间（子类选择覆盖）

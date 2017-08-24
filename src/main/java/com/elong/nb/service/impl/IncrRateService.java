@@ -9,9 +9,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.util.SafeConvertUtils;
-import com.elong.nb.dao.IncrRateDao;
 import com.elong.nb.exception.IncrException;
 import com.elong.nb.model.IncrRateResponse;
 import com.elong.nb.model.IncrResponse;
@@ -31,6 +28,7 @@ import com.elong.nb.rule.agent.SettlementPriceRuleCommon;
 import com.elong.nb.rule.agent.enums.EnumSystem;
 import com.elong.nb.rule.agent.model.RateWithRule;
 import com.elong.nb.service.IIncrRateService;
+import com.elong.nb.submeter.service.impl.IncrRateSubmeterService;
 import com.elong.nb.util.IncrConst;
 
 /**
@@ -52,8 +50,8 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 
 	private static final Log logger = LogFactory.getLog(IncrRateService.class);
 
-	@Resource
-	private IncrRateDao incrRateDao;
+	@Resource(name = "incrRateSubmeterService")
+	private IncrRateSubmeterService incrRateSubmeterService;
 
 	/** 
 	 * 获取最大IncrID的房价增量
@@ -65,7 +63,7 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	@Override
 	public IncrRate getLastIncrRate() {
 		try {
-			return incrRateDao.getLastIncrRate();
+			return incrRateSubmeterService.getLastIncrData();
 		} catch (Exception e) {
 			logger.error("getLastIncrRate error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
@@ -87,9 +85,7 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 			throw new IncrException("getOneIncrRate error,due to the parameter 'lastTime' is null.");
 		}
 		try {
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("lastTime", lastTime);
-			return incrRateDao.getOneIncrRate(paramMap);
+			return incrRateSubmeterService.getOneIncrData(lastTime);
 		} catch (Exception e) {
 			logger.error("getOneIncrRate error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
@@ -106,20 +102,13 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	 * @see com.elong.nb.service.IIncrRateService#getIncrRates(long, int)    
 	 */
 	@Override
-	public List<IncrRate> getIncrRates(long lastId, int maxRecordCount) {
-		// if (lastId == 0) {
-		// logger.error("getIncrRates error,due to the parameter 'lastId' is 0.");
-		// throw new IncrException("getIncrRates error,due to the parameter 'lastId' is 0.");
-		// }
+	public List<IncrRate> getIncrRates(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		if (maxRecordCount == 0) {
 			logger.error("getIncrRates error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrRates error,due to the parameter 'maxRecordCount' is 0.");
 		}
 		try {
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("lastId", lastId);
-			paramMap.put("maxRecordCount", maxRecordCount);
-			return incrRateDao.getIncrRates(paramMap);
+			return incrRateSubmeterService.getIncrDataList(lastId, maxRecordCount, proxyAccount);
 		} catch (Exception e) {
 			logger.error("getIncrRates error,due to " + e.getMessage(), e);
 			throw new IllegalStateException(e.getMessage());
@@ -138,7 +127,7 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	 */
 	@Override
 	protected List<IncrRate> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
-		List<IncrRate> beforeRates = getIncrRates(lastId, maxRecordCount);
+		List<IncrRate> beforeRates = getIncrRates(lastId, maxRecordCount, proxyAccount);
 		// 价格小数点
 		return demicalHandler(proxyAccount, beforeRates);
 	}

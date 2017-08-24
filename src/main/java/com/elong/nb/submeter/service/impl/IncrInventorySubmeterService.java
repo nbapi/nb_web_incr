@@ -13,6 +13,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.elong.nb.common.model.EnumSellChannel;
+import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.dao.IncrInventoryDao;
 import com.elong.nb.model.bean.IncrInventory;
 
@@ -52,7 +54,10 @@ public class IncrInventorySubmeterService extends AbstractSubmeterService<IncrIn
 	}
 
 	@Override
-	protected List<IncrInventory> getIncrDataList(String subTableName, Map<String, Object> params) {
+	protected List<IncrInventory> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
+		if (EnumSellChannel.B == proxyAccount.getSellChannel()) {
+			params.put("Channel", 0);
+		}
 		return incrInventoryDao.getIncrInventories(subTableName, params);
 	}
 

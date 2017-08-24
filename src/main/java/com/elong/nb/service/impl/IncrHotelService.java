@@ -97,13 +97,13 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 	 * @see com.elong.nb.service.IIncrHotelService#getIncrHotels(long, int)    
 	 */
 	@Override
-	public List<IncrHotel> getIncrHotels(long lastId, int maxRecordCount) {
+	public List<IncrHotel> getIncrHotels(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		if (maxRecordCount == 0) {
 			logger.error("getIncrHotels error,due to the parameter 'maxRecordCount' is 0.");
 			throw new IncrException("getIncrHotels error,due to the parameter 'maxRecordCount' is 0.");
 		}
 		try {
-			List<IncrHotel> incrHotelList = incrHotelSubmeterService.getIncrDataList(lastId, maxRecordCount);
+			List<IncrHotel> incrHotelList = incrHotelSubmeterService.getIncrDataList(lastId, maxRecordCount, proxyAccount);
 			if (incrHotelList == null || incrHotelList.size() == 0)
 				return Collections.emptyList();
 			for (IncrHotel incrHotel : incrHotelList) {
@@ -130,7 +130,7 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 	 */
 	@Override
 	protected List<IncrHotel> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
-		return getIncrHotels(lastId, maxRecordCount);
+		return getIncrHotels(lastId, maxRecordCount, proxyAccount);
 	}
 
 	/** 

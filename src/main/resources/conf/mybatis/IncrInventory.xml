@@ -34,6 +34,9 @@
 			<if test="params.lastTime != null and !params.lastTime.equals('')">
 				<![CDATA[ and ChangeTime <= #{params.lastTime}  ]]>
 			</if>
+			<if test="params.Channel != null and !params.Channel.equals('')">
+				<![CDATA[ and Channel = #{params.Channel}  ]]>
+			</if>
 		</where>
 		order by ID limit 0,#{params.maxRecordCount}
 	</select>
