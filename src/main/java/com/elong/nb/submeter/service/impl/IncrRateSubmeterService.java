@@ -58,10 +58,6 @@ public class IncrRateSubmeterService extends AbstractSubmeterService<IncrRate> {
 		if (EnumSellChannel.B == proxyAccount.getSellChannel()) {
 			params.put("Channel", 0);
 		}
-		long startId = (long) params.get("ID");
-		long endId = startId + 10000;
-		params.put("startId", startId);
-		params.put("endId", endId);
 		return incrRateDao.getIncrRates(subTableName, params);
 	}
 
