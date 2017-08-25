@@ -55,7 +55,7 @@ public class IncrInventorySubmeterService extends AbstractSubmeterService<IncrIn
 
 	@Override
 	protected List<IncrInventory> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
-		if (EnumSellChannel.B == proxyAccount.getSellChannel()) {
+		if (EnumSellChannel.A != proxyAccount.getSellChannel()) {
 			params.put("Channel", 0);
 		}
 		return incrInventoryDao.getIncrInventories(subTableName, params);

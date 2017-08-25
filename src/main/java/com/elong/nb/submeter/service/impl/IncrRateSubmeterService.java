@@ -55,7 +55,7 @@ public class IncrRateSubmeterService extends AbstractSubmeterService<IncrRate> {
 
 	@Override
 	protected List<IncrRate> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
-		if (EnumSellChannel.B == proxyAccount.getSellChannel()) {
+		if (EnumSellChannel.A != proxyAccount.getSellChannel()) {
 			params.put("Channel", 0);
 		}
 		return incrRateDao.getIncrRates(subTableName, params);

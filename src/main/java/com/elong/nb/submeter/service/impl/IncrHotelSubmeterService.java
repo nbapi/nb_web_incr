@@ -58,7 +58,7 @@ public class IncrHotelSubmeterService extends AbstractSubmeterService<IncrHotel>
 
 	@Override
 	protected List<IncrHotel> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
-		if (EnumSellChannel.B == proxyAccount.getSellChannel()) {
+		if (EnumSellChannel.A != proxyAccount.getSellChannel()) {
 			params.put("Channel", 0);
 		}
 		return incrHotelDao.getIncrHotels(subTableName, params);
