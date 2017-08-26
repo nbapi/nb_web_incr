@@ -8,7 +8,9 @@ package com.elong.nb.submeter.service.impl;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
@@ -49,7 +51,7 @@ public class SubmeterTableCache {
 	 *
 	 * long SubmeterTableCache.java lastChangeTime
 	 */
-	private volatile long lastChangeTime = 0l;
+	private Map<String, Long> lastChangeTimeMap = new ConcurrentHashMap<String, Long>();
 
 	/** 
 	 * 查询指定tablePrefix的所有非空分表
@@ -65,6 +67,8 @@ public class SubmeterTableCache {
 
 		// 缓存中获取到list升序的，根据isDesc决定是否倒序，直接返回
 		long currentTime = System.currentTimeMillis();
+		Long lastChangeTime = lastChangeTimeMap.get(tablePrefix);
+		lastChangeTime = lastChangeTime == null ? 0l : lastChangeTime;
 		if (subTableNameList != null && subTableNameList.size() > 0 && (currentTime - lastChangeTime) <= 10 * 60 * 1000) {
 			if (isDesc) {
 				Collections.reverse(subTableNameList);
@@ -76,7 +80,7 @@ public class SubmeterTableCache {
 		subTableNameList = submeterTableDao.queryNoEmptySubTableList(tablePrefix + "%");
 		// 刷新redis数据
 		refresh(tablePrefix, subTableNameList);
-		lastChangeTime = currentTime;
+		lastChangeTimeMap.put(tablePrefix, currentTime);
 		if (!isDesc) {
 			Collections.reverse(subTableNameList);
 		}
@@ -100,6 +104,7 @@ public class SubmeterTableCache {
 			for (String subTableName : subTableNameList) {
 				redisManager.lpush(tablesCacheKey, subTableName.getBytes());
 				redisManager.ltrim(tablesCacheKey, 0, SubmeterConst.NOEMPTY_SUMETER_COUNT_IN_REDIS);
+				logger.info("refresh,lpush newest table = " + subTableName);
 			}
 		} finally {
 			unlock(lockCacheKey, source, lockTime);
