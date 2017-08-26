@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.elong.nb.common.model.ProxyAccount;
+import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.model.bean.Idable;
 import com.elong.nb.model.enums.SubmeterConst;
 import com.elong.nb.submeter.service.ISubmeterService;
@@ -60,7 +61,12 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return Collections.emptyList();
 
-		long tableNumber = (int) Math.ceil(lastId * 1.0 / SubmeterConst.PER_SUBMETER_ROW_COUNT);
+		int submeterRowCount = SubmeterConst.PER_SUBMETER_ROW_COUNT;
+		String configValue = CommonsUtil.CONFIG_PROVIDAR.getProperty("ImpulseSenderFromRedisTest");
+		if (StringUtils.isNotEmpty(configValue)) {
+			submeterRowCount = 100;
+		}
+		long tableNumber = (int) Math.ceil(lastId * 1.0 / submeterRowCount);
 		String selectTableName = tablePrefix + "_" + tableNumber;
 		int fromIndex = subTableNameList.indexOf(selectTableName);
 		fromIndex = (fromIndex == -1) ? 0 : fromIndex;
