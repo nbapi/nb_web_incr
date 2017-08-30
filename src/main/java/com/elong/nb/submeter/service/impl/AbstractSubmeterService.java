@@ -130,7 +130,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public T getOneIncrData(Date lastTime) {
 		String tablePrefix = getTablePrefix();
-		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, false);
+		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, true);
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return null;
 
