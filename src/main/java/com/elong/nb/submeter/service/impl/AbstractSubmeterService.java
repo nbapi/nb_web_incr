@@ -21,6 +21,7 @@ import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.model.bean.Idable;
 import com.elong.nb.model.enums.SubmeterConst;
+import com.elong.nb.submeter.service.IImpulseSenderService;
 import com.elong.nb.submeter.service.ISubmeterService;
 
 /**
@@ -43,7 +44,10 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	private static final Logger logger = Logger.getLogger("SubmeterLogger");
 
 	@Resource
-	private SubmeterTableCache submeterTableCache;
+	private SubmeterTableCalculate submeterTableCalculate;
+
+	@Resource
+	private IImpulseSenderService impulseSenderService;
 
 	/** 
 	 * 获取大于指定lastId的maxRecordCount条增量
@@ -57,7 +61,8 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public List<T> getIncrDataList(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		String tablePrefix = getTablePrefix();
-		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, false);
+		long maxId = impulseSenderService.curId(tablePrefix + "_ID");
+		List<String> subTableNameList = submeterTableCalculate.querySubTableNameList(lastId, maxId, tablePrefix, true);
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return Collections.emptyList();
 
@@ -102,7 +107,8 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public T getLastIncrData() {
 		String tablePrefix = getTablePrefix();
-		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, true);
+		long maxId = impulseSenderService.curId(tablePrefix + "_ID");
+		List<String> subTableNameList = submeterTableCalculate.querySubTableNameList(0, maxId, tablePrefix, false);
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return null;
 
@@ -130,7 +136,8 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public T getOneIncrData(Date lastTime) {
 		String tablePrefix = getTablePrefix();
-		List<String> subTableNameList = submeterTableCache.queryNoEmptySubTableList(tablePrefix, true);
+		long maxId = impulseSenderService.curId(tablePrefix + "_ID");
+		List<String> subTableNameList = submeterTableCalculate.querySubTableNameList(0, maxId, tablePrefix, false);
 		if (subTableNameList == null || subTableNameList.size() == 0)
 			return null;
 
