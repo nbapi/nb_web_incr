@@ -219,7 +219,7 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 		if (incrRate == null) {
 			incrRate = getLastIncrRate();
 		}
-		return incrRate == null ? IncrConst.bigIntegerNegativeOne : incrRate.getIncrID();
+		return incrRate == null ? IncrConst.bigIntegerNegativeOne : BigInteger.valueOf(incrRate.getID());
 	}
 
 }
