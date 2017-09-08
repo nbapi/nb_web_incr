@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.elong.nb.common.util.CommonsUtil;
@@ -31,6 +32,8 @@ import com.elong.nb.model.enums.SubmeterConst;
  */
 @Repository
 public class SubmeterTableCalculate {
+
+	private static final Logger logger = Logger.getLogger("SubmeterLogger");
 
 	/** 
 	 * 获取末尾10张or实际张非空分表
@@ -54,6 +57,8 @@ public class SubmeterTableCalculate {
 		if (isAsc) {
 			Collections.reverse(subTableNameList);
 		}
+		logger.info("lastId = " + lastId + ",maxId = " + maxId + ",tablePrefix = " + tablePrefix + ",isAsc =" + isAsc
+				+ ",calculateSubtableNameList = " + subTableNameList);
 		return subTableNameList;
 	}
 
