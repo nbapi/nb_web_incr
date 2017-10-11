@@ -58,6 +58,8 @@ public class IncrInventorySubmeterService extends AbstractSubmeterService<IncrIn
 		if (EnumSellChannel.A != proxyAccount.getSellChannel()) {
 			params.put("Channel", 0);
 		}
+		params.put("SellChannel", proxyAccount.getSellChannel().getValue());
+		params.put("IsStraint", proxyAccount.isIsOnlyStraight() ? 0 : 1);
 		return incrInventoryDao.getIncrInventories(subTableName, params);
 	}
 

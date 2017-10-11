@@ -31,6 +31,12 @@
 			<if test="params.Channel != null and !params.Channel.equals('')">
 				<![CDATA[ and Channel = #{params.Channel}  ]]>
 			</if>
+			<if test="params.SellChannel != null and !params.SellChannel.equals('')">
+				<![CDATA[ and SellChannel|#{params.SellChannel} = #{params.SellChannel}  ]]>
+			</if>
+			<if test="params.IsStraint != null and !params.IsStraint.equals('')">
+				<![CDATA[ and IsStraint = #{params.IsStraint}  ]]>
+			</if>
 		</where>
 		order by ID limit 0,#{params.maxRecordCount}
 	</select>
