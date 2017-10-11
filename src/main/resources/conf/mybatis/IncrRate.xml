@@ -31,7 +31,7 @@
 				<![CDATA[ and Channel = #{params.Channel}  ]]>
 			</if>
 			<if test="params.SellChannel != null and !params.SellChannel.equals('')">
-				<![CDATA[ and SellChannel|#{params.SellChannel} = #{params.SellChannel}  ]]>
+				<![CDATA[ and SellChannel&#{params.SellChannel} = #{params.SellChannel}  ]]>
 			</if>
 			<if test="params.IsStraint != null and !params.IsStraint.equals('')">
 				<![CDATA[ and IsStraint = #{params.IsStraint}  ]]>
