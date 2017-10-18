@@ -62,7 +62,7 @@ public class IncrHotelSubmeterService extends AbstractSubmeterService<IncrHotel>
 			params.put("Channel", 0);
 		}
 		params.put("SellChannel", proxyAccount.getSellChannel().getValue());
-		params.put("IsStraint", proxyAccount.isIsOnlyStraight() ? 0 : 1);
+		params.put("IsStraint", proxyAccount.isIsOnlyStraight() ? 1 : 2);//1为直签，2为非直签，0为未知
 		return incrHotelDao.getIncrHotels(subTableName, params);
 	}
 
