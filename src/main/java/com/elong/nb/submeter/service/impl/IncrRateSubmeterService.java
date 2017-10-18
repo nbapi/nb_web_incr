@@ -59,7 +59,9 @@ public class IncrRateSubmeterService extends AbstractSubmeterService<IncrRate> {
 			params.put("Channel", 0);
 		}
 		params.put("SellChannel", proxyAccount.getSellChannel().getValue());
-		params.put("IsStraint", proxyAccount.isIsOnlyStraight() ? 1 : 2);//1为直签，2为非直签，0为未知
+		if(proxyAccount.isIsOnlyStraight()){
+			params.put("IsStraint", 1);//1为直签，2为非直签，0为未知
+		}
 		return incrRateDao.getIncrRates(subTableName, params);
 	}
 
