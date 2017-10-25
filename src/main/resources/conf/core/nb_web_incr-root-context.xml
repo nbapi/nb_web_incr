@@ -31,7 +31,7 @@
 		<aop:aspect id="b2" ref="checklistAspect">
 			<aop:pointcut id="tx2"
 				expression="execution(public * com.elong.nb.controller.*.*(..))
-							||execution(public * com.elong.nb.submeter.service.impl.*.*(..))
+							||execution(public * com.elong.nb.submeter.service.impl.ImpulseSenderServiceImpl.*(..))
 							||execution(public * com.elong.nb.dao.*.*(..))" />
 			<aop:before pointcut-ref="tx2" method="handlerLogBefore" />
 			<aop:after-returning pointcut-ref="tx2" method="handlerLogAfter" returning="returnValue" />
