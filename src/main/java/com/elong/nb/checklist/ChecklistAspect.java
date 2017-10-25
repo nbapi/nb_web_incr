@@ -94,7 +94,7 @@ public class ChecklistAspect {
 						EnumNBLogType.OUTER_CONTROLLER);
 			} else {
 				NBActionLogHelper.businessLog(guid.toString(), true, methodName, classFullName, null, useTime, code, businessCode, result,
-						JSON.toJSONString(point.getArgs()), userNameStr, EnumNBLogType.OUTER_CONTROLLER);
+						JSON.toJSONString(point.getArgs()), userNameStr, EnumNBLogType.DAO);
 			}
 		} catch (Exception e) {// 异常吃掉，避免影响主业务
 		}
@@ -123,7 +123,7 @@ public class ChecklistAspect {
 						EnumNBLogType.OUTER_CONTROLLER);
 			} else {
 				NBActionLogHelper.businessLog((String) guid, false, methodName, classFullName, e, useTime, -1, e.getMessage(), null,
-						JSON.toJSONString(point.getArgs()), userNameStr, EnumNBLogType.OUTER_CONTROLLER);
+						JSON.toJSONString(point.getArgs()), userNameStr, EnumNBLogType.DAO);
 			}
 		} catch (Exception e) {// 异常吃掉，避免影响主业务
 		}
