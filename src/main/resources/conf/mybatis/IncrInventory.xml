@@ -25,7 +25,7 @@
 	<!-- 获取大于指定lastId的maxRecordCount条库存增量 -->
 	<select id="getIncrInventories" resultType="incrInventory">
 		select
-		IncrID,ID,ChangeID,HotelID,RoomTypeID,HotelCode,Status,AvailableDate,AvailableAmount,OverBooking,StartDate,EndDate,StartTime,EndTime,ChangeTime,OperateTime,InsertTime
+		IncrID,ID,ChangeID,HotelID,RoomTypeID,HotelCode,Status,AvailableDate,AvailableAmount,OverBooking,StartDate,EndDate,StartTime,EndTime,ChangeTime,OperateTime,InsertTime,IsInstantConfirm,IC_BeginTime,IC_EndTime
 		from ${subTableName}
 		<where>
 			<if test="params.ID != null and !params.ID.equals('')">
