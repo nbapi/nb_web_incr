@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.elong.nb.common.model.EnumSellChannel;
 import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.common.util.CommonsUtil;
 import com.elong.nb.dao.IncrHotelDao;
@@ -58,9 +57,6 @@ public class IncrHotelSubmeterService extends AbstractSubmeterService<IncrHotel>
 
 	@Override
 	protected List<IncrHotel> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
-		if (EnumSellChannel.A != proxyAccount.getSellChannel()) {
-			params.put("Channel", 0);
-		}
 		params.put("SellChannel", proxyAccount.getSellChannel().getValue());
 		if(proxyAccount.isIsOnlyStraight()){
 			params.put("IsStraint", 1);//1为直签，2为非直签，0为未知

@@ -27,9 +27,6 @@
 			<if test="params.lastTime != null and !params.lastTime.equals('')">
 				<![CDATA[ and ChangeTime <= #{params.lastTime}  ]]>
 			</if>
-			<if test="params.Channel != null and !params.Channel.equals('')">
-				<![CDATA[ and Channel = #{params.Channel}  ]]>
-			</if>
 			<if test="params.SellChannel != null and !params.SellChannel.equals('')">
 				<![CDATA[ and SellChannel&#{params.SellChannel} = #{params.SellChannel}  ]]>
 			</if>
