@@ -78,7 +78,7 @@ public class LogCollectServiceImpl implements ILogCollectService {
 	private void writeBusinessLog(int orderFrom, List<?> incrList, String incrType, Date changeTime) {
 		String logTime = DateHandlerUtils.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
 		IncrQueryStatistic incrQueryStatistic = new IncrQueryStatistic();
-		incrQueryStatistic.setBusiness_type(BUSINESS_TYPE + "_" + EnumIncrType.Order.name());
+		incrQueryStatistic.setBusiness_type(BUSINESS_TYPE + "_" + incrType);
 		incrQueryStatistic.setLog_time(logTime);
 		incrQueryStatistic.setProxyId(orderFrom + "");
 		if (CollectionUtils.isEmpty(incrList)) {

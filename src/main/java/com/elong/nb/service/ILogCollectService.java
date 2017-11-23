@@ -34,40 +34,40 @@ public interface ILogCollectService {
 	 * 订单增量监控日志收集 
 	 *
 	 * @param proxyAccount
-	 * @param incrOrderList
+	 * @param incrList
 	 */
-	public void writeIncrOrderLog(ProxyAccount proxyAccount, List<IncrOrder> incrOrderList);
+	public void writeIncrOrderLog(ProxyAccount proxyAccount, List<IncrOrder> incrList);
 
 	/** 
 	 * 酒店增量监控日志收集 
 	 *
 	 * @param proxyAccount
-	 * @param incrOrderList
+	 * @param incrList
 	 */
-	public void writeIncrHotelLog(ProxyAccount proxyAccount, List<IncrHotel> incrOrderList);
+	public void writeIncrHotelLog(ProxyAccount proxyAccount, List<IncrHotel> incrList);
 
 	/** 
 	 * 库存增量监控日志收集
 	 *
 	 * @param proxyAccount
-	 * @param incrOrderList
+	 * @param incrList
 	 */
-	public void writeIncrInvLog(ProxyAccount proxyAccount, List<IncrInventory> incrOrderList);
+	public void writeIncrInvLog(ProxyAccount proxyAccount, List<IncrInventory> incrList);
 
 	/** 
 	 * 价格增量监控日志收集
 	 *
 	 * @param proxyAccount
-	 * @param incrOrderList
+	 * @param incrList
 	 */
-	public void writeIncrRateLog(ProxyAccount proxyAccount, List<IncrRate> incrOrderList);
+	public void writeIncrRateLog(ProxyAccount proxyAccount, List<IncrRate> incrList);
 
 	/** 
 	 * 状态增量监控日志收集
 	 *
 	 * @param proxyAccount
-	 * @param incrOrderList
+	 * @param incrList
 	 */
-	public void writeIncrStateLog(ProxyAccount proxyAccount, List<IncrState> incrOrderList);
+	public void writeIncrStateLog(ProxyAccount proxyAccount, List<IncrState> incrList);
 
 }
