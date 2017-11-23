@@ -121,7 +121,9 @@ public class IncrInventoryService extends AbstractIncrService<IncrInventory> imp
 	 */
 	@Override
 	protected List<IncrInventory> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
-		return getIncrInventories(lastId, maxRecordCount, proxyAccount);
+		List<IncrInventory> incrList = getIncrInventories(lastId, maxRecordCount, proxyAccount);
+		logCollectService.writeIncrInvLog(proxyAccount, incrList);
+		return incrList;
 	}
 
 	/** 

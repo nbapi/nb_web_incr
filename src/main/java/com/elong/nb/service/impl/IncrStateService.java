@@ -137,7 +137,9 @@ public class IncrStateService extends AbstractIncrService<IncrState> implements 
 	 */
 	@Override
 	protected List<IncrState> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
-		return getIncrStates(lastId, maxRecordCount);
+		List<IncrState> incrList = getIncrStates(lastId, maxRecordCount);
+		logCollectService.writeIncrStateLog(proxyAccount, incrList);
+		return incrList;
 	}
 
 	/** 

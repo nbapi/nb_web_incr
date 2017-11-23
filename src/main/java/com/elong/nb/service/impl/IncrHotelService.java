@@ -130,7 +130,9 @@ public class IncrHotelService extends AbstractIncrService<IncrHotel> implements 
 	 */
 	@Override
 	protected List<IncrHotel> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
-		return getIncrHotels(lastId, maxRecordCount, proxyAccount);
+		List<IncrHotel> incrList = getIncrHotels(lastId, maxRecordCount, proxyAccount);
+		logCollectService.writeIncrHotelLog(proxyAccount, incrList);
+		return incrList;
 	}
 
 	/** 

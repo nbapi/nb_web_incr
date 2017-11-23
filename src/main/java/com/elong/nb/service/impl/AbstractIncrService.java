@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,6 +24,7 @@ import com.elong.nb.model.IncrRequest;
 import com.elong.nb.model.IncrResponse;
 import com.elong.nb.model.enums.EnumIncrType;
 import com.elong.nb.service.IIncrService;
+import com.elong.nb.service.ILogCollectService;
 import com.elong.nb.util.IncrConst;
 
 /**
@@ -41,6 +44,9 @@ import com.elong.nb.util.IncrConst;
 public abstract class AbstractIncrService<T> implements IIncrService<T> {
 
 	private static final Log logger = LogFactory.getLog(AbstractIncrService.class);
+	
+	@Resource
+	protected ILogCollectService logCollectService;
 
 	/** 
 	 * 获取增量数据

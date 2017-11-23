@@ -128,6 +128,7 @@ public class IncrRateService extends AbstractIncrService<IncrRate> implements II
 	@Override
 	protected List<IncrRate> getIncrDatas(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		List<IncrRate> beforeRates = getIncrRates(lastId, maxRecordCount, proxyAccount);
+		logCollectService.writeIncrRateLog(proxyAccount, beforeRates);
 		// 价格小数点
 		return demicalHandler(proxyAccount, beforeRates);
 	}
