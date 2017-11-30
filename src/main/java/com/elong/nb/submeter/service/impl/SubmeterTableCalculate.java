@@ -5,16 +5,18 @@
  */
 package com.elong.nb.submeter.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import com.elong.nb.common.util.CommonsUtil;
+import com.elong.nb.model.RowRangeInfo;
+import com.elong.nb.model.ShardingInfo;
 import com.elong.nb.model.enums.SubmeterConst;
+import com.elong.nb.util.ShardingUtils;
 
 /**
  * 计算获取表名
@@ -33,48 +35,104 @@ import com.elong.nb.model.enums.SubmeterConst;
 @Repository
 public class SubmeterTableCalculate {
 
-	private static final Logger logger = Logger.getLogger("SubmeterLogger");
+	private static final BigDecimal DENOMINATOR = new BigDecimal(10);// TODO
 
 	/** 
-	 * 获取末尾10张or实际张非空分表
+	 * 获取id所在段末尾id
 	 *
-	 * @param lastId
-	 * @param maxId
-	 * @param tablePrefix
-	 * @param isAsc 是否升序
+	 * @param id
 	 * @return
 	 */
-	public List<String> querySubTableNameList(long lastId, long maxId, String tablePrefix, boolean isAsc) {
-		List<String> subTableNameList = new ArrayList<String>();
-		long beginTableNumber = getSelectedSubTableNumber(lastId);
-		long lastTableNumber = getSelectedSubTableNumber(maxId);
-		long cycleCount = lastTableNumber - beginTableNumber + 1;
-		cycleCount = cycleCount > 10 ? 10 : cycleCount;
-		for (int i = 0; i < cycleCount; i++) {
-			String subTableName = tablePrefix + "_" + (lastTableNumber--);
-			subTableNameList.add(subTableName);
-		}
-		if (isAsc) {
-			Collections.reverse(subTableNameList);
-		}
-		logger.info("lastId = " + lastId + ",maxId = " + maxId + ",tablePrefix = " + tablePrefix + ",isAsc =" + isAsc
-				+ ",calculateSubtableNameList = " + subTableNameList);
-		return subTableNameList;
+	public long getSegmentEndId(long id) {
+		BigDecimal numerator = new BigDecimal(id);
+		BigDecimal value = numerator.divide(DENOMINATOR, 3, RoundingMode.CEILING);
+		return (long) Math.ceil(value.doubleValue()) * 10;// TODO
 	}
 
 	/** 
-	 * 获取id对应分表序号 
+	 * 获取id所在段起始id 
 	 *
-	 * @param lastId
+	 * @param id
 	 * @return
 	 */
-	public long getSelectedSubTableNumber(long id) {
-		int submeterRowCount = SubmeterConst.PER_SUBMETER_ROW_COUNT;
-		String configValue = CommonsUtil.CONFIG_PROVIDAR.getProperty("ImpulseSenderFromRedisTest");
-		if (StringUtils.isNotEmpty(configValue)) {
-			submeterRowCount = 100;
+	public long getSegmentBeginId(long id) {
+		BigDecimal numerator = new BigDecimal(id);
+		BigDecimal value = numerator.divide(DENOMINATOR, 3, RoundingMode.CEILING);
+		return (long) Math.floor(value.doubleValue()) * 10;// TODO
+	}
+
+	/** 
+	 * 获取id对应分片数据源 
+	 *
+	 * @param selectedShardId
+	 * @return
+	 */
+	public String getSelectedDataSource(long id) {
+		int selectedShardId = getSelectedShardId(id);
+		// 获取命中分片信息
+		Map<Integer, ShardingInfo> shardInfoMap = ShardingUtils.SHARDINFO_MAP;
+		ShardingInfo shardingInfo = shardInfoMap.get(selectedShardId);
+		if (shardingInfo == null) {
+			throw new IllegalStateException("selectedShardId = " + selectedShardId + ",getSelectedShard is null!");
 		}
-		return (int) Math.ceil(id * 1.0 / submeterRowCount);
+		String dataSource = shardingInfo.getDataSource();
+		if (StringUtils.isEmpty(dataSource)) {
+			throw new IllegalStateException("selectedShardId = " + selectedShardId + ",getSelectedDataSource is null!");
+		}
+		return dataSource;
+	}
+
+	/** 
+	 * 获取指定id所在行范围的分片数量 
+	 *
+	 * @param id
+	 * @return
+	 */
+	private int getShardCount(long id) {
+		// 确定id属于的行范围
+		RowRangeInfo rowRangeInfo = null;
+		List<RowRangeInfo> rowRangeInfoList = ShardingUtils.ROWRANGEINFO_LIST;
+		for (RowRangeInfo row : rowRangeInfoList) {
+			if (id < row.getBeginId().longValue() || id > row.getEndId().longValue())
+				continue;
+			rowRangeInfo = row;
+			break;
+		}
+		if (rowRangeInfo == null) {
+			throw new IllegalStateException("id = " + id + ",getRowRangeInfo is null!");
+		}
+		// 计算所属分片编号
+		String shardIdStr = rowRangeInfo.getShardIds();
+		if (StringUtils.isEmpty(shardIdStr)) {
+			throw new IllegalStateException("id = " + id + ",shardIds is null or empty!");
+		}
+		String[] shardIds = StringUtils.split(shardIdStr, ",", -1);
+		return shardIds.length;
+	}
+
+	/** 
+	 * 获取id对应的分片编号
+	 *
+	 * @param id
+	 * @return
+	 */
+	public int getSelectedShardId(long id) {
+		int shardCount = getShardCount(id);
+		int selectedShardId = (int) ((id - 1) / 10) % shardCount + 1;
+		return selectedShardId;
+	}
+
+	/** 
+	 * 获取id对应的分表
+	 *
+	 * @param id
+	 * @return
+	 */
+	public String getSelectedSubTable(String tablePrefix, long id) {
+		int shardCount = getShardCount(id);
+		int submeterRowCount = SubmeterConst.PER_SUBMETER_ROW_COUNT;
+		submeterRowCount = 100;// TODO
+		return tablePrefix + "_" + (int) Math.ceil(id * 1.0 / (shardCount * submeterRowCount));
 	}
 
 }

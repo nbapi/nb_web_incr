@@ -6,7 +6,6 @@
 package com.elong.nb.submeter.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.elong.nb.common.model.ProxyAccount;
@@ -59,28 +57,32 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	 */
 	@Override
 	public List<T> getIncrDataList(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
+		// 获取id所在分片datasource
+		String dataSource = submeterTableCalculate.getSelectedDataSource(lastId);
+		// 获取id所在分表表名
 		String tablePrefix = getTablePrefix();
-		long maxId = impulseSenderService.curId(tablePrefix + "_ID");
-		List<String> subTableNameList = submeterTableCalculate.querySubTableNameList(lastId, maxId, tablePrefix, true);
-		if (subTableNameList == null || subTableNameList.size() == 0)
-			return Collections.emptyList();
+		String subTableName = submeterTableCalculate.getSelectedSubTable(tablePrefix, lastId);
+		// 获取id所在段段尾id
+		long segmentEndId = submeterTableCalculate.getSegmentEndId(lastId);
 
-		List<T> resultList = new ArrayList<T>();
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("ID", lastId);
-		for (String subTableName : subTableNameList) {
-			if (StringUtils.isEmpty(subTableName))
-				continue;
-			params.put("maxRecordCount", maxRecordCount);
-			params.put("lastTime", getLastTimeAfterDelay());
-			List<T> subList = getIncrDataList(subTableName, params, proxyAccount);
-			if (subList == null || subList.size() == 0)
-				continue;
-			resultList.addAll(subList);
-			logger.info("subTableName = " + subTableName + ",getIncrDataList params = " + params + ",result size = " + subList.size());
-			if (subList.size() >= maxRecordCount)
-				break;
+		params.put("segmentEndId", segmentEndId);
+		params.put("maxRecordCount", maxRecordCount);
+		params.put("lastTime", getLastTimeAfterDelay());
+		List<T> subList = getIncrDataList(dataSource, subTableName, params, proxyAccount);
+		logger.info("getIncrDataList,dataSource = " + dataSource + ",subTableName = " + subTableName + ",params = " + params
+				+ ",resultListSize = " + subList.size());
+
+		List<T> resultList = new ArrayList<T>();
+		resultList.addAll(subList);
+		long maxId = impulseSenderService.curId(tablePrefix + "_ID");
+		long nextSegmentBeginId = segmentEndId + 1;
+		// id所在段返回数据不够，并且后面段有数据，则继续查下一个段
+		if (maxRecordCount > subList.size() && nextSegmentBeginId < maxId) {
 			maxRecordCount = maxRecordCount - subList.size();
+			List<T> remainList = getIncrDataList(nextSegmentBeginId, maxRecordCount, proxyAccount);
+			resultList.addAll(remainList);
 		}
 		return resultList;
 	}
@@ -96,21 +98,35 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	public T getLastIncrData() {
 		String tablePrefix = getTablePrefix();
 		long maxId = impulseSenderService.curId(tablePrefix + "_ID");
-		List<String> subTableNameList = submeterTableCalculate.querySubTableNameList(0, maxId, tablePrefix, false);
-		if (subTableNameList == null || subTableNameList.size() == 0)
-			return null;
+		return getLastIncrData(maxId);
+	}
 
-		subTableNameList.remove(tablePrefix);
-		for (String subTableName : subTableNameList) {
-			if (StringUtils.isEmpty(subTableName))
-				continue;
-			T result = getLastIncrData(subTableName);
-			logger.info("subTableName = " + subTableName + ",getLastIncrData,result  = " + result);
-			if (result == null)
-				continue;
-			return result;
+	/** 
+	 * 按段递归查询最后一条数据 
+	 *
+	 * @param trigger
+	 * @param maxId
+	 * @return
+	 */
+	private T getLastIncrData(long maxId) {
+		String tablePrefix = getTablePrefix();
+		// 获取id所在分片datasource
+		String dataSource = submeterTableCalculate.getSelectedDataSource(maxId);
+		// 获取id所在分表表名
+		String subTableName = submeterTableCalculate.getSelectedSubTable(tablePrefix, maxId);
+		// 获取id所在段段尾id
+		long segmentBeginId = submeterTableCalculate.getSegmentBeginId(maxId);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("segmentBeginId", segmentBeginId);
+		T result = getLastIncrData(dataSource, subTableName, params);
+		logger.info("getLastIncrData,dataSource = " + dataSource + ",subTableName = " + subTableName + ",params= " + params + ",result  = "
+				+ result);
+		if (result == null && segmentBeginId > 1) {
+			long previousSegmentEndId = segmentBeginId - 1;
+			return getLastIncrData(previousSegmentEndId);
 		}
-		return null;
+		return result;
 	}
 
 	/** 
@@ -125,21 +141,36 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	public T getOneIncrData(Date lastTime) {
 		String tablePrefix = getTablePrefix();
 		long maxId = impulseSenderService.curId(tablePrefix + "_ID");
-		List<String> subTableNameList = submeterTableCalculate.querySubTableNameList(0, maxId, tablePrefix, false);
-		if (subTableNameList == null || subTableNameList.size() == 0)
-			return null;
+		return getOneIncrData(lastTime, maxId);
+	}
 
-		subTableNameList.remove(tablePrefix);
-		for (String subTableName : subTableNameList) {
-			if (StringUtils.isEmpty(subTableName))
-				continue;
-			T result = getOneIncrData(subTableName, lastTime);
-			logger.info("subTableName = " + subTableName + ",getOneIncrData lastTime = " + lastTime + ",result  = " + result);
-			if (result == null)
-				continue;
-			return result;
+	/** 
+	 * 按段递归查询小于指定时间的最后一条数据 
+	 *
+	 * @param lastTime
+	 * @param maxId
+	 * @return
+	 */
+	private T getOneIncrData(Date lastTime, long maxId) {
+		String tablePrefix = getTablePrefix();
+		// 获取id所在分片datasource
+		String dataSource = submeterTableCalculate.getSelectedDataSource(maxId);
+		// 获取id所在分表表名
+		String subTableName = submeterTableCalculate.getSelectedSubTable(tablePrefix, maxId);
+		// 获取id所在段段首id
+		long segmentBeginId = submeterTableCalculate.getSegmentBeginId(maxId);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("segmentBeginId", segmentBeginId);
+		params.put("lastTime", lastTime);
+		T result = getOneIncrData(dataSource, subTableName, params);
+		logger.info("getOneIncrData,dataSource = " + dataSource + ",subTableName = " + subTableName + ",params= " + params
+				+ ",result  = " + result);
+		if (result == null && segmentBeginId > 1) {
+			long previousSegmentEndId = segmentBeginId - 1;
+			return getOneIncrData(lastTime, previousSegmentEndId);
 		}
-		return null;
+		return result;
 	}
 
 	/** 
@@ -149,7 +180,7 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	 * @param lastTime
 	 * @return
 	 */
-	protected abstract T getOneIncrData(String subTableName, Date lastTime);
+	protected abstract T getOneIncrData(String dataSource, String subTableName, Map<String, Object> params);
 
 	/** 
 	 * 获取指定分表大于指定lastTime的最早发生变化的增量
@@ -157,16 +188,18 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	 * @param subTableName
 	 * @return
 	 */
-	protected abstract T getLastIncrData(String subTableName);
+	protected abstract T getLastIncrData(String dataSource, String subTableName, Map<String, Object> params);
 
 	/** 
 	 * 获取分表数据
 	 *
+	 * @param dataSource
 	 * @param subTableName
 	 * @param params
+	 * @param proxyAccount
 	 * @return
 	 */
-	protected abstract List<T> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount);
+	protected abstract List<T> getIncrDataList(String dataSource, String subTableName, Map<String, Object> params, ProxyAccount proxyAccount);
 
 	/** 
 	 * 获取数据延时时间（子类选择覆盖）

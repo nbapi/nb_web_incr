@@ -5,7 +5,6 @@
  */
 package com.elong.nb.dao;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ import com.elong.nb.model.bean.IncrRate;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("dataSource_nbsubmeter_read")
 public interface IncrRateDao {
 
 	/** 
@@ -36,7 +34,8 @@ public interface IncrRateDao {
 	 *
 	 * @return
 	 */
-	public IncrRate getLastIncrRate(@Param("subTableName") String subTableName);
+	public IncrRate getLastIncrRate(@DataSource("dataSource") String dataSource, @Param("subTableName") String subTableName,
+			@Param("params") Map<String, Object> paramMap);
 
 	/** 
 	 * 获取大于指定lastTime的最早发生变化的价格增量
@@ -44,7 +43,8 @@ public interface IncrRateDao {
 	 * @param paramMap
 	 * @return
 	 */
-	public IncrRate getOneIncrRate(@Param("subTableName") String subTableName, @Param("lastTime") Date lastTime);
+	public IncrRate getOneIncrRate(@DataSource("dataSource") String dataSource, @Param("subTableName") String subTableName,
+			@Param("params") Map<String, Object> paramMap);
 
 	/** 
 	 * 获取大于指定lastId的maxRecordCount条价格增量
@@ -52,6 +52,7 @@ public interface IncrRateDao {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<IncrRate> getIncrRates(@Param("subTableName") String subTableName, @Param("params") Map<String, Object> paramMap);
+	public List<IncrRate> getIncrRates(@DataSource("dataSource") String dataSource, @Param("subTableName") String subTableName,
+			@Param("params") Map<String, Object> paramMap);
 
 }

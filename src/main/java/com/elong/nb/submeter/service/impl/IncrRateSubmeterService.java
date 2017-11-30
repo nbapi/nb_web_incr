@@ -5,7 +5,6 @@
  */
 package com.elong.nb.submeter.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,22 +42,22 @@ public class IncrRateSubmeterService extends AbstractSubmeterService<IncrRate> {
 	}
 
 	@Override
-	protected IncrRate getOneIncrData(String subTableName, Date lastTime) {
-		return incrRateDao.getOneIncrRate(subTableName, lastTime);
+	protected IncrRate getOneIncrData(String dataSource, String subTableName, Map<String, Object> params) {
+		return incrRateDao.getOneIncrRate(dataSource, subTableName, params);
 	}
 
 	@Override
-	protected IncrRate getLastIncrData(String subTableName) {
-		return incrRateDao.getLastIncrRate(subTableName);
+	protected IncrRate getLastIncrData(String dataSource, String subTableName, Map<String, Object> params) {
+		return incrRateDao.getLastIncrRate(dataSource, subTableName, params);
 	}
 
 	@Override
-	protected List<IncrRate> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
+	protected List<IncrRate> getIncrDataList(String dataSource, String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
 		params.put("SellChannel", proxyAccount.getSellChannel().getValue());
-		if(proxyAccount.isIsOnlyStraight()){
-			params.put("IsStraint", 1);//1为直签，2为非直签，0为未知
+		if (proxyAccount.isIsOnlyStraight()) {
+			params.put("IsStraint", 1);// 1为直签，2为非直签，0为未知
 		}
-		return incrRateDao.getIncrRates(subTableName, params);
+		return incrRateDao.getIncrRates(dataSource, subTableName, params);
 	}
 
 }

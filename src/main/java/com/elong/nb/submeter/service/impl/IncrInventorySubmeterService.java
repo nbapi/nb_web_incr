@@ -5,7 +5,6 @@
  */
 package com.elong.nb.submeter.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,22 +42,23 @@ public class IncrInventorySubmeterService extends AbstractSubmeterService<IncrIn
 	}
 
 	@Override
-	protected IncrInventory getOneIncrData(String subTableName, Date lastTime) {
-		return incrInventoryDao.getOneIncrInventory(subTableName, lastTime);
+	protected IncrInventory getOneIncrData(String dataSource, String subTableName, Map<String, Object> params) {
+		return incrInventoryDao.getOneIncrInventory(dataSource, subTableName, params);
 	}
 
 	@Override
-	protected IncrInventory getLastIncrData(String subTableName) {
-		return incrInventoryDao.getLastIncrInventory(subTableName);
+	protected IncrInventory getLastIncrData(String dataSource, String subTableName, Map<String, Object> params) {
+		return incrInventoryDao.getLastIncrInventory(dataSource, subTableName, params);
 	}
 
 	@Override
-	protected List<IncrInventory> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
-		params.put("SellChannel", proxyAccount.getSellChannel().getValue());
-		if(proxyAccount.isIsOnlyStraight()){
-			params.put("IsStraint", 1);//1为直签，2为非直签，0为未知
-		}
-		return incrInventoryDao.getIncrInventories(subTableName, params);
+	protected List<IncrInventory> getIncrDataList(String dataSource, String subTableName, Map<String, Object> params,
+			ProxyAccount proxyAccount) {
+//		params.put("SellChannel", proxyAccount.getSellChannel().getValue());TODO 临时注释掉
+//		if (proxyAccount.isIsOnlyStraight()) {
+//			params.put("IsStraint", 1);// 1为直签，2为非直签，0为未知
+//		}
+		return incrInventoryDao.getIncrInventories(dataSource, subTableName, params);
 	}
 
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Jedis;
 
+import com.elong.nb.cache.RedisManager;
 import com.elong.nb.submeter.service.IImpulseSenderService;
 import com.elong.nb.util.JedisPoolUtil;
 
@@ -31,6 +32,8 @@ import com.elong.nb.util.JedisPoolUtil;
 public class ImpulseSenderServiceImpl implements IImpulseSenderService {
 
 	private static final String REDIS_SENTINEL_CONFIG = "redis_sentinel";
+	
+	private RedisManager redisManager = RedisManager.getInstance("redis_shared", "redis_shared");
 
 	/** 
 	 * 当前id
@@ -45,9 +48,7 @@ public class ImpulseSenderServiceImpl implements IImpulseSenderService {
 		if (StringUtils.isEmpty(key)) {
 			throw new IllegalArgumentException("ImpulseSender curId must not be null parameter['key']");
 		}
-		Jedis jedis = JedisPoolUtil.getJedis(REDIS_SENTINEL_CONFIG);
-		String idStr = jedis.get(key);
-		JedisPoolUtil.returnRes(jedis);
+		String idStr = redisManager.get(RedisManager.getCacheKey(key + "_zxvasdfadID"));
 		return Long.valueOf(idStr);
 	}
 

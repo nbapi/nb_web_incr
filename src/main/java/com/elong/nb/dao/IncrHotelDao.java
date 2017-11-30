@@ -5,7 +5,6 @@
  */
 package com.elong.nb.dao;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ import com.elong.nb.model.bean.IncrHotel;
  * @version		1.0  
  * @since		JDK1.7
  */
-@DataSource("dataSource_nbsubmeter_write")
 public interface IncrHotelDao {
 
 	/** 
@@ -36,7 +34,8 @@ public interface IncrHotelDao {
 	 *
 	 * @return
 	 */
-	public IncrHotel getLastIncrHotel(@Param("subTableName") String subTableName);
+	public IncrHotel getLastIncrHotel(@DataSource("dataSource") String dataSource, @Param("subTableName") String subTableName,
+			@Param("params") Map<String, Object> paramMap);
 
 	/** 
 	 * 获取大于指定lastTime的最早发生变化的酒店增量
@@ -44,7 +43,8 @@ public interface IncrHotelDao {
 	 * @param paramMap
 	 * @return
 	 */
-	public IncrHotel getOneIncrHotel(@Param("subTableName") String subTableName,@Param("lastTime") Date lastTime);
+	public IncrHotel getOneIncrHotel(@DataSource("dataSource") String dataSource, @Param("subTableName") String subTableName,
+			@Param("params") Map<String, Object> paramMap);
 
 	/** 
 	 * 获取大于指定lastId的maxRecordCount条酒店增量
@@ -52,6 +52,7 @@ public interface IncrHotelDao {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<IncrHotel> getIncrHotels(@Param("subTableName") String subTableName,@Param("params")  Map<String, Object> paramMap);
+	public List<IncrHotel> getIncrHotels(@DataSource("dataSource") String dataSource, @Param("subTableName") String subTableName,
+			@Param("params") Map<String, Object> paramMap);
 
 }

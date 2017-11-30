@@ -46,22 +46,22 @@ public class IncrHotelSubmeterService extends AbstractSubmeterService<IncrHotel>
 	}
 
 	@Override
-	protected IncrHotel getOneIncrData(String subTableName, Date lastTime) {
-		return incrHotelDao.getOneIncrHotel(subTableName, lastTime);
+	protected IncrHotel getOneIncrData(String dataSource, String subTableName, Map<String, Object> params) {
+		return incrHotelDao.getOneIncrHotel(dataSource, subTableName, params);
 	}
 
 	@Override
-	protected IncrHotel getLastIncrData(String subTableName) {
-		return incrHotelDao.getLastIncrHotel(subTableName);
+	protected IncrHotel getLastIncrData(String dataSource, String subTableName, Map<String, Object> params) {
+		return incrHotelDao.getLastIncrHotel(dataSource, subTableName, params);
 	}
 
 	@Override
-	protected List<IncrHotel> getIncrDataList(String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
+	protected List<IncrHotel> getIncrDataList(String dataSource, String subTableName, Map<String, Object> params, ProxyAccount proxyAccount) {
 		params.put("SellChannel", proxyAccount.getSellChannel().getValue());
-		if(proxyAccount.isIsOnlyStraight()){
-			params.put("IsStraint", 1);//1为直签，2为非直签，0为未知
+		if (proxyAccount.isIsOnlyStraight()) {
+			params.put("IsStraint", 1);// 1为直签，2为非直签，0为未知
 		}
-		return incrHotelDao.getIncrHotels(subTableName, params);
+		return incrHotelDao.getIncrHotels(dataSource, subTableName, params);
 	}
 
 	@Override
