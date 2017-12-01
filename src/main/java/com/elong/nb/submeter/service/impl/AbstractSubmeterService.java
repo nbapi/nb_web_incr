@@ -19,6 +19,7 @@ import com.elong.nb.common.model.ProxyAccount;
 import com.elong.nb.model.bean.Idable;
 import com.elong.nb.submeter.service.IImpulseSenderService;
 import com.elong.nb.submeter.service.ISubmeterService;
+import com.elong.nb.submeter.util.SubmeterTableCalculate;
 
 /**
  * 分表服务实现
@@ -40,9 +41,6 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	private static final Logger logger = Logger.getLogger("SubmeterLogger");
 
 	@Resource
-	private SubmeterTableCalculate submeterTableCalculate;
-
-	@Resource
 	private IImpulseSenderService impulseSenderService;
 
 	/** 
@@ -58,12 +56,12 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	@Override
 	public List<T> getIncrDataList(long lastId, int maxRecordCount, ProxyAccount proxyAccount) {
 		// 获取id所在分片datasource
-		String dataSource = submeterTableCalculate.getSelectedDataSource(lastId);
+		String dataSource = SubmeterTableCalculate.getSelectedDataSource(lastId);
 		// 获取id所在分表表名
 		String tablePrefix = getTablePrefix();
-		String subTableName = submeterTableCalculate.getSelectedSubTable(tablePrefix, lastId);
+		String subTableName = SubmeterTableCalculate.getSelectedSubTable(tablePrefix, lastId);
 		// 获取id所在段段尾id
-		long segmentEndId = submeterTableCalculate.getSegmentEndId(lastId);
+		long segmentEndId = SubmeterTableCalculate.getSegmentEndId(lastId);
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("ID", lastId);
@@ -111,11 +109,11 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	private T getLastIncrData(long maxId) {
 		String tablePrefix = getTablePrefix();
 		// 获取id所在分片datasource
-		String dataSource = submeterTableCalculate.getSelectedDataSource(maxId);
+		String dataSource = SubmeterTableCalculate.getSelectedDataSource(maxId);
 		// 获取id所在分表表名
-		String subTableName = submeterTableCalculate.getSelectedSubTable(tablePrefix, maxId);
+		String subTableName = SubmeterTableCalculate.getSelectedSubTable(tablePrefix, maxId);
 		// 获取id所在段段尾id
-		long segmentBeginId = submeterTableCalculate.getSegmentBeginId(maxId);
+		long segmentBeginId = SubmeterTableCalculate.getSegmentBeginId(maxId);
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("segmentBeginId", segmentBeginId);
@@ -154,11 +152,11 @@ public abstract class AbstractSubmeterService<T extends Idable> implements ISubm
 	private T getOneIncrData(Date lastTime, long maxId) {
 		String tablePrefix = getTablePrefix();
 		// 获取id所在分片datasource
-		String dataSource = submeterTableCalculate.getSelectedDataSource(maxId);
+		String dataSource = SubmeterTableCalculate.getSelectedDataSource(maxId);
 		// 获取id所在分表表名
-		String subTableName = submeterTableCalculate.getSelectedSubTable(tablePrefix, maxId);
+		String subTableName = SubmeterTableCalculate.getSelectedSubTable(tablePrefix, maxId);
 		// 获取id所在段段首id
-		long segmentBeginId = submeterTableCalculate.getSegmentBeginId(maxId);
+		long segmentBeginId = SubmeterTableCalculate.getSegmentBeginId(maxId);
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("segmentBeginId", segmentBeginId);
