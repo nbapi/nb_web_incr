@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<!-- 控制台输出 -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS\} %-5p] [%t] (%c{1}:%L) %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="SubmeterAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/business/SubmeterAppender.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS}-%p[%t][%c]-%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+	
+	<!--nbminitor appender -->
+	<appender name="MinitorAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/nb_web_incr_minitor.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+
+	<!--actionLogEntity appender -->
+	<appender name="actionLogEntityAppender" class="com.elong.common.util.log.ElongDailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/nb_web_incr_actionlogentity.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd-HH-mm" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+
+	<category name="actionLogEntityLogger" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="actionLogEntityAppender" />
+	</category>
+	
+	<logger name="SubmeterLogger" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="SubmeterAppender" />
+	</logger>
+	<logger name="MinitorLogger" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="MinitorAppender" />
+	</logger>
+
+	<root>
+		<level value="info" />
+		<appender-ref ref="console" />
+	</root>
+
+</log4j:configuration>

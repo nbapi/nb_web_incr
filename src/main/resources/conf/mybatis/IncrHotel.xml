@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elong.nb.dao.IncrHotelDao">
+	<!-- 获取大于指定lastTime的最早发生变化的酒店增量 -->
+	<select id="getOneIncrHotel" resultType="incrHotel">
+		select * from ${subTableName}
+		<where>
+			<if test="params.lastTime != null and !params.lastTime.equals('')">
+				<![CDATA[ and ChangeTime <= #{params.lastTime}  ]]>
+			</if>
+			<if test="params.segmentBeginId != null and !params.segmentBeginId.equals('')">
+				<![CDATA[ and ID >= #{params.segmentBeginId}  ]]>
+			</if>
+		</where>
+		order by ChangeTime desc limit 0,1
+	</select>
+
+	<!-- 获取最大IncrID的酒店增量 -->
+	<select id="getLastIncrHotel" resultType="incrHotel">
+		select * from ${subTableName}
+		<where>
+			<if test="params.segmentBeginId != null and !params.segmentBeginId.equals('')">
+				<![CDATA[ and ID >= #{params.segmentBeginId}  ]]>
+			</if>
+		</where>
+		order by ID desc limit 0,1
+	</select>
+
+	<!-- 获取大于指定lastId的maxRecordCount条酒店增量 -->
+	<select id="getIncrHotels" resultType="incrHotel">
+		select * from ${subTableName}
+		<where>
+			<if test="params.ID != null and !params.ID.equals('')">
+				<![CDATA[ and ID >= #{params.ID}  ]]>
+			</if>
+			<if test="params.segmentEndId != null and !params.segmentEndId.equals('')">
+				<![CDATA[ and ID <= #{params.segmentEndId}  ]]>
+			</if>
+			<if test="params.lastTime != null and !params.lastTime.equals('')">
+				<![CDATA[ and ChangeTime <= #{params.lastTime}  ]]>
+			</if>
+			<if test="params.SellChannel != null and !params.SellChannel.equals('')">
+				<![CDATA[ and SellChannel&#{params.SellChannel} = #{params.SellChannel}  ]]>
+			</if>
+			<if test="params.IsStraint != null and !params.IsStraint.equals('')">
+				<![CDATA[ and (IsStraint = #{params.IsStraint} or IsStraint = 0)  ]]>
+			</if>
+		</where>
+		order by ID limit 0,#{params.maxRecordCount}
+	</select>
+</mapper>

@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ErrorPage</title>
+</head>
+<body>
+	<!--<h2 align="center">·ÃÎÊ³ö´í£¬Çë¼ì²é£¡</h2>-->
+	<div align="center">		
+			<img style="cursor:'hand'" width="25%" height="50%" src="${rc.contextPath}/resources/image/errors/403.jpg"  />
+	</div>
+	<div style="display:none;">
+		<!--
+		<label>servername:${serverName}</label>
+		</br>
+		<label>errorMsg:${errorMsg}</label>
+		</br>
+		<label>stackInfo:${stackInfo}</label>
+		-->
+		<label>ErrorMsg:${exception}.getMessage()</label>
+		<label>StackInfo:</br>
+			#foreach($stackInfo in ${exception}.getStackTrace)
+				${stackInfo}.toString()
+				</br>
+			#end
+		</label>
+	</div>
+</body>
+</html>
